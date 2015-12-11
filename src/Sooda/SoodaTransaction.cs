@@ -554,6 +554,7 @@ namespace Sooda
         {
             _dirtyObjects.Clear();
             _dirtyObjectsByClass.Clear();
+            _deletedObjects.Clear();
             _objectDictByClass.Clear();
             _objectList.Clear();
             _objectsByClass.Clear();
@@ -629,6 +630,27 @@ namespace Sooda
 
             _dirtyObjects.Clear();
             _dirtyObjectsByClass.Clear();
+            _deletedObjects.Clear();
+        }
+
+        public bool HasUncommitedChanges
+        {
+            get
+            {
+                if (_dirtyObjects.Count > 0)
+                    return true;
+
+                if (_relationTables.Count > 0)
+                {
+                    foreach (var soodaRelationTable in _relationTables.Values)
+                    {
+                        if (soodaRelationTable.TupleCount > 0)
+                            return true;
+                    }
+                }
+                
+                return false;
+            }
         }
 
         private SoodaObject GetObject(ISoodaObjectFactory factory, string keyString)
