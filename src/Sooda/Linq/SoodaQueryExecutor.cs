@@ -312,6 +312,7 @@ namespace Sooda.Linq
         {
             if (expr.Type == typeof(object)
              || expr.Operand.Type == typeof(object)
+             || expr.Type == expr.Operand.Type      // T -> T
              || Nullable.GetUnderlyingType(expr.Type) == expr.Operand.Type // T -> Nullable<T>
              || (expr.Type == typeof(long) && expr.Operand.Type == typeof(int)))
                 return TranslateExpression(expr.Operand);
