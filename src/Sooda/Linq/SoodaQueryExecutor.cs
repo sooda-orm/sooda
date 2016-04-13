@@ -1407,10 +1407,10 @@ namespace Sooda.Linq
                     switch (method)
                     {
                         case SoodaLinqMethod.Queryable_OrderBy:
-                            _orderBy = new SoodaOrderBy(orderBy, SortOrder.Ascending, _orderBy);
+                            _orderBy = new SoodaOrderBy(orderBy, SortOrder.Ascending, null);
                             break;
                         case SoodaLinqMethod.Queryable_OrderByDescending:
-                            _orderBy = new SoodaOrderBy(orderBy, SortOrder.Descending, _orderBy);
+                            _orderBy = new SoodaOrderBy(orderBy, SortOrder.Descending, null);
                             break;
                         case SoodaLinqMethod.Queryable_ThenBy:
                             _orderBy = new SoodaOrderBy(_orderBy, orderBy, SortOrder.Ascending);
