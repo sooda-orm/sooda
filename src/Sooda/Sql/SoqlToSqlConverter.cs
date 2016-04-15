@@ -979,6 +979,7 @@ namespace Sooda.Sql
                             Output.Write("> ");
                             Output.Write(v.StartIdx);
                         }
+                        Output.Write(" order by rownum_");
                         IndentLevel--;
                     }
                 }
