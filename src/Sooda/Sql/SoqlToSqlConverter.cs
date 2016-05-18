@@ -980,7 +980,7 @@ namespace Sooda.Sql
                             Output.Write(v.StartIdx);
                         }
 
-                        if (v.OrderByExpressions.Count > 0)
+                        if (v.OrderByExpressions.Count > 0 && this.Parent == null)
                         {
                             Output.Write(" order by rownum_");
                         }
