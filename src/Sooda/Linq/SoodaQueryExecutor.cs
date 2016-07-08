@@ -509,7 +509,7 @@ namespace Sooda.Linq
             return null;
         }
 
-        SoqlExpression TranslateCustomExpression(string exprName, object replacement, IList<Expression> arguments)
+        internal Expression TranslateCustomExpression(string exprName, object replacement, IList<Expression> arguments)
         {
             LambdaExpression lambda = replacement as LambdaExpression;
             if (lambda == null)
@@ -527,7 +527,7 @@ namespace Sooda.Linq
                 throw new NotSupportedException(string.Format("{0} requires .NET 4", exprName));
 #endif
             }
-            return TranslateExpression(expr);
+            return expr;
         }
 
         SoqlExpression TranslateMember(MemberExpression expr)
@@ -651,13 +651,9 @@ namespace Sooda.Linq
                     }
                 }
 
-                string exprName = name + "Expression";
-                PropertyInfo pi = expr.Expression.Type.GetProperty(exprName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-                if (pi != null)
-                {
-                    // It's an instance property because static properties are constant-folded.
-                    return TranslateCustomExpression(exprName, pi.GetValue(null, null), new Expression[] { expr.Expression });
-                }
+                Expression newExpr = TranslateUnknownMember(expr);
+                if (newExpr != null)
+                    return TranslateExpression(newExpr);
             }
 
             throw new NotSupportedException(t.FullName + "." + name);
@@ -884,8 +880,19 @@ namespace Sooda.Linq
                 return new SoqlConditionalExpression(TranslateBoolean(expr), new SoqlLiteralExpression("True"), new SoqlLiteralExpression("False"));
             throw new NotSupportedException(expr.Type.ToString());
         }
+        
+        internal Expression TranslateUnknownMember(MemberExpression expr)
+        {
+            string exprName = expr.Member.Name + "Expression";
+            PropertyInfo pi = expr.Expression.Type.GetProperty(exprName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
 
-        SoqlExpression TranslateUnknownMethod(MethodCallExpression mc)
+            if (pi == null)
+                return null;
+          
+            return TranslateCustomExpression(exprName, pi.GetValue(null, null), new Expression[] {expr.Expression});
+        }
+
+        internal Expression TranslateUnknownMethod(MethodCallExpression mc)
         {
             // First look for an XXXExpression method whose signature matches the unknown method.
             // This enables translation of overloaded methods.
@@ -898,7 +905,7 @@ namespace Sooda.Linq
                 // If not found, try an XXXExpression method with no parameters.
                 exprMethod = inType.GetMethod(exprName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, null, Type.EmptyTypes, null);
                 if (exprMethod == null)
-                    throw new NotSupportedException(inType.FullName + "." + mc.Method.Name);
+                    return null;
             }
             // Invoke XXXExpression with default argument values.
             int dummyParameterCount = exprMethod.GetParameters().Length;
@@ -1067,7 +1074,13 @@ namespace Sooda.Linq
                         throw new Exception(name + " is not a Sooda field");
                     return new SoqlPathExpression(parent, name);
                 default:
-                    return TranslateUnknownMethod(mc);
+                    Expression newExpr = TranslateUnknownMethod(mc);
+                    if (newExpr == null)    // not found custom XXXExpression method
+                    {
+                        Type inType = mc.Object != null ? mc.Object.Type : mc.Method.DeclaringType;
+                        throw new NotSupportedException(inType.FullName + "." + mc.Method.Name);
+                    }
+                    return TranslateExpression(newExpr);
             }
         }
 

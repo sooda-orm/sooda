@@ -73,6 +73,86 @@ namespace Sooda.UnitTests.TestCases.Linq
             }
         }
 
+        public static object CarOwner(Car car)
+        {
+            throw new Exception("should use CarOwnerExpression instead of CarOwner function");
+        }
+
+        public static Expression<Func<Car, object>> CarOwnerExpression(Car dummyCar)
+        {
+            return car => new { Car = car.Name.Value, Owner = car.Owner.Name };
+        }
+
+        public static string ContactLabel(Contact c)
+        {
+            throw new Exception("should use ContactLabelExpression instead of ContactLabel function");
+        }
+
+        public static Expression<Func<Contact, string>>  ContactLabelExpression(Contact dummyContact)
+        {
+            return c => string.Format("+{0}+", c.Name);
+        }
+
+        public static string ContactLabelInSql(Contact c)
+        {
+            throw new Exception("should use ContactLabelInSqlExpression instead of ContactLabelInSql function");
+        }
+
+        public static Expression<Func<Contact, string>> ContactLabelInSqlExpression(Contact dummyContact)
+        {
+            return c =>"+" + c.Name + "+";
+        }
+
+        [Test]
+        public void DirectNewObject()
+        {
+            using (new SoodaTransaction())
+            {
+                var c = Car.Linq().Select(car => new { Car = car.Name.Value, Owner = car.Owner.Name });
+                CollectionAssert.AreEquivalent(new object[] { new { Car = "some vehicle", Owner = (string)null }, new { Car = "a car", Owner = "Mary Manager" } }, c);
+            }
+        }
+
+        [Test]
+        public void IndirectNewObject()
+        {
+            using (new SoodaTransaction())
+            {
+                var c = Car.Linq().Select(car => CarOwner(car));
+                CollectionAssert.AreEquivalent(new object[] { new { Car = "some vehicle", Owner = (string)null }, new { Car = "a car", Owner = "Mary Manager" } }, c);
+            }
+        }
+
+        [Test]
+        public void DirectDotNetFunction()
+        {
+            using (new SoodaTransaction())
+            {
+                var c = Vehicle.Linq().Where(vehicle => vehicle.Owner != null).Select(vehicle => string.Format("+{0}+", vehicle.Owner.Name));
+                CollectionAssert.AreEquivalent(new [] { "+Mary Manager+", "+Ed Employee+" }, c);
+            }
+        }
+
+        [Test]
+        public void IndirectDotNetFunction()
+        {
+            using (new SoodaTransaction())
+            {
+                var c = Vehicle.Linq().Where(vehicle => vehicle.Owner != null).Select(vehicle => ContactLabel(vehicle.Owner));
+                CollectionAssert.AreEquivalent(new[] { "+Mary Manager+", "+Ed Employee+" }, c);
+            }
+        }
+
+        [Test]
+        public void IndirectInSqlFunction()
+        {
+            using (new SoodaTransaction())
+            {
+                var c = Vehicle.Linq().Where(vehicle => vehicle.Owner != null).Select(vehicle => ContactLabelInSql(vehicle.Owner));
+                CollectionAssert.AreEquivalent(new[] { "+Mary Manager+", "+Ed Employee+" }, c);
+            }
+        }
+
         public static double CircleArea(double r)
         {
             return Math.PI * r * r;

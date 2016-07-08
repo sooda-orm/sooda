@@ -32,7 +32,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="NUnit.Framework">
-      <HintPath>..\..\..\external\NUnit.Framework.dll</HintPath>
+      <HintPath>..\..\external\NUnit.Framework.dll</HintPath>
     </Reference>
     <ProjectReference Include="..\..\src\Sooda\Sooda.csproj">
       <Name>Sooda</Name>
