@@ -883,6 +883,9 @@ namespace Sooda.Linq
         
         internal Expression TranslateUnknownMember(MemberExpression expr)
         {
+            if (expr.Expression == null)    // this is const
+                return null;
+
             string exprName = expr.Member.Name + "Expression";
             PropertyInfo pi = expr.Expression.Type.GetProperty(exprName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
 

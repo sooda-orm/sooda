@@ -153,6 +153,16 @@ namespace Sooda.UnitTests.TestCases.Linq
             }
         }
 
+        [Test]
+        public void IndirectNestedPropertyAndFunction()
+        {
+            using (new SoodaTransaction())
+            {
+                var c = Car.Linq().Where(car => car.Owner != null).Select(vehicle => ContactLabelInSql(vehicle.CurrentOwner));
+                CollectionAssert.AreEquivalent(new[] { "+Mary Manager+" }, c);
+            }
+        }
+
         public static double CircleArea(double r)
         {
             return Math.PI * r * r;

@@ -28,6 +28,9 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+using System;
+using System.Linq.Expressions;
+
 namespace Sooda.UnitTests.BaseObjects
 {
     using Sooda;
@@ -53,6 +56,23 @@ namespace Sooda.UnitTests.BaseObjects
                 this(SoodaTransaction.ActiveTransaction)
         {
             // Do not modify this constructor.
+        }
+
+        public Contact CurrentOwner
+        {
+            get
+            {
+                // return Owner ?? Contact.GetRef(3);
+                throw new NotSupportedException("expression from 'CurrentOwnerExpression' should be used");
+            }
+        }
+
+        public static Expression<Func<Car, Contact>> CurrentOwnerExpression
+        {
+            get
+            {
+                return car => car.Owner;
+            }
         }
     }
 }

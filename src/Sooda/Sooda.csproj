@@ -69,6 +69,7 @@
     <Compile Include="Linq\LinqUtils.cs" />
     <Compile Include="Linq\ParameterBinder.cs" />
     <Compile Include="Linq\SelectExecutor.cs" />
+    <Compile Include="Linq\SelectExpressionPreprocessor.cs" />
     <Compile Include="Linq\SoodaLinqMethod.cs" />
     <Compile Include="Linq\SoodaQueryable.cs" />
     <Compile Include="Linq\SoodaQueryExecutor.cs" />
