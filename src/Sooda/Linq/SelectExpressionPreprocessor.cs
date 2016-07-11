@@ -31,14 +31,14 @@ namespace Sooda.Linq
             if (current.DeclaringType == null)
                 return base.VisitMember(node);
 
-            if (!typeof(SoodaObject).IsAssignableFrom(current.DeclaringType))   // skip members outside SoodaObject's
+            if (!typeof(SoodaObject).IsAssignableFrom(node.Expression.Type))   // skip members outside SoodaObject's
                 return base.VisitMember(node);
 
             if (current.DeclaringType.Name.EndsWith("_Stub"))  // skip members declared in sooda stubs
                 return base.VisitMember(node);
 
             // check for <member>Expression for processed member
-            Tuple<Type, string> key = new Tuple<Type, string>(current.DeclaringType, current.Name);
+            Tuple<Type, string> key = new Tuple<Type, string>(node.Expression.Type, current.Name);
 
             bool hasTranslation;
             bool foundInfo = _translations.TryGetValue(key, out hasTranslation);
