@@ -71,6 +71,7 @@ namespace Sooda.Schema
                     Precision = pk.Precision,
                     References = pk.References,
                     IsPrimaryKey = true,
+                    Table = table,
                     DBColumnName = i == 0 ? "id" : "id" + (i + 1) });
             }
 
