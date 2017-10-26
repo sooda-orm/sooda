@@ -37,6 +37,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Sooda.Sql
@@ -730,6 +731,8 @@ namespace Sooda.Sql
                 // optimization: don't insert null dynamic fields
                 return;
             }
+
+            if (table.Fields.All(x => x.ReadOnly)) return;
 
             StringBuilder builder = new StringBuilder(500);
             builder.Append("insert into ");
