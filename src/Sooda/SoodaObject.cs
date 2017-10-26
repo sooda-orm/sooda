@@ -541,8 +541,11 @@ namespace Sooda
                 for (int i = 0; i < _fieldValues.Length; ++i)
                 {
                     Sooda.Schema.FieldInfo field = fields[i];
-                    if (!field.IsNullable && IsDataLoaded(field.Table.OrdinalInClass) && _fieldValues.IsNull(i))
-                        FieldCannotBeNull(field.Name);
+                    if (!field.ReadOnly)
+                    {
+                        if (!field.IsNullable && IsDataLoaded(field.Table.OrdinalInClass) && _fieldValues.IsNull(i))
+                            FieldCannotBeNull(field.Name);
+                    }
                 }
             }
         }
