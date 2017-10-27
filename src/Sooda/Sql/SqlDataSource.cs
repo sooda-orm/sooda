@@ -341,9 +341,11 @@ namespace Sooda.Sql
 
         void DoDeletesForTable(SoodaObject obj, TableInfo table)
         {
+            var allRO = table.Fields.All(x => x.ReadOnly);
+            if (allRO) return; //ignore RO tables
             StringBuilder builder = new StringBuilder();
             ArrayList queryParams = new ArrayList();
-            builder.Append("delete from ");
+            builder.Append("delete fsrom ");
             builder.Append(table.DBTableName);
             DoWithWhere(obj, builder, queryParams, true);
         }
@@ -793,6 +795,7 @@ namespace Sooda.Sql
                 return;
             }
 
+            
             StringBuilder builder = new StringBuilder(500);
             builder.Append("update ");
             builder.Append(table.DBTableName);
