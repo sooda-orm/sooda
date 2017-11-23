@@ -1334,6 +1334,9 @@ namespace Sooda
                 }
             }
 
+            if (!classInfo.IsAbstractClass())
+                return factory;
+
             throw new Exception("Cannot determine subclass. Selector actual value: " + selectorActualValue + " base class: " + classInfo.Name);
         }
 
