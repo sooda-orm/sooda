@@ -282,10 +282,11 @@ namespace Sooda.Schema
                 t.Resolve(this.Name, false);
             }
 
-            if (UnifiedTables.Count > 30)
-            {
-                throw new SoodaSchemaException("Class " + Name + " is invalid, because it's based on more than 30 tables");
-            }
+            // seems to be arbitrary .. and obsolete, as it limits number of dynamic fields
+            //if (UnifiedTables.Count > 30)
+            //{
+            //    throw new SoodaSchemaException("Class " + Name + " is invalid, because it's based on more than 30 tables");
+            //}
             // Console.WriteLine("<<< End of FlattenTables for {0}", Name);
         }
 
