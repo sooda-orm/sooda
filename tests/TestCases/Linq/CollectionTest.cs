@@ -477,7 +477,8 @@ namespace Sooda.UnitTests.TestCases.Linq
         {
             using (new SoodaTransaction())
             {
-                IEnumerable<Contact> ce = Contact.Linq().Where(c => new int[] { 1, 3 }.Any(i => i == c.ContactId));
+                var array = new Contact[] {Contact.Mary, Contact.Eva};
+                IEnumerable<Contact> ce = Contact.Linq().Where(c => array.Any(i => i == c.Manager));
                 CollectionAssert.AreEquivalent(new Contact[] { Contact.Mary, Contact.Eva }, ce);
             }
         }

@@ -73,8 +73,10 @@ namespace Sooda.UnitTests.TestCases.ObjectMapper
                 VehicleList vehicles = Vehicle.GetList(true, SoodaOrderBy.Ascending("Id"));
                 Assert.AreEqual(9, vehicles.Count);
                 Assert.AreEqual(string.Empty, vehicles[0].GetLabel(false));
+                
                 Assert.AreEqual("Mary Manager", vehicles[1].GetLabel(false));
                 Assert.AreEqual("Ed Employee", vehicles[2].GetLabel(false));
+
                 Assert.AreEqual(string.Empty, vehicles[3].GetLabel(false));
                 Assert.AreEqual(string.Empty, vehicles[4].GetLabel(false));
                 Assert.AreEqual(string.Empty, vehicles[5].GetLabel(false));
