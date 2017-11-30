@@ -635,7 +635,8 @@ namespace Sooda
 
         void SetAllDataLoaded()
         {
-            Array.ForEach<bool>(_dataLoadedMask, t => t = true);
+            for (int i = 0; i < _dataLoadedMask.Length; i++)
+                _dataLoadedMask[i] = true;
         }
 
         void SetAllDataNotLoaded()
