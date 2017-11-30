@@ -172,11 +172,21 @@ namespace Sooda.Schema
 
             fi.Name = this.Name;
             fi.dbcolumn = this.dbcolumn;
-            fi.IsNullable = this.IsNullable;
             fi.DataType = this.DataType;
+            fi.Description = this.Description;
             fi.Size = this.Size;
-            fi.ForceTrigger = this.ForceTrigger;
+            fi.Precision = this.Precision;
+            fi.References = this.References;
+            fi.PrecommitValue = this.PrecommitValue;
+            fi.IsPrimaryKey = this.IsPrimaryKey;
+            fi.IsNullable = this.IsNullable;
             fi.ReadOnly = this.ReadOnly;
+            fi.ForceTrigger = this.ForceTrigger;
+            fi.DeleteAction = this.DeleteAction;
+            fi.IsLabel = this.IsLabel;
+            fi.PrefetchLevel = this.PrefetchLevel;
+            if (this.Extensions != null)
+                fi.Extensions = (System.Xml.XmlAttribute[])this.Extensions.Clone();
 
             return fi;
         }

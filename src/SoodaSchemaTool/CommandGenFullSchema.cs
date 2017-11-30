@@ -29,6 +29,7 @@
 //
 
 using Sooda.Schema;
+using System;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
@@ -56,6 +57,7 @@ namespace SoodaSchemaTool
         {
             string schemaFileName = args[0];
             string outschemaFileName = args[1];
+            string xsltFileName = args.Length > 2 ? args[2] : "";
 
             XmlTextReader xr = new XmlTextReader(schemaFileName);
             SchemaInfo schemaInfo = SchemaManager.ReadAndValidateSchema(xr, Path.GetDirectoryName(schemaFileName));
@@ -67,10 +69,13 @@ namespace SoodaSchemaTool
             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
             ns.Add("", SchemaInfo.XmlNamespace);
 
-            using (FileStream fs = File.Create(outschemaFileName))
+            using (XmlWriter fs = XmlWriter.Create(outschemaFileName, new XmlWriterSettings() { Indent = true }))
+            //using (FileStream fs = File.Create(outschemaFileName))
             {
                 try
                 {
+                    if (!String.IsNullOrEmpty(xsltFileName))
+                        fs.WriteProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"" + xsltFileName +"\"");
                     ser.Serialize(fs, schemaInfo, ns);
                 }
                 finally

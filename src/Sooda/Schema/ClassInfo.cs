@@ -256,13 +256,26 @@ namespace Sooda.Schema
                     InheritsFromClass.FlattenTables();
                 }
                 UnifiedTables = new List<TableInfo>();
+                //dynamic tables moved to the end
                 foreach (TableInfo ti in InheritsFromClass.UnifiedTables)
                 {
-                    UnifiedTables.Add(ti.Clone(this));
+                    if (!ti.IsDynamic)
+                        UnifiedTables.Add(ti.Clone(this));
                 }
                 foreach (TableInfo ti in LocalTables)
                 {
-                    UnifiedTables.Add(ti);
+                    if (!ti.IsDynamic)
+                        UnifiedTables.Add(ti);
+                }
+                foreach (TableInfo ti in InheritsFromClass.UnifiedTables)
+                {
+                    if (ti.IsDynamic)
+                        UnifiedTables.Add(ti.Clone(this));
+                }
+                foreach (TableInfo ti in LocalTables)
+                {
+                    if (ti.IsDynamic)
+                        UnifiedTables.Add(ti);
                 }
             }
             else
