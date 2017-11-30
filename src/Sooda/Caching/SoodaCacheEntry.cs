@@ -35,13 +35,13 @@ namespace Sooda.Caching
 {
     public class SoodaCacheEntry
     {
-        private int _dataLoadedMask;
+        private bool[] _dataLoadedMask;
         private SoodaObjectFieldValues _data;
         private IList _dependentCollections;
 
-        public SoodaCacheEntry(int dataLoadedMask, SoodaObjectFieldValues data)
+        public SoodaCacheEntry(bool[] dataLoadedMask, SoodaObjectFieldValues data)
         {
-            _dataLoadedMask = dataLoadedMask;
+            _dataLoadedMask = (bool[])dataLoadedMask.Clone();
             _data = data;
             _dependentCollections = null;
         }
@@ -51,7 +51,7 @@ namespace Sooda.Caching
             get { return _data; }
         }
 
-        public int DataLoadedMask
+        public bool[] DataLoadedMask
         {
             get { return _dataLoadedMask; }
         }

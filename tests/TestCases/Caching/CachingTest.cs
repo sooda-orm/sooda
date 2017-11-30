@@ -38,7 +38,7 @@ namespace Sooda.UnitTests.TestCases.Caching
     [TestFixture]
     public class CachingTest
     {
-        private static SoodaCacheEntry DummyEntry(int a)
+        private static SoodaCacheEntry DummyEntry(bool[] a)
         {
             return new SoodaCacheEntry(a, new SoodaObjectArrayFieldValues(3));
         }
@@ -54,7 +54,7 @@ namespace Sooda.UnitTests.TestCases.Caching
         public void Test2()
         {
             ISoodaCache c = new SoodaInProcessCache();
-            c.Add("Contact", 2, DummyEntry(2), TimeSpan.FromHours(1), false);
+            c.Add("Contact", 2, DummyEntry(new bool[] { false, true}), TimeSpan.FromHours(1), false);
             c.Invalidate("Contact", 2, SoodaCacheInvalidateReason.Updated);
             Assert.IsNull(c.Find("Contact", 2));
         }
@@ -63,7 +63,7 @@ namespace Sooda.UnitTests.TestCases.Caching
         public void Test3()
         {
             ISoodaCache c = new SoodaInProcessCache();
-            c.Add("Contact", 2, DummyEntry(2), TimeSpan.FromHours(1), false);
+            c.Add("Contact", 2, DummyEntry(new bool[] { false, true }), TimeSpan.FromHours(1), false);
             //c.Invalidate("Contact", 2, SoodaCacheInvalidateReason.Updated);
             Assert.IsNotNull(c.Find("Contact", 2));
             Assert.AreEqual(2, c.Find("Contact", 2).DataLoadedMask);
@@ -73,8 +73,8 @@ namespace Sooda.UnitTests.TestCases.Caching
         public void Test4()
         {
             ISoodaCache c = new SoodaInProcessCache();
-            c.Add("Contact", 2, DummyEntry(2), TimeSpan.FromHours(1), false);
-            c.Add("Contact", 2, DummyEntry(3), TimeSpan.FromHours(1), false);
+            c.Add("Contact", 2, DummyEntry(new bool[] { false, true }), TimeSpan.FromHours(1), false);
+            c.Add("Contact", 2, DummyEntry(new bool[] { true, true }), TimeSpan.FromHours(1), false);
             Assert.AreEqual(3, c.Find("Contact", 2).DataLoadedMask);
         }
 
