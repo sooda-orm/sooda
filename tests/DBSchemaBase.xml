@@ -80,6 +80,7 @@
             <field name="Name" dbcolumn="name" type="String" size="64" nullable="true" />
             <field name="Owner" dbcolumn="owner" type="Integer" references="Contact" nullable="true" />
         </table>
+        <collectionManyToMany name="Contacts" relation="ContactToVehicle" masterField="0"><description>Owners of vehicle.</description></collectionManyToMany>
     </class>
 
     <class name="Car" subclassSelectorValue="1" inheritFrom="Vehicle">

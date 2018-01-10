@@ -66,7 +66,7 @@ namespace Sooda.UnitTests.TestCases.Caching
             c.Add("Contact", 2, DummyEntry(new bool[] { false, true }), TimeSpan.FromHours(1), false);
             //c.Invalidate("Contact", 2, SoodaCacheInvalidateReason.Updated);
             Assert.IsNotNull(c.Find("Contact", 2));
-            Assert.AreEqual(2, c.Find("Contact", 2).DataLoadedMask);
+            Assert.AreEqual(new[] { false, true }, c.Find("Contact", 2).DataLoadedMask);
         }
 
         [Test]
@@ -75,7 +75,7 @@ namespace Sooda.UnitTests.TestCases.Caching
             ISoodaCache c = new SoodaInProcessCache();
             c.Add("Contact", 2, DummyEntry(new bool[] { false, true }), TimeSpan.FromHours(1), false);
             c.Add("Contact", 2, DummyEntry(new bool[] { true, true }), TimeSpan.FromHours(1), false);
-            Assert.AreEqual(3, c.Find("Contact", 2).DataLoadedMask);
+            Assert.AreEqual(new[] { true, true }, c.Find("Contact", 2).DataLoadedMask);
         }
 
         [Test]

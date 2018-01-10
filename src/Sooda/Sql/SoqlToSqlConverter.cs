@@ -102,9 +102,11 @@ namespace Sooda.Sql
             }
             else
             {
-                if (Parent != null && Parent.TableAliases.ContainsKey(firstToken.PropertyName))
-                    return Parent.GenerateTableJoins(expr, out p, out firstTableAlias);
-
+                for (var parentConv = Parent; parentConv != null; parentConv = parentConv.Parent)
+                {
+                    if (parentConv.TableAliases.ContainsKey(firstToken.PropertyName))
+                        return parentConv.GenerateTableJoins(expr, out p, out firstTableAlias);
+                }
                 // artificial first token
 
                 // TODO - find default container for current field
