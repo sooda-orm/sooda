@@ -197,6 +197,12 @@ namespace Sooda.Schema
         public TableInfo Clone(ClassInfo newParent)
         {
             TableInfo tableInfo = (TableInfo) this.MemberwiseClone();
+            if (tableInfo.IsDynamic)
+            {
+                tableInfo.Fields = new List<FieldInfo>();
+                foreach (FieldInfo fi in Fields)
+                    tableInfo.Fields.Add(fi.Clone());
+            }
 
             tableInfo.OwnerClass = newParent;
             return tableInfo;

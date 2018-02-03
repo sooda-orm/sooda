@@ -40,7 +40,18 @@ namespace Sooda.UnitTests.TestCases.Caching
     {
         private static SoodaCacheEntry DummyEntry(int a)
         {
-            return new SoodaCacheEntry(a, new SoodaObjectArrayFieldValues(3));
+            bool[] mask = new[] {
+                (a & (1 << 0)) != 0,
+                (a & (1 << 1)) != 0,
+                (a & (1 << 2)) != 0,
+                (a & (1 << 3)) != 0,
+                (a & (1 << 4)) != 0,
+                (a & (1 << 5)) != 0,
+                (a & (1 << 6)) != 0,
+                (a & (1 << 7)) != 0,
+                (a & (1 << 7)) != 0
+            };
+            return new SoodaCacheEntry(mask, new SoodaObjectArrayFieldValues(3));
         }
 
         [Test]

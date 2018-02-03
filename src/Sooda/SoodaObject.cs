@@ -40,6 +40,7 @@ using System.Collections.Specialized;
 using System.Data;
 using System.Reflection;
 using System.Xml;
+using System.Linq;
 
 namespace Sooda
 {
@@ -54,7 +55,7 @@ namespace Sooda
 
         private byte[] _fieldIsDirty;
         internal SoodaObjectFieldValues _fieldValues;
-        private int _dataLoadedMask;
+        private bool[] _dataLoadedMask;
         private SoodaTransaction _transaction;
         private SoodaObjectFlags _flags;
         private object _primaryKeyValue;
@@ -308,7 +309,7 @@ namespace Sooda
                         logger.Trace("Initializing object {0}({1}) from cache.", this.GetType().Name, _primaryKeyValue);
                     }
                     _fieldValues = cachedData.Data;
-                    _dataLoadedMask = cachedData.DataLoadedMask;
+                    _dataLoadedMask = (bool[])cachedData.DataLoadedMask.Clone();
                     FromCache = true;
                     return;
                 }
@@ -328,6 +329,7 @@ namespace Sooda
             ClassInfo ci = GetClassInfo();
 
             int fieldCount = ci.UnifiedFields.Count;
+            _dataLoadedMask = new bool[ci.UnifiedTables.Count];
             _fieldValues = InitFieldValues(fieldCount, ci.OrderedFieldNames);
             GetTransaction().Statistics.RegisterFieldsInited();
             SoodaStatistics.Global.RegisterFieldsInited();
@@ -631,29 +633,28 @@ namespace Sooda
 
         bool IsAllDataLoaded()
         {
-            // 2^N-1 has exactly N lower bits set to 1
-            return _dataLoadedMask == (1 << GetClassInfo().UnifiedTables.Count) - 1;
+            return Array.TrueForAll<bool>(_dataLoadedMask, t => t);
         }
 
         void SetAllDataLoaded()
         {
-            // 2^N-1 has exactly N lower bits set to 1
-            _dataLoadedMask = (1 << GetClassInfo().UnifiedTables.Count) - 1;
+            for (int i = 0; i < _dataLoadedMask.Length; i++)
+                _dataLoadedMask[i] = true;
         }
 
         void SetAllDataNotLoaded()
         {
-            _dataLoadedMask = 0;
+            Array.Clear(_dataLoadedMask, 0, _dataLoadedMask.Length);
         }
 
-        bool IsDataLoaded(int tableNumber)
+        internal bool IsDataLoaded(int tableNumber)
         {
-            return (_dataLoadedMask & (1 << tableNumber)) != 0;
+            return _dataLoadedMask[tableNumber];
         }
 
         void SetDataLoaded(int tableNumber)
         {
-            _dataLoadedMask |= (1 << tableNumber);
+            _dataLoadedMask[tableNumber] = true;
         }
 
         #endregion
@@ -666,7 +667,7 @@ namespace Sooda
             EnsureFieldsInited(true);
 
             int i;
-            int oldDataLoadedMask = _dataLoadedMask;
+            bool[] oldDataLoadedMask = (bool[])_dataLoadedMask.Clone() ;
 
             for (i = tableIndex; i < tables.Length; ++i)
             {
@@ -705,7 +706,7 @@ namespace Sooda
                 SetDataLoaded(table.OrdinalInClass);
                 first = false;
             }
-            if (!IsObjectDirty() && (!FromCache || _dataLoadedMask != oldDataLoadedMask) && GetTransaction().CachingPolicy.ShouldCacheObject(this))
+            if (!IsObjectDirty() && (!FromCache || !_dataLoadedMask.SequenceEqual<bool>(oldDataLoadedMask)) && GetTransaction().CachingPolicy.ShouldCacheObject(this))
             {
                 TimeSpan expirationTimeout;
                 bool slidingExpiration;
@@ -1345,6 +1346,9 @@ namespace Sooda
                 }
             }
 
+            if (!classInfo.IsAbstractClass())
+                return factory;
+
             throw new Exception("Cannot determine subclass. Selector actual value: " + selectorActualValue + " base class: " + classInfo.Name);
         }
 
@@ -1499,7 +1503,7 @@ namespace Sooda
         public void InitRawObject(SoodaTransaction tran)
         {
             _transaction = tran;
-            _dataLoadedMask = 0;
+            _dataLoadedMask = new bool[GetClassInfo().UnifiedTables.Count];
             _flags = SoodaObjectFlags.InsertMode;
             _primaryKeyValue = null;
         }

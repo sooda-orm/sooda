@@ -71,12 +71,13 @@ namespace Sooda.UnitTests.TestCases.Linq
         [Test]
         public void DeleteCount()
         {
-            using (new SoodaTransaction())
+            using (var t = new SoodaTransaction())
             {
                 int n = Contact.Linq().Count();
                 Assert.AreEqual(7, n);
 
                 Contact.GetRef(5).MarkForDelete();
+                t.SaveObjectChanges();
                 n = Contact.Linq().Count();
                 Assert.AreEqual(6, n);
             }

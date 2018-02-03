@@ -508,6 +508,8 @@ namespace Sooda.Sql
                 queryExpression.FromAliases.Add("");
                 foreach (TableInfo ti in classInfo.UnifiedTables)
                 {
+                    if (ti.IsDynamic)
+                        continue;
                     tablesArrayList.Add(ti);
                     foreach (FieldInfo fi in ti.Fields)
                     {
@@ -790,8 +792,11 @@ namespace Sooda.Sql
                 // For dynamic fields do DELETE+INSERT instead of UPDATE.
                 // This is because if a dynamic field is added to an existing object, there is no dynamic field row to update.
                 // Another reason is that we never store null dynamic fields in the database - an INSERT will be ommitted in this case.
-                DoDeletesForTable(obj, table);
-                DoInsertsForTable(obj, table, true);
+                if (obj.IsDataLoaded(table.OrdinalInClass))
+                {
+                    DoDeletesForTable(obj, table);
+                    DoInsertsForTable(obj, table, true);
+                }
                 return;
             }
 

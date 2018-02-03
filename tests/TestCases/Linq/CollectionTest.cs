@@ -29,12 +29,14 @@
 
 #if DOTNET35
 
+using System;
 using NUnit.Framework;
 using Sooda.Linq;
 using Sooda.UnitTests.BaseObjects;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace Sooda.UnitTests.TestCases.Linq
 {
@@ -477,7 +479,8 @@ namespace Sooda.UnitTests.TestCases.Linq
         {
             using (new SoodaTransaction())
             {
-                IEnumerable<Contact> ce = Contact.Linq().Where(c => new int[] { 1, 3 }.Any(i => i == c.ContactId));
+                var array = new Contact[] {Contact.Mary, Contact.Eva};
+                IEnumerable<Contact> ce = Contact.Linq().Where(c => array.Any(i => i == c.Manager));
                 CollectionAssert.AreEquivalent(new Contact[] { Contact.Mary, Contact.Eva }, ce);
             }
         }
@@ -499,6 +502,16 @@ namespace Sooda.UnitTests.TestCases.Linq
             {
                 IEnumerable<Contact> ce = Contact.Linq().Where(c => Role.Employee.MembersQuery.Any(m => m.Manager == c));
                 CollectionAssert.AreEqual(new Contact[] { Contact.Mary }, ce);
+            }
+        }
+
+        [Test]
+        public void AnySecondAnyWithRootParameterTest()
+        {
+            using (new SoodaTransaction())
+            {
+                IEnumerable<Vehicle> veh = Vehicle.Linq().Where(rootParam => rootParam.Contacts.Any(c => c.Vehicles.Any(mv => mv == rootParam)));
+                Assert.DoesNotThrow(() => { veh.ToList(); });
             }
         }
 

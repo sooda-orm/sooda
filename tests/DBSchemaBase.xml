@@ -73,13 +73,14 @@
         <collectionOneToMany name="Managers" class="Contact" foreignField="PrimaryGroup" where="Type='Employee'" />
     </class>
 
-    <class name="Vehicle" subclassSelectorField="Type" label="Owner.ContactId">
+    <class name="Vehicle" subclassSelectorField="Type" label="Owner.Name">
         <table name="Vehicle">
             <field name="Id" dbcolumn="id" type="Integer" primaryKey="true" />
             <field name="Type" dbcolumn="type" type="Integer" />
             <field name="Name" dbcolumn="name" type="String" size="64" nullable="true" />
             <field name="Owner" dbcolumn="owner" type="Integer" references="Contact" nullable="true" />
         </table>
+        <collectionManyToMany name="Contacts" relation="ContactToVehicle" masterField="0"><description>Owners of vehicle.</description></collectionManyToMany>
     </class>
 
     <class name="Car" subclassSelectorValue="1" inheritFrom="Vehicle">

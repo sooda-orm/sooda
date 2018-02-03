@@ -256,13 +256,26 @@ namespace Sooda.Schema
                     InheritsFromClass.FlattenTables();
                 }
                 UnifiedTables = new List<TableInfo>();
+                //dynamic tables moved to the end
                 foreach (TableInfo ti in InheritsFromClass.UnifiedTables)
                 {
-                    UnifiedTables.Add(ti.Clone(this));
+                    if (!ti.IsDynamic)
+                        UnifiedTables.Add(ti.Clone(this));
                 }
                 foreach (TableInfo ti in LocalTables)
                 {
-                    UnifiedTables.Add(ti);
+                    if (!ti.IsDynamic)
+                        UnifiedTables.Add(ti);
+                }
+                foreach (TableInfo ti in InheritsFromClass.UnifiedTables)
+                {
+                    if (ti.IsDynamic)
+                        UnifiedTables.Add(ti.Clone(this));
+                }
+                foreach (TableInfo ti in LocalTables)
+                {
+                    if (ti.IsDynamic)
+                        UnifiedTables.Add(ti);
                 }
             }
             else
@@ -282,10 +295,11 @@ namespace Sooda.Schema
                 t.Resolve(this.Name, false);
             }
 
-            if (UnifiedTables.Count > 30)
-            {
-                throw new SoodaSchemaException("Class " + Name + " is invalid, because it's based on more than 30 tables");
-            }
+            // seems to be arbitrary .. and obsolete, as it limits number of dynamic fields
+            //if (UnifiedTables.Count > 30)
+            //{
+            //    throw new SoodaSchemaException("Class " + Name + " is invalid, because it's based on more than 30 tables");
+            //}
             // Console.WriteLine("<<< End of FlattenTables for {0}", Name);
         }
 
@@ -515,7 +529,7 @@ namespace Sooda.Schema
                     mt = new TableInfo();
                     mt.DBTableName = table.DBTableName;
                     mt.TableUsageType = table.TableUsageType;
-                    mt.OrdinalInClass = -1;
+                    mt.OrdinalInClass = table.IsDynamic ? table.OrdinalInClass : -1;
                     mt.Rehash();
                     mergedTables[table.DBTableName] = mt;
                     DatabaseTables.Add(mt);
