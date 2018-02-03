@@ -1,0 +1,205 @@
+NAnt 0.92 (Build 0.92.4543.0; release; 09-06-2012)
+Copyright (C) 2001-2012 Gerry Shaw
+http://nant.sourceforge.net
+
+Buildfile: file:///C:/devs/sooda/Sooda.build
+Target framework: Microsoft .NET Framework 4.0
+Target(s) specified: test 
+
+
+configure:
+
+
+configure-net-4.0:
+
+     [echo] basedir:   C:\devs\sooda
+     [echo] external:  C:\devs\sooda/external
+     [echo] defines:   NANT,DOTNET35,DOTNET4
+     [echo] optimize:  false
+     [echo] output:    C:\devs\sooda/build/net-4.0-debug/bin
+     [echo] framework: Microsoft .NET Framework 4.0
+
+update-build-number:
+
+
+Sooda:
+
+      [csc] Compiling 220 files to 'C:\devs\sooda\build\net-4.0-debug\bin\Sooda.dll'.
+
+NLog:
+
+
+Sooda.Logging.NLog:
+
+      [csc] Compiling 4 files to 'C:\devs\sooda\build\net-4.0-debug\bin\Sooda.Logging.NLog.dll'.
+
+log4net:
+
+
+Sooda.Logging.log4net:
+
+      [csc] Compiling 4 files to 'C:\devs\sooda\build\net-4.0-debug\bin\Sooda.Logging.log4net.dll'.
+
+libraries:
+
+
+Sooda.CodeGen:
+
+      [csc] Compiling 23 files to 'C:\devs\sooda\build\net-4.0-debug\bin\Sooda.CodeGen.dll'.
+
+SoodaStubGen:
+
+      [csc] Compiling 5 files to 'C:\devs\sooda\build\net-4.0-debug\bin\SoodaStubGen.exe'.
+
+Sooda.NAnt.Tasks:
+
+      [csc] Compiling 2 files to 'C:\devs\sooda\build\net-4.0-debug\bin\Sooda.NAnt.Tasks.dll'.
+
+Sooda.UnitTests.BaseObjects:
+
+[sooda-generate-code] Loading Sooda project from 'C:\devs\sooda\tests\BaseObjects\Sooda.UnitTests.BaseObjects.soodaproject'
+[sooda-generate-code] Loading schema file ../DBSchemaBase.xml...
+[sooda-generate-code] Loaded 9 classes, 3 relations...
+[sooda-generate-code] Opening Project file '.\Sooda.UnitTests.BaseObjects.csproj'...
+[sooda-generate-code] CodeProvider:      Microsoft.CSharp.CSharpCodeProvider
+[sooda-generate-code] Source extension:  cs
+[sooda-generate-code] Project:           vs2005 (.\Sooda.UnitTests.BaseObjects.csproj)
+[sooda-generate-code] Output Path:       .
+[sooda-generate-code] Namespace:         Sooda.UnitTests.BaseObjects
+[sooda-generate-code]     Role.cs
+[sooda-generate-code]     ContactType.cs
+[sooda-generate-code]     Contact.cs
+[sooda-generate-code]     KeyGen.cs
+[sooda-generate-code]     Group.cs
+[sooda-generate-code]     Vehicle.cs
+[sooda-generate-code]     Car.cs
+[sooda-generate-code]     Bike.cs
+[sooda-generate-code]     PersonBase.cs
+[sooda-generate-code] Serializing schema to .\_DBSchema.bin...
+[sooda-generate-code]     * list wrappers
+[sooda-generate-code]     * database schema
+[sooda-generate-code]     * class stubs
+[sooda-generate-code]     * class factories
+[sooda-generate-code]     * N-N relation stubs
+[sooda-generate-code]     * typed query wrappers (internal)
+[sooda-generate-code]     * typed query wrappers
+[sooda-generate-code] Writing code...
+[sooda-generate-code] Done.
+[sooda-generate-code] Saving Project '.\Sooda.UnitTests.BaseObjects.csproj'...
+[sooda-generate-code] Saved.
+      [csc] Compiling 11 files to 'C:\devs\sooda\build\net-4.0-debug\bin\Sooda.UnitTests.BaseObjects.dll'.
+
+Sooda.UnitTests.Objects:
+
+[sooda-generate-code] Loading Sooda project from 'C:\devs\sooda\tests\UnitTestObjects\Sooda.UnitTests.Objects.soodaproject'
+[sooda-generate-code] Loading schema file ../DBSchema.xml...
+[sooda-generate-code] Loaded 16 classes, 6 relations...
+[sooda-generate-code] Opening Project file '.\Sooda.UnitTests.Objects.csproj'...
+[sooda-generate-code] CodeProvider:      Microsoft.CSharp.CSharpCodeProvider
+[sooda-generate-code] Source extension:  cs
+[sooda-generate-code] Project:           vs2005 (.\Sooda.UnitTests.Objects.csproj)
+[sooda-generate-code] Output Path:       .
+[sooda-generate-code] Namespace:         Sooda.UnitTests.Objects
+[sooda-generate-code]     SuperBike.cs
+[sooda-generate-code]     MegaSuperBike.cs
+[sooda-generate-code]     AbstractMegaSuperBike.cs
+[sooda-generate-code]     ConcreteMegaSuperBikeA.cs
+[sooda-generate-code]     ConcreteMegaSuperBikeB.cs
+[sooda-generate-code]     ExtendedBike.cs
+[sooda-generate-code]     AllDataTypes.cs
+[sooda-generate-code]     PKBool.cs
+[sooda-generate-code]     PKGuid.cs
+[sooda-generate-code]     PKDateTime.cs
+[sooda-generate-code]     PKInt32.cs
+[sooda-generate-code]     PKInt64.cs
+[sooda-generate-code]     PKString.cs
+[sooda-generate-code]     MultiKey.cs
+[sooda-generate-code]     EightFields.cs
+[sooda-generate-code]     PersonConcrete.cs
+[sooda-generate-code] Serializing schema to .\_DBSchema.bin...
+[sooda-generate-code]     * list wrappers
+[sooda-generate-code]     * database schema
+[sooda-generate-code]     * class stubs
+[sooda-generate-code]     * class factories
+[sooda-generate-code]     * N-N relation stubs
+[sooda-generate-code]     * typed query wrappers (internal)
+[sooda-generate-code]     * typed query wrappers
+[sooda-generate-code] Writing code...
+[sooda-generate-code] Done.
+[sooda-generate-code] Saving Project '.\Sooda.UnitTests.Objects.csproj'...
+[sooda-generate-code] Saved.
+      [csc] Compiling 18 files to 'C:\devs\sooda\build\net-4.0-debug\bin\Sooda.UnitTests.Objects.dll'.
+
+Sooda.UnitTests.TestCases:
+
+      [csc] Compiling 53 files to 'C:\devs\sooda\build\net-4.0-debug\bin\Sooda.UnitTests.TestCases.dll'.
+
+Sooda.UnitTests.VBObjects:
+
+[sooda-generate-code] Loading Sooda project from 'C:\devs\sooda\tests\VBUnitTestObjects\Sooda.UnitTests.VBObjects.soodaproject'
+[sooda-generate-code] Loading schema file ../DBSchema.xml...
+[sooda-generate-code] Loaded 16 classes, 6 relations...
+[sooda-generate-code] Opening Project file '.\Sooda.UnitTests.VBObjects.vbproj'...
+[sooda-generate-code] CodeProvider:      Microsoft.VisualBasic.VBCodeProvider
+[sooda-generate-code] Source extension:  vb
+[sooda-generate-code] Project:           vs2005 (.\Sooda.UnitTests.VBObjects.vbproj)
+[sooda-generate-code] Output Path:       .
+[sooda-generate-code] Namespace:         Sooda.UnitTests.VBObjects
+[sooda-generate-code]     SuperBike.vb
+[sooda-generate-code]     MegaSuperBike.vb
+[sooda-generate-code]     AbstractMegaSuperBike.vb
+[sooda-generate-code]     ConcreteMegaSuperBikeA.vb
+[sooda-generate-code]     ConcreteMegaSuperBikeB.vb
+[sooda-generate-code]     ExtendedBike.vb
+[sooda-generate-code]     AllDataTypes.vb
+[sooda-generate-code]     PKBool.vb
+[sooda-generate-code]     PKGuid.vb
+[sooda-generate-code]     PKDateTime.vb
+[sooda-generate-code]     PKInt32.vb
+[sooda-generate-code]     PKInt64.vb
+[sooda-generate-code]     PKString.vb
+[sooda-generate-code]     MultiKey.vb
+[sooda-generate-code]     EightFields.vb
+[sooda-generate-code]     PersonConcrete.vb
+[sooda-generate-code] Serializing schema to .\_DBSchema.bin...
+[sooda-generate-code]     * list wrappers
+[sooda-generate-code]     * database schema
+[sooda-generate-code]     * class stubs
+[sooda-generate-code]     * class factories
+[sooda-generate-code]     * N-N relation stubs
+[sooda-generate-code] Writing code...
+[sooda-generate-code] Done.
+[sooda-generate-code] Saving Project '.\Sooda.UnitTests.VBObjects.vbproj'...
+[sooda-generate-code] Saved.
+      [vbc] Compiling 17 files to 'C:\devs\sooda\build\net-4.0-debug\bin\Sooda.UnitTests.VBObjects.dll'.
+      [vbc] C:\devs\sooda\tests\VBUnitTestObjects\_Stubs.vb(711) : warning BC40003: Element property „AllQuery” zas³ania cz³onka, którego mo¿na przeci¹¿yæ, zadeklarowanego w podstawowym elemencie class „Bike_Stub”. Aby mo¿na by³o przeci¹¿yæ metodê podstawow¹, ta metoda musi byæ zadeklarowana jako „Overloads”.
+      [vbc] 
+      [vbc]     Public Shared ReadOnly Property AllQuery() As System.Linq.IQueryable(Of SuperBike)
+      [vbc]                                     ~~~~~~~~                                          
+      [vbc] C:\devs\sooda\tests\VBUnitTestObjects\_Stubs.vb(948) : warning BC40003: Element property „AllQuery” zas³ania cz³onka, którego mo¿na przeci¹¿yæ, zadeklarowanego w podstawowym elemencie class „SuperBike_Stub”. Aby mo¿na by³o przeci¹¿yæ metodê podstawow¹, ta metoda musi byæ zadeklarowana jako „Overloads”.
+      [vbc] 
+      [vbc]     Public Shared ReadOnly Property AllQuery() As System.Linq.IQueryable(Of MegaSuperBike)
+      [vbc]                                     ~~~~~~~~                                              
+      [vbc] C:\devs\sooda\tests\VBUnitTestObjects\_Stubs.vb(1185) : warning BC40003: Element property „AllQuery” zas³ania cz³onka, którego mo¿na przeci¹¿yæ, zadeklarowanego w podstawowym elemencie class „MegaSuperBike_Stub”. Aby mo¿na by³o przeci¹¿yæ metodê podstawow¹, ta metoda musi byæ zadeklarowana jako „Overloads”.
+      [vbc] 
+      [vbc]     Public Shared ReadOnly Property AllQuery() As System.Linq.IQueryable(Of AbstractMegaSuperBike)
+      [vbc]                                     ~~~~~~~~                                                      
+      [vbc] C:\devs\sooda\tests\VBUnitTestObjects\_Stubs.vb(1422) : warning BC40003: Element property „AllQuery” zas³ania cz³onka, którego mo¿na przeci¹¿yæ, zadeklarowanego w podstawowym elemencie class „AbstractMegaSuperBike_Stub”. Aby mo¿na by³o przeci¹¿yæ metodê podstawow¹, ta metoda musi byæ zadeklarowana jako „Overloads”.
+      [vbc] 
+      [vbc]     Public Shared ReadOnly Property AllQuery() As System.Linq.IQueryable(Of ConcreteMegaSuperBikeA)
+      [vbc]                                     ~~~~~~~~                                                       
+      [vbc] C:\devs\sooda\tests\VBUnitTestObjects\_Stubs.vb(1659) : warning BC40003: Element property „AllQuery” zas³ania cz³onka, którego mo¿na przeci¹¿yæ, zadeklarowanego w podstawowym elemencie class „AbstractMegaSuperBike_Stub”. Aby mo¿na by³o przeci¹¿yæ metodê podstawow¹, ta metoda musi byæ zadeklarowana jako „Overloads”.
+      [vbc] 
+      [vbc]     Public Shared ReadOnly Property AllQuery() As System.Linq.IQueryable(Of ConcreteMegaSuperBikeB)
+      [vbc]                                     ~~~~~~~~                                                       
+      [vbc] C:\devs\sooda\tests\VBUnitTestObjects\_Stubs.vb(1896) : warning BC40003: Element property „AllQuery” zas³ania cz³onka, którego mo¿na przeci¹¿yæ, zadeklarowanego w podstawowym elemencie class „Bike_Stub”. Aby mo¿na by³o przeci¹¿yæ metodê podstawow¹, ta metoda musi byæ zadeklarowana jako „Overloads”.
+      [vbc] 
+      [vbc]     Public Shared ReadOnly Property AllQuery() As System.Linq.IQueryable(Of ExtendedBike)
+      [vbc]                                     ~~~~~~~~                                             
+      [vbc] C:\devs\sooda\tests\VBUnitTestObjects\_Stubs.vb(5044) : warning BC40003: Element property „AllQuery” zas³ania cz³onka, którego mo¿na przeci¹¿yæ, zadeklarowanego w podstawowym elemencie class „PersonBase_Stub”. Aby mo¿na by³o przeci¹¿yæ metodê podstawow¹, ta metoda musi byæ zadeklarowana jako „Overloads”.
+      [vbc] 
+      [vbc]     Public Shared ReadOnly Property AllQuery() As System.Linq.IQueryable(Of PersonConcrete)
+      [vbc]                                     ~~~~~~~~                                               
+
+test:
+

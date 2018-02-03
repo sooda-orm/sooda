@@ -28,11 +28,13 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+using Sooda.Logging;
 using Sooda.ObjectMapper;
 using Sooda.ObjectMapper.FieldHandlers;
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Threading;
 using System.Xml.Serialization;
 
 namespace Sooda.Schema
@@ -42,6 +44,8 @@ namespace Sooda.Schema
     [Serializable]
     public class FieldInfo : ICloneable
     {
+        private static Logger log = Logging.LogManager.GetLogger("FieldInfo");
+
         [XmlAttribute("name")]
         public string Name;
 
@@ -75,9 +79,27 @@ namespace Sooda.Schema
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool IsPrimaryKey = false;
 
+        private bool? _nullable;
+
         [XmlAttribute("nullable")]
         [System.ComponentModel.DefaultValueAttribute(false)]
-        public bool IsNullable = false;
+        public bool IsNullable
+        {
+            get { return _nullable.GetValueOrDefault(); }
+            set
+            {
+                _nullable = value;
+                var st = new System.Diagnostics.StackTrace();
+                if (log != null)
+                {
+                    log.Warn("{0}.{1} Nullable set to {2}: {3}", this.ParentClass == null ? "" : this.ParentClass.Name, this.Name, value, st.ToString());
+                }
+                else
+                {
+                    Console.WriteLine("{0}.{1} Nullable set to {2}: {3}", this.ParentClass == null ? "" : this.ParentClass.Name, this.Name, value, st.ToString());
+                }
+            }
+        }
 
         [XmlAttribute("readOnly")]
         [System.ComponentModel.DefaultValueAttribute(false)]
@@ -299,7 +321,9 @@ namespace Sooda.Schema
                 }
                 else
                 {
-                    DataType = FieldHandlerFactory.GetFieldDataType(value, out IsNullable);
+                    bool nuli;
+                    DataType = FieldHandlerFactory.GetFieldDataType(value, out nuli);
+                    IsNullable = nuli;
                     References = null;
                 }
             }

@@ -345,7 +345,7 @@ namespace Sooda.Sql
             if (allRO) return; //ignore RO tables
             StringBuilder builder = new StringBuilder();
             ArrayList queryParams = new ArrayList();
-            builder.Append("delete fsrom ");
+            builder.Append("delete from ");
             builder.Append(table.DBTableName);
             DoWithWhere(obj, builder, queryParams, true);
         }

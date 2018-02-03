@@ -386,7 +386,8 @@ namespace Sooda.Schema
             }
             else if (InheritFrom != null)
             {
-                throw new SoodaSchemaException(String.Format("Must use subclassSelectorFieldName when defining inherited class '{0}'", this.Name));
+                //RG why throw - just make it abstract..
+                //throw new SoodaSchemaException(String.Format("Must use subclassSelectorFieldName when defining inherited class '{0}'", this.Name));
             }
             if (SubclassSelectorStringValue != null)
             {
@@ -670,7 +671,8 @@ namespace Sooda.Schema
 
         public bool IsAbstractClass()
         {
-            return SubclassSelectorFieldName != null && SubclassSelectorValue == null;
+            if (SubclassSelectorField != null) return SubclassSelectorValue == null;
+            return Schema != null && Schema.GetSubclasses(this).Count > 0;
         }
 
         public string GetLabel()

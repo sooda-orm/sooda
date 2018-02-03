@@ -1312,6 +1312,14 @@ namespace Sooda
                 return factory;
 
             // more complex case - we have to determine the actual factory to be used for object creation
+            if (classInfo.SubclassSelectorField == null)
+            {
+                if (subclasses.Count != 1) throw new Exception(string.Format("Class {0} is abstract, no subclassSelectorField, so only 1 subclass allowed", classInfo.Name));
+                var sc = subclasses[0];
+                var fact = tran.GetFactory(sc);
+                SoodaTransaction.SoodaObjectFactoryCache.SetObjectFactory(classInfo.Name, keyValue, fact);
+                return fact;
+            }
 
             int selectorFieldOrdinal = loadData ? classInfo.SubclassSelectorField.OrdinalInTable : record.FieldCount - 1;
             object selectorActualValue = factory.GetFieldHandler(selectorFieldOrdinal).RawRead(record, firstColumnIndex + selectorFieldOrdinal);

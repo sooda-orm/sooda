@@ -48,6 +48,7 @@
     <Compile Include="Role.cs" />
     <Compile Include="Vehicle.cs" />
     <Compile Include="_Stubs.cs" />
+    <Compile Include="PersonBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sooda.UnitTests.BaseObjects.soodaproject" />

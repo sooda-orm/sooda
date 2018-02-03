@@ -218,8 +218,20 @@ create table EightFields
 )
 go
 
+create table PersonBase
+(
+id int not null primary key,
+name nvarchar(50) not null
+)
+go
+
+
 print 'Inserting sample data...'
 set nocount on
+
+insert into PersonBase(id, name) values(1, 'The boss');
+insert into PersonBase(id, name) values(2, 'The admin');
+go
 
 insert into ContactType values('Employee','Internal Employee');
 insert into ContactType values('Manager','Internal Manager');

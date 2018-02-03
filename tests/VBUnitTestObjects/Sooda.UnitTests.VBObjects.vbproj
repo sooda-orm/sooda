@@ -6,7 +6,8 @@
     <ProjectGuid>{14560270-B86E-4C15-BD34-4E06CCFB091B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>Sooda.UnitTests.VBObjects</AssemblyName>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -70,6 +71,7 @@
     <Compile Include="PKString.vb" />
     <Compile Include="SuperBike.vb" />
     <Compile Include="_Stubs.vb" />
+    <Compile Include="PersonConcrete.vb" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sooda.UnitTests.VBObjects.soodaproject" />

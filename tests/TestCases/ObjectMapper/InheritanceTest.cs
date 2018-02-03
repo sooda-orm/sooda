@@ -147,6 +147,51 @@ namespace Sooda.UnitTests.TestCases.ObjectMapper
         }
 
         [Test]
+        public void AbstractBaseTest()
+        {
+            Console.WriteLine("ABT1");
+            try
+            {
+                System.Diagnostics.Debugger.Launch();
+                using (SoodaTransaction tran = new SoodaTransaction())
+                {
+                    var p1 = PersonBase.GetRef(1);
+                    Console.WriteLine("Name: " + p1.Name + ", is: " + p1.GetClassInfo().Name);
+
+                    var person = PersonConcrete.TheBoss;
+                    Console.WriteLine("Name: " + person.Name + ", is: " + person.GetClassInfo().Name);
+
+                    var p2 = PersonBase.GetRef(person.Id);
+                    Console.WriteLine("Name: " + p2.Name + ", is: " + p2.GetClassInfo().Name);
+
+                    foreach(PersonBase bp in PersonConcrete.GetList(new SoodaWhereClause("Name is not null")))
+                    {
+
+                        Console.WriteLine("PB {0} {1} | {2}", bp.Id, bp.Name, bp.GetType().Name);
+                    }
+
+                    var p3 = new PersonConcrete();
+                    p3.Name = "im new created " + DateTime.Now.ToString("yyyy.MM.dd HH:mm:SS");
+
+                    var p4 = new PersonBase();
+                    p4.Name = "A base class?";
+
+                    tran.SaveObjectChanges();
+                }
+
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error :{0}", ex.ToString());
+                throw;
+            }
+            finally
+            {
+                Console.WriteLine("ABT2");
+            }
+        }
+
+        [Test]
         public void LongTest()
         {
             // run multiple Sooda transactions in a single SQL transaction

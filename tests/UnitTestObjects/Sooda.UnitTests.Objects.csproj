@@ -60,6 +60,7 @@
     <Compile Include="PKString.cs" />
     <Compile Include="SuperBike.cs" />
     <Compile Include="_Stubs.cs" />
+    <Compile Include="PersonConcrete.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sooda.UnitTests.Objects.soodaproject" />

@@ -364,7 +364,7 @@ namespace Sooda.Sql
             }
 
             List<ClassInfo> subclasses = currentClass.GetSubclassesForSchema(Schema);
-            if (subclasses.Count == 0)
+            if (subclasses.Count == 0 || (currentClass.SubclassSelectorField == null && subclasses.Count == 1))
             {
                 Output.Write('\'');
                 Output.Write(currentClass.Name);

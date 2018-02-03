@@ -96,6 +96,14 @@
             <field name="TwoWheels" dbcolumn="two_wheels" type="Integer" nullable="false" />
         </table>
     </class>
+    
+    <class name="PersonBase">
+        <table name="PersonBase">
+            <field name="Id" dbcolumn="id" type="Integer" primaryKey="true" />
+            <field name="Name"  type="String" nullable="false" />
+        </table>
+    
+    </class>
 
     <relation name="ContactToRole">
         <table name="ContactRole">
