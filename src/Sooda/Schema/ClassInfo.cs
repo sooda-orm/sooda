@@ -671,8 +671,7 @@ namespace Sooda.Schema
 
         public bool IsAbstractClass()
         {
-            if (SubclassSelectorField != null) return SubclassSelectorValue == null;
-            return Schema != null && Schema.GetSubclasses(this).Count > 0;
+            return SubclassSelectorFieldName != null && SubclassSelectorValue == null;
         }
 
         public string GetLabel()
