@@ -472,7 +472,7 @@ namespace Sooda.Schema
                 {
                     foreach (CollectionOnetoManyInfo mci in merge.Collections1toN)
                         if (mergeNames.ContainsKey(mci.Name))
-                            throw new SoodaSchemaException(String.Format("Duplicate collection 1:N '{0}' found!", mci.Name));
+                            throw new SoodaSchemaException(String.Format("Duplicate collection 1:N '{0}' found in {1}", mci.Name, this.Name));
                     this.Collections1toN = (CollectionOnetoManyInfo[])MergeArray(this.Collections1toN, merge.Collections1toN);
                 }
             }
@@ -491,7 +491,7 @@ namespace Sooda.Schema
                 {
                     foreach (CollectionManyToManyInfo mci in merge.CollectionsNtoN)
                         if (mergeNames.ContainsKey(mci.Name))
-                            throw new SoodaSchemaException(String.Format("Duplicate collection N:N '{0}' found!", mci.Name));
+                            throw new SoodaSchemaException(String.Format("Duplicate collection N:N '{0}' found in {1}", mci.Name, this.Name));
                     this.CollectionsNtoN = (CollectionManyToManyInfo[])MergeArray(this.CollectionsNtoN, merge.CollectionsNtoN);
                 }
             }
@@ -510,7 +510,7 @@ namespace Sooda.Schema
                 {
                     foreach (ConstantInfo mci in merge.Constants)
                         if (mergeNames.ContainsKey(mci.Name))
-                            throw new SoodaSchemaException(String.Format("Duplicate constant name '{0}' found!", mci.Name));
+                            throw new SoodaSchemaException(String.Format("Duplicate constant name '{0}' found in {1}", mci.Name, this.Name));
                     this.Constants = (ConstantInfo[])MergeArray(this.Constants, merge.Constants);
                 }
             }
@@ -540,7 +540,7 @@ namespace Sooda.Schema
                     if (mt.ContainsField(fi.Name))
                     {
                         if (!fi.IsPrimaryKey)
-                            throw new SoodaSchemaException("Duplicate field found for one table!");
+                            throw new SoodaSchemaException("Duplicate field found: " + this.Name + " in " + fi.Name);
                         continue;
                     }
 
