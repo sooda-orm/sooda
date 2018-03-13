@@ -1556,7 +1556,7 @@ namespace Sooda
             return value;
         }
 
-        public object this[string fieldName]
+        public virtual object this[string fieldName]
         {
             get
             {
