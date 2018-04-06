@@ -587,16 +587,26 @@ namespace Sooda
             }
         }
 
-        public virtual void Commit()
+        /// <summary>
+        /// prepare commit in two phase commit (with pre-commit actions
+        /// and check commit conditions)
+        /// </summary>
+        public virtual void TwoPhasePrepare()
         {
             _precommitQueue = new Queue(_dirtyObjects.Count);
             CallBeforeCommitEvents();
             CheckCommitConditions();
 
             SaveObjectChanges(false, _dirtyObjects);
+        }
 
+        
+        /// <summary>
+        /// do commit in two phase commit (with processing post commit actions)
+        /// </summary>
+        public virtual void TwoPhaseCommit()
+        {
             // commit all transactions on all data sources
-
             foreach (SoodaRelationTable rel in _relationTables.Values)
             {
                 rel.Commit();
@@ -631,6 +641,12 @@ namespace Sooda
             _dirtyObjects.Clear();
             _dirtyObjectsByClass.Clear();
             _deletedObjects.Clear();
+        }
+
+        public virtual void Commit()
+        {
+            TwoPhasePrepare();
+            TwoPhaseCommit();
         }
 
         public bool HasUncommitedChanges
