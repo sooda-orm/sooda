@@ -383,7 +383,18 @@ namespace Sooda.Sql
                 foreach (ClassInfo subci in subclasses)
                     OutputSoodaClassCase(subci);
 
-                Output.Write(" else null end)");
+                if (currentClass.IsAbstractClass())
+                {
+                    Output.Write(" else null end)");
+                }
+                else
+                {
+                    // support for virtual subclasses (not defined directly in dbschema),
+                    // determined by subclassSelectorField.
+                    Output.Write(" else '");
+                    Output.Write(currentClass.Name);
+                    Output.Write("' end)");
+                }
             }
         }
 
