@@ -116,6 +116,13 @@ namespace Sooda.Linq
         SoodaObject_GetPrimaryKeyValue,
         SoodaObject_GetLabel,
         SoodaObject_GetItem,
+        DateTime_Add,
+        DateTime_AddSeconds,
+        DateTime_AddDays,
+        DateTime_AddHours,
+        DateTime_AddMinutes,
+        DateTime_AddMonths,
+        DateTime_AddYears
     }
 
     static class SoodaLinqMethodDictionary
@@ -294,6 +301,13 @@ namespace Sooda.Linq
             method2id.Add(MethodOf(() => string.Empty.EndsWith(string.Empty)), SoodaLinqMethod.String_EndsWith);
             method2id.Add(MethodOf(() => string.Empty.Contains(string.Empty)), SoodaLinqMethod.String_Contains);
             method2id.Add(MethodOf(() => string.IsNullOrEmpty(null)), SoodaLinqMethod.String_IsNullOrEmpty);
+            method2id.Add(MethodOf(() => DateTime.Now.Add(TimeSpan.Zero)), SoodaLinqMethod.DateTime_Add);
+            method2id.Add(MethodOf(() => DateTime.Now.AddSeconds(0.0)), SoodaLinqMethod.DateTime_AddSeconds);
+            method2id.Add(MethodOf(() => DateTime.Now.AddMinutes(0.0)), SoodaLinqMethod.DateTime_AddMinutes);
+            method2id.Add(MethodOf(() => DateTime.Now.AddHours(0.0)), SoodaLinqMethod.DateTime_AddHours);
+            method2id.Add(MethodOf(() => DateTime.Now.AddDays(0.0)), SoodaLinqMethod.DateTime_AddDays);
+            method2id.Add(MethodOf(() => DateTime.Now.AddMonths(0)), SoodaLinqMethod.DateTime_AddMonths);
+            method2id.Add(MethodOf(() => DateTime.Now.AddYears(0)), SoodaLinqMethod.DateTime_AddYears);
             method2id.Add(MethodOf(() => 0.ToString()), SoodaLinqMethod.Int_ToString);
             method2id.Add(MethodOf(() => 0L.ToString()), SoodaLinqMethod.Long_ToString);
             method2id.Add(MethodOf(() => 0D.ToString()), SoodaLinqMethod.Double_ToString);

@@ -1076,7 +1076,49 @@ namespace Sooda.Linq
                     if (!FindClassInfo(mc.Object).ContainsField(name))
                         throw new Exception(name + " is not a Sooda field");
                     return new SoqlPathExpression(parent, name);
-                default:
+                case SoodaLinqMethod.DateTime_Add:
+                    return new SoqlFunctionCallExpression("dateadd", new SoqlExpressionCollection(new[] {
+                        new SoqlRawExpression("second"),
+                        TranslateExpression(mc.Arguments[0]),
+                        TranslateExpression(mc.Object)
+                    }));
+                case SoodaLinqMethod.DateTime_AddSeconds:
+                    return new SoqlFunctionCallExpression("dateadd", new SoqlExpressionCollection(new[] {
+                        new SoqlRawExpression("second"),
+                        TranslateExpression(mc.Arguments[0]),
+                        TranslateExpression(mc.Object)
+                    }));
+                case SoodaLinqMethod.DateTime_AddMinutes:
+                    return new SoqlFunctionCallExpression("dateadd", new SoqlExpressionCollection(new[] {
+                        new SoqlRawExpression("minute"),
+                        TranslateExpression(mc.Arguments[0]),
+                        TranslateExpression(mc.Object)
+                    }));
+                case SoodaLinqMethod.DateTime_AddHours:
+                    return new SoqlFunctionCallExpression("dateadd", new SoqlExpressionCollection(new[] {
+                        new SoqlRawExpression("hour"),
+                        TranslateExpression(mc.Arguments[0]),
+                        TranslateExpression(mc.Object)
+                    }));
+                case SoodaLinqMethod.DateTime_AddDays:
+                    return new SoqlFunctionCallExpression("dateadd", new SoqlExpressionCollection(new[] {
+                        new SoqlRawExpression("day"),
+                        TranslateExpression(mc.Arguments[0]),
+                        TranslateExpression(mc.Object)
+                    }));
+                case SoodaLinqMethod.DateTime_AddMonths:
+                    return new SoqlFunctionCallExpression("dateadd", new SoqlExpressionCollection(new[] {
+                        new SoqlRawExpression("month"),
+                        TranslateExpression(mc.Arguments[0]),
+                        TranslateExpression(mc.Object)
+                    }));
+                case SoodaLinqMethod.DateTime_AddYears:
+                    return new SoqlFunctionCallExpression("dateadd", new SoqlExpressionCollection(new[] {
+                        new SoqlRawExpression("year"),
+                        TranslateExpression(mc.Arguments[0]),
+                        TranslateExpression(mc.Object)
+                    }));
+            default:
                     Expression newExpr = TranslateUnknownMethod(mc);
                     if (newExpr == null)    // not found custom XXXExpression method
                     {
