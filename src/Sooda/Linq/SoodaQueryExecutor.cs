@@ -34,6 +34,7 @@ using Sooda.ObjectMapper.FieldHandlers;
 using Sooda.QL;
 using Sooda.Schema;
 using System;
+using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -637,6 +638,21 @@ namespace Sooda.Linq
 
                         default:
                             break;
+                    }
+                }
+
+                if (t == typeof(TimeSpan))
+                {
+                    switch (name)
+                    {
+                        case "TotalDays":
+                            return new SoqlBinaryExpression(parent, new SoqlRawExpression("86400"), SoqlBinaryOperator.Div);
+                        case "TotalHours":
+                            return new SoqlBinaryExpression(parent, new SoqlRawExpression("3600"), SoqlBinaryOperator.Div);
+                        case "TotalMinutes":
+                            return new SoqlBinaryExpression(parent, new SoqlRawExpression("60"), SoqlBinaryOperator.Div);
+                        case "TotalSeconds":
+                            return parent;
                     }
                 }
 
