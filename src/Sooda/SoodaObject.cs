@@ -1108,14 +1108,15 @@ namespace Sooda
                 EnsureFieldsInited();
                 CopyOnWrite();
 
-                int fieldOrdinal = GetFieldInfo(name).ClassUnifiedOrdinal;
+                var fieldInfo = GetFieldInfo(name);
+                int fieldOrdinal = fieldInfo.ClassUnifiedOrdinal;
                 SoodaFieldHandler field = GetFieldHandler(fieldOrdinal);
                 object val = field.Deserialize(reader);
 
                 // Console.WriteLine("Deserializing field: {0}", name);
 
-                PropertyInfo pi = GetType().GetProperty(name);
-                if (pi.PropertyType.IsSubclassOf(typeof(SoodaObject)))
+                PropertyInfo pi = !fieldInfo.IsDynamic ? GetType().GetProperty(name) : null;
+                if (pi != null && pi.PropertyType.IsSubclassOf(typeof(SoodaObject)))
                 {
                     if (val != null)
                     {
@@ -1124,7 +1125,7 @@ namespace Sooda
                     }
                     pi.SetValue(this, val, null);
                 }
-                else
+                else // not subclass of SoodaObject or dynamic field
                 {
                     // set as raw
 

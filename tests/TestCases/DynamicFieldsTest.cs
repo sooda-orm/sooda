@@ -606,6 +606,38 @@ namespace Sooda.UnitTests.TestCases
         }
 
         [Test]
+        public void SerializeDynamicField()
+        {
+            const int val = 1237;
+            int pk;
+            string serializedTran;
+            using (SoodaTransaction tran = new SoodaTransaction())
+            {
+                AddIntField(tran);
+                PKInt32 o = new PKInt32();
+                o[IntField] = val;
+                pk = o.Id;
+
+                Assert.That(o[IntField], Is.EqualTo(val));
+
+                serializedTran = tran.Serialize();
+            }
+
+            Assert.That(serializedTran, Contains.Substring("name=\"" + IntField + "\"").And.ContainsSubstring("value=\"" + val + "\""));
+
+            using (SoodaTransaction t2 = new SoodaTransaction())
+            {
+                Assert.DoesNotThrow(() =>
+                {
+                    t2.Deserialize(serializedTran);
+                });
+
+                var o = PKInt32.Load(pk);
+                Assert.That(o[IntField], Is.EqualTo(val));
+            }
+        }
+
+        [Test]
         public void OrderBySelectStatic()
         {
             using (new SoodaTransaction())
