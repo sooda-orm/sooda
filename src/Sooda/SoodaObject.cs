@@ -696,7 +696,7 @@ namespace Sooda
                         }
                         catch (Exception ex)
                         {
-                            logger.Error("Error while reading field {0}.{1}: {2}", table.NameToken, field.Name, ex);
+                            logger.Error("Error while reading field {0}.{1}: {2}. column #{3}", table.NameToken, field.Name, ex, recordPos);
                             throw;
                         }
                     }

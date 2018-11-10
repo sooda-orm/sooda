@@ -230,7 +230,7 @@ namespace Sooda.Sql
 
         public override void Rollback()
         {
-            if (OwnConnection && !DisableTransactions)
+            if (!DisableTransactions)
             {
                 if (Transaction != null)
                 {
@@ -244,7 +244,7 @@ namespace Sooda.Sql
 
         public override void Commit()
         {
-            if (OwnConnection && !DisableTransactions)
+            if (!DisableTransactions)
             {
                 if (Transaction != null)
                 {
@@ -258,23 +258,21 @@ namespace Sooda.Sql
 
         public override void Close()
         {
-            if (OwnConnection)
+            
+            try
             {
-                try
+                if (Transaction != null)
                 {
-                    if (!DisableTransactions && Transaction != null)
-                    {
-                        Transaction.Dispose();
-                    }
+                    Transaction.Dispose();
                 }
-                finally
+            }
+            finally
+            {
+                Transaction = null;
+                if (OwnConnection && Connection != null)
                 {
-                    Transaction = null;
-                    if (Connection != null)
-                    {
-                        Connection.Dispose();
-                        Connection = null;
-                    }
+                    Connection.Dispose();
+                    Connection = null;
                 }
             }
         }
