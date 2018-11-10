@@ -34,6 +34,7 @@ using Sooda.ObjectMapper.FieldHandlers;
 using Sooda.QL;
 using Sooda.Schema;
 using System;
+using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -640,6 +641,21 @@ namespace Sooda.Linq
                     }
                 }
 
+                if (t == typeof(TimeSpan))
+                {
+                    switch (name)
+                    {
+                        case "TotalDays":
+                            return new SoqlBinaryExpression(parent, new SoqlRawExpression("86400"), SoqlBinaryOperator.Div);
+                        case "TotalHours":
+                            return new SoqlBinaryExpression(parent, new SoqlRawExpression("3600"), SoqlBinaryOperator.Div);
+                        case "TotalMinutes":
+                            return new SoqlBinaryExpression(parent, new SoqlRawExpression("60"), SoqlBinaryOperator.Div);
+                        case "TotalSeconds":
+                            return parent;
+                    }
+                }
+
                 SoqlPathExpression parentPath = parent as SoqlPathExpression;
                 if (parentPath != null)
                 {
@@ -1076,7 +1092,49 @@ namespace Sooda.Linq
                     if (!FindClassInfo(mc.Object).ContainsField(name))
                         throw new Exception(name + " is not a Sooda field");
                     return new SoqlPathExpression(parent, name);
-                default:
+                case SoodaLinqMethod.DateTime_Add:
+                    return new SoqlFunctionCallExpression("dateadd", new SoqlExpressionCollection(new[] {
+                        new SoqlRawExpression("second"),
+                        TranslateExpression(mc.Arguments[0]),
+                        TranslateExpression(mc.Object)
+                    }));
+                case SoodaLinqMethod.DateTime_AddSeconds:
+                    return new SoqlFunctionCallExpression("dateadd", new SoqlExpressionCollection(new[] {
+                        new SoqlRawExpression("second"),
+                        TranslateExpression(mc.Arguments[0]),
+                        TranslateExpression(mc.Object)
+                    }));
+                case SoodaLinqMethod.DateTime_AddMinutes:
+                    return new SoqlFunctionCallExpression("dateadd", new SoqlExpressionCollection(new[] {
+                        new SoqlRawExpression("minute"),
+                        TranslateExpression(mc.Arguments[0]),
+                        TranslateExpression(mc.Object)
+                    }));
+                case SoodaLinqMethod.DateTime_AddHours:
+                    return new SoqlFunctionCallExpression("dateadd", new SoqlExpressionCollection(new[] {
+                        new SoqlRawExpression("hour"),
+                        TranslateExpression(mc.Arguments[0]),
+                        TranslateExpression(mc.Object)
+                    }));
+                case SoodaLinqMethod.DateTime_AddDays:
+                    return new SoqlFunctionCallExpression("dateadd", new SoqlExpressionCollection(new[] {
+                        new SoqlRawExpression("day"),
+                        TranslateExpression(mc.Arguments[0]),
+                        TranslateExpression(mc.Object)
+                    }));
+                case SoodaLinqMethod.DateTime_AddMonths:
+                    return new SoqlFunctionCallExpression("dateadd", new SoqlExpressionCollection(new[] {
+                        new SoqlRawExpression("month"),
+                        TranslateExpression(mc.Arguments[0]),
+                        TranslateExpression(mc.Object)
+                    }));
+                case SoodaLinqMethod.DateTime_AddYears:
+                    return new SoqlFunctionCallExpression("dateadd", new SoqlExpressionCollection(new[] {
+                        new SoqlRawExpression("year"),
+                        TranslateExpression(mc.Arguments[0]),
+                        TranslateExpression(mc.Object)
+                    }));
+            default:
                     Expression newExpr = TranslateUnknownMethod(mc);
                     if (newExpr == null)    // not found custom XXXExpression method
                     {
