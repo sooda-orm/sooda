@@ -600,6 +600,7 @@ namespace Sooda
             SoodaTuple tuple = (SoodaTuple) _primaryKeyValue;
             if (tuple == null)
                 _primaryKeyValue = tuple = new SoodaTuple(totalValues);
+            var oldv = tuple.GetValue(valueOrdinal);
             tuple.SetValue(valueOrdinal, keyValue);
             if (tuple.IsAllNotNull())
             {
@@ -608,6 +609,32 @@ namespace Sooda
                 if (IsRegisteredInTransaction())
                     throw new SoodaException("Cannot set primary key value more than once.");
                 RegisterObjectInTransaction();
+            }
+            var fi = this.GetClassInfo().GetPrimaryKeyFields().FirstOrDefault(x => x.ClassUnifiedOrdinal == valueOrdinal);
+            StringCollection backRefCollections = GetTransaction().Schema.GetBackRefCollections(fi);
+
+            if (oldv != null && backRefCollections != null)
+            {
+                foreach (string collectionName in backRefCollections)
+                {
+                    PropertyInfo coll = oldv.GetType().GetProperty(collectionName, BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public);
+                    if (coll == null)
+                        throw new Exception(collectionName + " not found in " + oldv.GetType().Name + " while setting [key part] " + this.GetType().Name + "." + fi.Name);
+                    ISoodaObjectListInternal listInternal = (ISoodaObjectListInternal)coll.GetValue(oldv, null);
+                    listInternal.InternalRemove(this);
+                }
+            }
+            
+            if (keyValue != null && backRefCollections != null)
+            {
+                foreach (string collectionName in backRefCollections)
+                {
+                    PropertyInfo coll = keyValue.GetType().GetProperty(collectionName, BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public);
+                    if (coll == null)
+                        throw new Exception(collectionName + " not found in " + keyValue.GetType().Name + " while setting [key part] " + this.GetType().Name + "." + fi.Name);
+                    ISoodaObjectListInternal listInternal = (ISoodaObjectListInternal)coll.GetValue(keyValue, null);
+                    listInternal.InternalAdd(this);
+                }
             }
         }
 
@@ -1559,6 +1586,8 @@ namespace Sooda
                 throw new Exception("Field " + name + " not found in " + ci.Name);
             return fi;
         }
+
+        
 
         object GetTypedFieldValue(Sooda.Schema.FieldInfo fi)
         {
