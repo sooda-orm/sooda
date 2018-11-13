@@ -611,29 +611,23 @@ namespace Sooda
                 RegisterObjectInTransaction();
             }
             var fi = this.GetClassInfo().GetPrimaryKeyFields().FirstOrDefault(x => x.ClassUnifiedOrdinal == valueOrdinal);
-            StringCollection backRefCollections = GetTransaction().Schema.GetBackRefCollections(fi);
+            if (keyValue != null && fi.ReferencedClass != null)
+            {
+                var tf = GetTransaction().GetFactory(fi.ReferencedClass);
+                var rtyp = tf.TheType;
 
-            if (oldv != null && backRefCollections != null)
-            {
-                foreach (string collectionName in backRefCollections)
+                StringCollection backRefCollections = GetTransaction().Schema.GetBackRefCollections(fi);
+                if (backRefCollections != null)
                 {
-                    PropertyInfo coll = oldv.GetType().GetProperty(collectionName, BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public);
-                    if (coll == null)
-                        throw new Exception(collectionName + " not found in " + oldv.GetType().Name + " while setting [key part] " + this.GetType().Name + "." + fi.Name);
-                    ISoodaObjectListInternal listInternal = (ISoodaObjectListInternal)coll.GetValue(oldv, null);
-                    listInternal.InternalRemove(this);
-                }
-            }
-            
-            if (keyValue != null && backRefCollections != null)
-            {
-                foreach (string collectionName in backRefCollections)
-                {
-                    PropertyInfo coll = keyValue.GetType().GetProperty(collectionName, BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public);
-                    if (coll == null)
-                        throw new Exception(collectionName + " not found in " + keyValue.GetType().Name + " while setting [key part] " + this.GetType().Name + "." + fi.Name);
-                    ISoodaObjectListInternal listInternal = (ISoodaObjectListInternal)coll.GetValue(keyValue, null);
-                    listInternal.InternalAdd(this);
+                    foreach (string collectionName in backRefCollections)
+                    {
+                        PropertyInfo coll = rtyp.GetProperty(collectionName, BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public);
+                        if (coll == null)
+                            throw new Exception(collectionName + " not found in " + keyValue.GetType().Name + " while setting [key part] " + this.GetType().Name + "." + fi.Name);
+                        var theObj = tf.GetRef(GetTransaction(), keyValue);
+                        ISoodaObjectListInternal listInternal = (ISoodaObjectListInternal)coll.GetValue(theObj, null);
+                        listInternal.InternalAdd(this);
+                    }
                 }
             }
         }
