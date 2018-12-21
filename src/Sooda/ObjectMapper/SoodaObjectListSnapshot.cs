@@ -239,9 +239,14 @@ namespace Sooda.ObjectMapper
 
             SoodaDataSource ds = transaction.OpenDataSource(classInfo.GetDataSource());
 
+            // we don't need PagedCount
+            bool calculatePagedCount = (options & SoodaSnapshotOptions.DisablePagedCount) == 0x0;
+            if (!calculatePagedCount)
+                count = -1;
+
             if ((options & SoodaSnapshotOptions.KeysOnly) != 0)
             {
-                if (pageCount != -1)
+                if (pageCount != -1 && calculatePagedCount)
                 {
                     using (IDataReader reader = ds.LoadMatchingPrimaryKeys(transaction.Schema, classInfo, whereClause, orderBy, 0, -1))
                     {
@@ -263,7 +268,7 @@ namespace Sooda.ObjectMapper
             }
             else
             {
-                if (pageCount != -1)
+                if (pageCount != -1 && calculatePagedCount)
                 {
                     using (IDataReader reader = ds.LoadMatchingPrimaryKeys(transaction.Schema, classInfo, whereClause, orderBy, 0, -1))
                     {
