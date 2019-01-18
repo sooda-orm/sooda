@@ -132,5 +132,9 @@ namespace Sooda.Schema
             return Table.Fields;
         }
 
+        public override string ToString()
+        {
+            return string.Format("{0}[{1}] {2} <-> {3}", GetType().Name, Name, GetRef1ClassInfo(), GetRef2ClassInfo());
+        }
     }
 }

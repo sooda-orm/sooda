@@ -28,14 +28,15 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+using System;
+using Sooda.ObjectMapper;
 using Sooda.Schema;
 
-namespace Sooda.ObjectMapper
+namespace Sooda
 {
-    public interface ISoodaSchema
+    public interface IInterfaceProxyFactory : ISoodaObjectFactory
     {
-        ISoodaObjectFactory[] GetFactories();
-        IInterfaceProxyFactory[] GetProxies();
-        SchemaInfo Schema { get; }
+        void SetTargetFactory(ISoodaObjectFactory concreteFactory);
+        Type TheInterface { get; }
     }
 }

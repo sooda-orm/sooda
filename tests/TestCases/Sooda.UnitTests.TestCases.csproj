@@ -59,6 +59,7 @@
     <Compile Include="Caching\CollectionEvictTest.cs" />
     <Compile Include="Caching\CollectionTest.cs" />
     <Compile Include="DynamicFieldsTest.cs" />
+    <Compile Include="InjectDependentSchemasAttribute.cs" />
     <Compile Include="Linq\CollectionQueryTest.cs" />
     <Compile Include="Linq\CollectionTest.cs" />
     <Compile Include="Linq\ConstantFoldingTest.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Linq\SingleTest.cs" />
     <Compile Include="Linq\SubqueryTest.cs" />
     <Compile Include="Linq\UtilsTest.cs" />
+    <Compile Include="DependencyInversion\ModelDependencyInjectionTest.cs" />
     <Compile Include="ObjectMapper\AbstractTest.cs" />
     <Compile Include="ObjectMapper\CacheTest.cs" />
     <Compile Include="ObjectMapper\CollectionTest.cs" />

@@ -68,6 +68,22 @@ create table MultiKey
 )
 go
 
+create table Mileage
+(
+    id int primary key,
+    total int not null default 0
+)
+go
+
+create table MileageItem
+(
+	id int primary key,
+	vehicle_mileage int not null references Mileage(id),
+	miles int not null,
+	description nvarchar(256) null
+)
+go
+
 create table Vehicle
 (
 	id int primary key,
@@ -75,7 +91,9 @@ create table Vehicle
 	name varchar(64) null,
 	abs varchar(64) null,
 	four_wheel_drive varchar(64) null,
-	owner int null references Contact(id)
+	owner int null references Contact(id),
+	driver int null references Contact(id),
+	mileage int null references Mileage(id) -- reference in db, in schema is reference to interface
 )
 go
 
@@ -258,15 +276,31 @@ insert into KeyGen values('Contact',100);
 insert into KeyGen values('Group',100);
 insert into KeyGen values('Vehicle',100);
 
-insert into Vehicle values(1,1,'some vehicle',null,null,null);
-insert into Vehicle values(2,1,'a car',null,null,1);
-insert into Vehicle values(3,2,'a bike',null,null,2);
-insert into Vehicle values(4,3,'a super-bike',null,null,null);
-insert into Vehicle values(5,3,'another super-bike',null,null,null);
-insert into Vehicle values(6,4,'mega super-bike',null,null,null);
-insert into Vehicle values(10,7,'an extended bike',null,null,null);
-insert into Vehicle values(11,5,'concrete bike 1',null,null,null);
-insert into Vehicle values(12,6,'concrete bike 2',null,null,null);
+insert into Mileage values(1, 0);
+insert into Mileage values(2, 0);
+insert into Mileage values(4, 113);
+insert into Mileage values(5, 0);
+insert into Mileage values(6, 77);
+insert into Mileage values(10, 0);
+insert into Mileage values(11, 0);
+insert into Mileage values(12, 0);
+
+insert into MileageItem values(1, 4, 54, '1st');
+insert into MileageItem values(2, 4, 37, '2nd');
+insert into MileageItem values(3, 4, 22, '3rd');
+
+insert into MileageItem values(4, 6, 56, 'bikes first ride');
+insert into MileageItem values(5, 6, 21, 'bikes 2nd ride');
+
+insert into Vehicle values(1,1,'some vehicle',null,null,null,null, 1);
+insert into Vehicle values(2,1,'a car',null,null,1,1, 2);
+insert into Vehicle values(3,2,'a bike',null,null,2,2, null);
+insert into Vehicle values(4,3,'a super-bike',null,null,null,3, 4);
+insert into Vehicle values(5,3,'another super-bike',null,null,null,52, 5);
+insert into Vehicle values(6,4,'mega super-bike',null,null,null,null, 6);
+insert into Vehicle values(10,7,'an extended bike',null,null,null,null, 10);
+insert into Vehicle values(11,5,'concrete bike 1',null,null,null,null, 11);
+insert into Vehicle values(12,6,'concrete bike 2',null,null,null,null, 12);
 
 insert into Bike values(3,1);
 insert into Bike values(4,1);

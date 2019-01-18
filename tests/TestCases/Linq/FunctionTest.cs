@@ -115,7 +115,7 @@ namespace Sooda.UnitTests.TestCases.Linq
                 ce = Contact.Linq().Where(c => string.Equals(c.Name, "Mary Manager"));
                 CollectionAssert.AreEqual(new Contact[] { Contact.Mary }, ce);
 
-                ce = Contact.Linq().Where(c => SqlDecimal.Equals(c.LastSalary, 234M).IsTrue);
+                ce = Contact.Linq().Where(c => c.LastSalary.Value == 234m);
                 CollectionAssert.AreEqual(new Contact[] { Contact.Ed }, ce);
             }
         }

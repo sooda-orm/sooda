@@ -33,6 +33,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Xml.Serialization;
@@ -56,6 +57,9 @@ namespace Sooda.Schema
 
         [XmlElement("include", typeof(IncludeInfo))]
         public List<IncludeInfo> Includes = new List<IncludeInfo>();
+
+        [XmlElement("interface", typeof(InterfaceInfo))]
+        public List<InterfaceInfo> Interfaces = new List<InterfaceInfo>();
 
         [XmlElement("datasource", typeof(DataSourceInfo))]
         public List<DataSourceInfo> DataSources = new List<DataSourceInfo>();
@@ -100,6 +104,20 @@ namespace Sooda.Schema
         public bool Contains(string className)
         {
             return FindClassByName(className) != null;
+        }
+
+        public InterfaceInfo FindInterfaceByName(string interfaceName)
+        {
+            if (Interfaces == null)
+                return null;
+
+            foreach (var interfaceInfo in Interfaces)
+            {
+                if (interfaceInfo.InterfaceName == interfaceName)
+                    return interfaceInfo;
+            }
+
+            return null;
         }
 
         public ClassInfo FindClassByName(string className)
@@ -245,12 +263,26 @@ namespace Sooda.Schema
         {
             classNameHash.Clear();
             relationNameHash.Clear();
+            
+            if (Interfaces != null)
+            {
+                foreach (var @interface in Interfaces)
+                {
+                    classNameHash[@interface.InterfaceName] = new ClassInfo(@interface.InterfaceName, this);
+                }
+            }
+
             if (Classes != null)
             {
                 foreach (ClassInfo ci in Classes)
                 {
                     if (ci.Name != null)
                         classNameHash[ci.Name] = ci;
+
+                    foreach (var ii in ci.ImplementsInterfaces)
+                    {
+                        classNameHash[ii] = ci;
+                    }
                 }
             }
             if (Relations != null)
@@ -289,6 +321,41 @@ namespace Sooda.Schema
             return sb.ToString();
         }
 
+        internal void UnionExternalSchema(SchemaInfo external)
+        {
+            Interfaces = UnionSchemaPart(this.Interfaces, external.Interfaces, ii => ii.InterfaceName, "interface");
+            Classes = UnionSchemaPart(this.Classes, external.Classes, ci => ci.Name, "class");
+            Relations = UnionSchemaPart(this.Relations, external.Relations, r => r.Name, "relation");
+            DataSources = UnionSchemaPart(this.DataSources, external.DataSources, ds => ds.Name, "data source");
+
+            Resolve();
+            foreach (var classInfo in Classes)
+            {
+                classInfo.Schema = this;
+            }
+        }
+
+        private static List<TPart> UnionSchemaPart<TPart>(List<TPart> target, List<TPart> source, Func<TPart, string> key, string partName)
+        {
+            if (source == null)
+                return target;
+
+            if (target == null)
+                return new List<TPart>(source);
+
+            Dictionary<string, TPart> existing = target.ToDictionary(key);
+
+            foreach (var part in source)
+            {
+                // add only new parts, based on key
+                string sourceKey = key(part);
+                if (!existing.ContainsKey(sourceKey))
+                    target.Add(part);
+            }
+
+            return target;
+        }
+
         internal void MergeIncludedSchema(SchemaInfo includedSchema)
         {
             // merge classes, relations and datasources
@@ -320,6 +387,26 @@ namespace Sooda.Schema
                 }
 
                 this.Classes = newClasses;
+            }
+
+            if (includedSchema.Interfaces != null)
+            {
+                Dictionary<string, InterfaceInfo> interfaces = new Dictionary<string, InterfaceInfo>();
+                foreach (InterfaceInfo nii in includedSchema.Interfaces)
+                    interfaces.Add(nii.InterfaceName, nii);
+
+                if (this.Interfaces != null)
+                {
+                    foreach (InterfaceInfo ii in this.Interfaces)
+                    {
+                        interfaces.Remove(ii.InterfaceName);
+                    }
+
+                    foreach (var newInterface in interfaces)
+                    {
+                        this.Interfaces.Add(newInterface.Value);
+                    }
+                }
             }
 
             if (includedSchema.Relations != null)

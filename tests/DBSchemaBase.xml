@@ -3,6 +3,10 @@
 <schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sooda.org/schemas/SoodaSchema.xsd">
     <datasource name="default" type="Sooda.Sql.SqlDataSource" dynamicFields="true" />
 
+
+    <interface name="IContact" namespace="Sooda.UnitTests.BaseObjects.Interfaces" />
+    <interface name="IMileage" namespace="Sooda.UnitTests.BaseObjects.Interfaces" />
+
     <class name="Role" cached="false" triggers="false" label="Id">
         <table name="_Role">
             <field name="Id" dbcolumn="id" type="Integer" primaryKey="true" />
@@ -14,6 +18,7 @@
         <const name="Employee" key="1" />
         <const name="Manager" key="2" />
         <const name="Customer" key="3" />
+        <const name="CustomerX" key="4" />
     </class>
 
     <class name="ContactType" cached="true" defaultPrecommitValue="Customer" triggers="false">
@@ -28,6 +33,7 @@
     </class>
 
     <class name="Contact" cached="true" cacheCollections="true" label="Name">
+        <implements>IContact</implements>
         <description>Contact information of a person.</description>
         <table name="Contact">
             <field name="ContactId" dbcolumn="id" type="Integer" primaryKey="true" />
@@ -79,6 +85,8 @@
             <field name="Type" dbcolumn="type" type="Integer" />
             <field name="Name" dbcolumn="name" type="String" size="64" nullable="true" />
             <field name="Owner" dbcolumn="owner" type="Integer" references="Contact" nullable="true" />
+            <field name="Driver" dbcolumn="driver" type="Integer" references="IContact" nullable="true" />
+            <field name="Mileage" dbcolumn="mileage" type="Integer" references="IMileage" nullable="true" />
         </table>
         <collectionManyToMany name="Contacts" relation="ContactToVehicle" masterField="0"><description>Owners of vehicle.</description></collectionManyToMany>
     </class>

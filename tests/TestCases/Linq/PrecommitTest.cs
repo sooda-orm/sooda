@@ -76,7 +76,8 @@ namespace Sooda.UnitTests.TestCases.Linq
                 int n = Contact.Linq().Count();
                 Assert.AreEqual(7, n);
 
-                Contact.GetRef(5).MarkForDelete();
+                Contact.GetRef(51).Roles.RemoveAt(0);
+                Contact.GetRef(51).MarkForDelete();
                 t.SaveObjectChanges();
                 n = Contact.Linq().Count();
                 Assert.AreEqual(6, n);
@@ -121,7 +122,9 @@ namespace Sooda.UnitTests.TestCases.Linq
                 int n = Contact.Linq().ToList().Count;
                 Assert.AreEqual(7, n);
 
-                Contact.GetRef(5).MarkForDelete();
+                Contact.GetRef(51).Roles.RemoveAt(0);
+                Contact.GetRef(51).MarkForDelete();
+
                 n = Contact.Linq().ToList().Count;
                 Assert.AreEqual(6, n);
             }
@@ -162,12 +165,17 @@ namespace Sooda.UnitTests.TestCases.Linq
         {
             using (new SoodaTransaction())
             {
-                int n = Contact.Linq().Select(c => c.Name).ToList().Count;
-                Assert.AreEqual(7, n);
+                var lst = Contact.Linq().Select(c => c.Name).ToList();
+                Assert.AreEqual(7, lst.Count);
+                Assert.That(lst, Has.Member(Contact.GetRef(51).Name));
 
-                Contact.GetRef(5).MarkForDelete();
-                n = Contact.Linq().Select(c => c.Name).ToList().Count;
-                Assert.AreEqual(6, n);
+                Contact.GetRef(51).Roles.RemoveAt(0);
+                Contact.GetRef(51).MarkForDelete();
+               
+                lst = Contact.Linq().Select(c => c.Name).ToList();
+
+                Assert.That(lst, Has.No.Member(Contact.GetRef(51).Name));
+                Assert.AreEqual(6, lst.Count);
             }
         }
 

@@ -41,7 +41,7 @@ namespace Sooda.UnitTests.BaseObjects
         }
     }
 
-    public class Contact : Sooda.UnitTests.BaseObjects.Stubs.Contact_Stub, INameAndType2
+    public class Contact : Sooda.UnitTests.BaseObjects.Stubs.Contact_Stub, INameAndType2, Sooda.UnitTests.BaseObjects.Interfaces.IContact
     {
         public bool AfterInsertCalled;
 

@@ -54,5 +54,10 @@ namespace Sooda.Schema
             Type t = Type.GetType(DataSourceType, true);
             return (SoodaDataSource)Activator.CreateInstance(t, new object[] { this });
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}[{1}]", base.ToString(), Name);
+        }
     }
 }

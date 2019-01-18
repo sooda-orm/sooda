@@ -47,5 +47,10 @@ namespace Sooda.Schema
         public string Namespace;
 
         public SchemaInfo Schema;
+
+        public override string ToString()
+        {
+            return string.Format("{0}[{1}]", base.ToString(), SchemaFile);
+        }
     }
 }

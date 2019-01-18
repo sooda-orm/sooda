@@ -254,7 +254,7 @@ namespace Sooda.Schema
                 return;
             ClassInfo ci = schema.FindClassByName(References);
             if (ci == null)
-                throw new SoodaSchemaException("Class " + References + " not found.");
+                throw new SoodaSchemaException("Class (or interface) " + References + " not found.");
             DataType = ci.GetFirstPrimaryKeyField().DataType;
             ReferencedClass = ci;
         }
@@ -323,5 +323,6 @@ namespace Sooda.Schema
                 return Table.IsDynamic;
             }
         }
+
     }
 }

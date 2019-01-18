@@ -119,6 +119,9 @@ namespace Sooda.Schema
         [System.Xml.Serialization.XmlAttributeAttribute("label")]
         public string LabelField = null;
 
+        [System.Xml.Serialization.XmlElementAttribute("implements")]
+        public List<string> ImplementsInterfaces = new List<string>();
+
         [System.Xml.Serialization.XmlAttributeAttribute("subclassSelectorField")]
         public string SubclassSelectorFieldName = null;
 
@@ -151,6 +154,36 @@ namespace Sooda.Schema
         [System.Xml.Serialization.XmlAttributeAttribute("disableTypeCache")]
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool DisableTypeCache = false;
+
+
+        public ClassInfo()
+        {
+            // do nth.    
+        }
+
+        /// <summary>
+        /// 'virtual' class - plug for future interface
+        /// </summary>
+        /// <param name="interface"></param>
+        /// <param name="schemaInfo"></param>
+        public ClassInfo(string @interface, SchemaInfo schemaInfo)
+        {
+            Name = @interface;
+            _primaryKeyFields = new [] {
+                new FieldInfo()
+                {
+                    Name = "Id",
+                    ClassLocalOrdinal = 1,
+                    ClassUnifiedOrdinal = 1,
+                    DataType = FieldDataType.Integer,
+                    DBColumnName = "id",
+                    IsPrimaryKey = true,
+                    ReadOnly = true
+                }
+            };
+            OuterReferences = new List<FieldInfo>();
+            Schema = schemaInfo;
+        }
 
         public CollectionOnetoManyInfo FindCollectionOneToMany(string collectionName)
         {
@@ -446,6 +479,12 @@ namespace Sooda.Schema
 
         internal void Merge(ClassInfo merge)
         {
+            foreach (var implementsInterface in merge.ImplementsInterfaces)
+            {
+                if (!ImplementsInterfaces.Contains(implementsInterface))
+                    ImplementsInterfaces.Add(implementsInterface);
+            }
+
             Hashtable mergeNames = new Hashtable();
             foreach (TableInfo mti in this.LocalTables)
                 mergeNames.Add(mti.DBTableName, mti);
@@ -471,7 +510,7 @@ namespace Sooda.Schema
                 {
                     foreach (CollectionOnetoManyInfo mci in merge.Collections1toN)
                         if (mergeNames.ContainsKey(mci.Name))
-                            throw new SoodaSchemaException(String.Format("Duplicate collection 1:N '{0}' found!", mci.Name));
+                                throw new SoodaSchemaException(String.Format("Duplicate collection 1:N '{0}' found!", mci.Name));
                     this.Collections1toN = (CollectionOnetoManyInfo[])MergeArray(this.Collections1toN, merge.Collections1toN);
                 }
             }
@@ -490,7 +529,7 @@ namespace Sooda.Schema
                 {
                     foreach (CollectionManyToManyInfo mci in merge.CollectionsNtoN)
                         if (mergeNames.ContainsKey(mci.Name))
-                            throw new SoodaSchemaException(String.Format("Duplicate collection N:N '{0}' found!", mci.Name));
+                                throw new SoodaSchemaException(String.Format("Duplicate collection N:N '{0}' found!", mci.Name));
                     this.CollectionsNtoN = (CollectionManyToManyInfo[])MergeArray(this.CollectionsNtoN, merge.CollectionsNtoN);
                 }
             }
@@ -699,6 +738,11 @@ namespace Sooda.Schema
         public string GetSafeDataSourceName()
         {
             return DataSourceName ?? "default";
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}[{1}]", GetType().Name, Name);
         }
     }
 }

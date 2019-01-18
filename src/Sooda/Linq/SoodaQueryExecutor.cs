@@ -82,26 +82,26 @@ namespace Sooda.Linq
             return factory.GetRef(_transaction, keyValue);
         }
 
-        ClassInfo FindClassInfo(Type type)
+        ClassInfo FindClassInfo(Type type, bool @throw = true)
         {
             string className = type.Name;
-            if (!type.IsSubclassOf(typeof(SoodaObject)))
+            if (@throw && !type.IsSubclassOf(typeof(SoodaObject)) && !type.IsInterface)
                 throw new NotSupportedException(className + " is not a Sooda class");
             ClassInfo classInfo = _transaction.Schema.FindClassByName(className);
-            if (classInfo == null)
+            if (@throw && classInfo == null)
                 throw new NotSupportedException("Class " + className + " not found in database schema");
             return classInfo;
         }
 
-        ClassInfo FindClassInfo(Expression expr)
+        ClassInfo FindClassInfo(Expression expr, bool @throw = true)
         {
-            return FindClassInfo(expr.Type);
+            return FindClassInfo(expr.Type, @throw);
         }
 
         internal bool IsPolymorphicSoodaObject(Type type)
         {
-            return type.IsSubclassOf(typeof(SoodaObject))
-                && FindClassInfo(type).GetSubclassesForSchema(_transaction.Schema).Count > 0;
+            var ci = FindClassInfo(type, false);
+            return ci != null ? ci.GetSubclassesForSchema(_transaction.Schema).Count > 0 : false;
         }
 
         static bool IsConstant(IEnumerable<ElementInit> initializers)
@@ -439,8 +439,9 @@ namespace Sooda.Linq
         SoqlPathExpression TranslatePrimaryKey(Expression expr)
         {
             SoqlPathExpression path = TranslateToPathExpression(expr);
-            if (expr.Type.IsSubclassOf(typeof(SoodaObject)))
-                return new SoqlPathExpression(path, FindClassInfo(expr).GetPrimaryKeyFields().Single().Name);
+            var @class = FindClassInfo(expr, false);
+            if (@class != null)
+                return new SoqlPathExpression(path, @class.GetPrimaryKeyFields().Single().Name);
             return path;
         }
 
@@ -452,10 +453,11 @@ namespace Sooda.Linq
                 return null;
 
             Type declaringType = expr.Expression != null ? expr.Expression.Type : m.DeclaringType;
-            if (declaringType == null || !declaringType.IsSubclassOf(typeof(SoodaObject)))
+            if (declaringType == null) // || !declaringType.IsSubclassOf(typeof(SoodaObject)))
                 return null;
 
-            if (!FindClassInfo(declaringType).ContainsField(m.Name))
+            ClassInfo @class = FindClassInfo(declaringType, false);
+            if (@class == null || !@class.ContainsField(m.Name))
                 return null;
 
             return new SoqlPathExpression(parent, m.Name);

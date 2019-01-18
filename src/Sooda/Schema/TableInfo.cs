@@ -219,5 +219,10 @@ namespace Sooda.Schema
                 else
                     ((FieldInfo)mergeNames[mfi.Name]).Merge(mfi);
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}[{1}]", GetType().Name, DBTableName);
+        }
     }
 }

@@ -36,6 +36,7 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Xml;
 
 namespace Sooda.CodeGen
@@ -235,9 +236,11 @@ namespace Sooda.CodeGen
             {
                 context["BaseClassName"] = "SoodaObject";
             }
+
             context["ArrayFieldValues"] = ci.GetDataSource().EnableDynamicFields;
 
             CodeTypeDeclaration ctd = CDILParser.ParseClass(CDILTemplate.Get("Stub.cdil"), context);
+
             if (ci.Description != null)
             {
                 ctd.Comments.Add(new CodeCommentStatement("<summary>", true));
@@ -344,6 +347,45 @@ namespace Sooda.CodeGen
             nspace.Types.Add(factoryClass);
         }
 
+        public void GenerateProxyInterfaceFactory(CodeNamespace nspace, InterfaceInfo ii)
+        {
+            CDILContext context = new CDILContext();
+            context["ClassName"] = ii.InterfaceName;
+            context["FullInterfaceName"] = ii.Namespace + "." + ii.InterfaceName;
+            context["OutNamespace"] = Project.OutputNamespace;
+
+            CodeTypeDeclaration factoryClass = CDILParser.ParseClass(CDILTemplate.Get("ProxyInterfaceFactory.cdil"), context);
+
+            factoryClass.CustomAttributes.Add(new CodeAttributeDeclaration("SoodaObjectFactoryAttribute",
+                new CodeAttributeArgument(new CodePrimitiveExpression(ii.InterfaceName)),
+                new CodeAttributeArgument(new CodeTypeOfExpression(ii.InterfaceName))
+            ));
+
+            nspace.Types.Add(factoryClass);
+        }
+
+        public void GenerateProxyInterface(CodeNamespace nspace, InterfaceInfo ii)
+        {
+            CDILContext context = new CDILContext();
+            var loaderClassName = ii.InterfaceName + "Repository";
+            if (Regex.IsMatch(loaderClassName, "^I[A-Z]"))
+                loaderClassName = loaderClassName.Substring(1);
+
+            context["ClassName"] = ii.InterfaceName;
+            context["OutNamespace"] = Project.OutputNamespace;
+
+            context["LoaderClass"] = loaderClassName;
+
+            context["PrimaryKeyFormalParameters"] = "System.Object primaryKey";
+            context["PrimaryKeyActualParameters"] = "arg(primaryKey)";
+            context["PrimaryKeyActualParametersTuple"] = context["PrimaryKeyActualParameters"];
+
+            CodeTypeDeclaration factoryClass = CDILParser.ParseClass(CDILTemplate.Get("ProxyInterface.cdil"), context);
+
+            nspace.Types.Add(factoryClass);
+        }
+
+
         public void GenerateClassSkeleton(CodeNamespace nspace, ClassInfo ci, bool useChainedConstructorCall, bool fakeSkeleton, bool usePartial, string partialSuffix)
         {
             if (!string.IsNullOrEmpty(ci.Schema.AssemblyName))
@@ -356,6 +398,16 @@ namespace Sooda.CodeGen
                 ctd.Comments.Add(new CodeCommentStatement("</summary>", true));
             }
             ctd.BaseTypes.Add(Project.OutputNamespace.Replace(".", "") + "Stubs." + ci.Name + "_Stub");
+
+            foreach (var @interface in ci.ImplementsInterfaces)
+            {
+                var ii = ci.Schema.FindInterfaceByName(@interface);
+                if (ii != null)
+                {
+                    ctd.BaseTypes.Add(ii.Namespace + "." + ii.InterfaceName);
+                }
+            }
+
             if (ci.IsAbstractClass())
                 ctd.TypeAttributes |= System.Reflection.TypeAttributes.Abstract;
             nspace.Types.Add(ctd);
@@ -410,16 +462,18 @@ namespace Sooda.CodeGen
 
         private void OutputFactories(CodeArrayCreateExpression cace, string ns, SchemaInfo schema)
         {
-            //foreach (IncludeInfo ii in schema.Includes)
-            //{
-            //    if ((ii.Schema != null) && (ii.AssemblyName != null) && (ii.AssemblyName != ""))
-            //        OutputFactories(cace, ii.Namespace, ii.Schema);
-            //}
-
             foreach (ClassInfo ci in schema.Classes)
             {
                 string nameSpace = string.IsNullOrEmpty(ci.Schema.Namespace) ? ns : ci.Schema.Namespace;
                 cace.Initializers.Add(new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(nameSpace + ".Stubs." + ci.Name + "_Factory"), "TheFactory"));
+            }
+        }
+
+        private void OutputProxyFactories(CodeArrayCreateExpression cace, string ns, SchemaInfo schema)
+        {
+            foreach (InterfaceInfo ii in schema.Interfaces)
+            {
+                cace.Initializers.Add(new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(ns + ".Stubs." + ii.InterfaceName + "_Factory"), "TheFactory"));
             }
         }
 
@@ -430,8 +484,7 @@ namespace Sooda.CodeGen
 
             CodeTypeDeclaration databaseSchemaClass = CDILParser.ParseClass(CDILTemplate.Get("DatabaseSchema.cdil"), context);
 
-            CodeArrayCreateExpression cace = new CodeArrayCreateExpression("ISoodaObjectFactory");
-            OutputFactories(cace, Project.OutputNamespace, schema);
+
 
             CodeTypeConstructor ctc = new CodeTypeConstructor();
             ctc.Statements.Add(
@@ -441,11 +494,25 @@ namespace Sooda.CodeGen
 
             databaseSchemaClass.Members.Add(ctc);
 
+
+            // --- constructor ---
             CodeConstructor ctor = new CodeConstructor();
             ctor.Attributes = MemberAttributes.Public;
+
+            CodeArrayCreateExpression cace = new CodeArrayCreateExpression("ISoodaObjectFactory");
+            OutputFactories(cace, Project.OutputNamespace, schema);
             ctor.Statements.Add(
                     new CodeAssignStatement(
                         new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "_factories"), cace));
+
+            CodeArrayCreateExpression ipfs = new CodeArrayCreateExpression("IInterfaceProxyFactory");
+            OutputProxyFactories(ipfs, Project.OutputNamespace, schema);
+
+            ctor.Statements.Add(
+                new CodeAssignStatement(
+                    new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "_proxies"), ipfs));
+
+            // ---
 
             databaseSchemaClass.Members.Add(ctor);
 
@@ -724,13 +791,18 @@ namespace Sooda.CodeGen
                         new CodeObjectCreateExpression(fullWrapperTypeName,
                         new CodeObjectCreateExpression("Sooda.QL.SoqlPathExpression", new CodePrimitiveExpression(fi.Name)))));
                 }
-                else
+                else if (ci.Schema.LocalClasses.Contains(fi.ReferencedClass))
                 {
                     fullWrapperTypeName = fi.ReferencedClass.Name + optionalNullable + "WrapperExpression";
                     prop.GetStatements.Add(new CodeMethodReturnStatement(
                         new CodeObjectCreateExpression(fullWrapperTypeName,
                         new CodePrimitiveExpression(null), new CodePrimitiveExpression(fi.Name))));
                 }
+                else
+                {
+                    continue;
+                }
+             
 
                 prop.Type = new CodeTypeReference(fullWrapperTypeName);
                 ctd.Members.Add(prop);
@@ -792,12 +864,16 @@ namespace Sooda.CodeGen
                         new CodeObjectCreateExpression(fullWrapperTypeName,
                         new CodeObjectCreateExpression("Sooda.QL.SoqlPathExpression", new CodeThisReferenceExpression(), new CodePrimitiveExpression(fi.Name)))));
                 }
-                else
+                else if (ci.Schema.LocalClasses.Contains(fi.ReferencedClass))
                 {
                     fullWrapperTypeName = fi.ReferencedClass.Name + optionalNullable + "WrapperExpression";
                     prop.GetStatements.Add(new CodeMethodReturnStatement(
                         new CodeObjectCreateExpression(fullWrapperTypeName,
                         new CodeThisReferenceExpression(), new CodePrimitiveExpression(fi.Name))));
+                }
+                else
+                {
+                    continue;
                 }
 
                 prop.Type = new CodeTypeReference(fullWrapperTypeName);
@@ -1272,6 +1348,19 @@ namespace Sooda.CodeGen
                 {
                     GenerateClassFactory(nspace, ci);
                 }
+
+                Output.Verbose("    * interface proxy classes");
+                foreach (InterfaceInfo ii in _schema.Interfaces)
+                {
+                    GenerateProxyInterface(nspace, ii);
+                }
+
+                Output.Verbose("    * proxy factories");
+                foreach (InterfaceInfo ii in _schema.Interfaces)
+                {
+                    GenerateProxyInterfaceFactory(nspace, ii);
+                }
+
                 Output.Verbose("    * N-N relation stubs");
                 foreach (RelationInfo ri in _schema.LocalRelations)
                 {
@@ -1350,7 +1439,7 @@ namespace Sooda.CodeGen
             }
             catch (SoodaCodeGenException e)
             {
-                throw e;
+                throw new SoodaCodeGenException(string.Format("Code generation error: {0}", e.Message), e);
             }
             catch (SoodaSchemaException e)
             {
@@ -1445,6 +1534,20 @@ namespace Sooda.CodeGen
             }
         }
 
+        void AddInterfaceImports(CodeNamespace nspace, List<InterfaceInfo> interfaces)
+        {
+            if (interfaces == null)
+                return;
+
+            foreach (var @interface in interfaces)
+            {
+                if (!string.IsNullOrEmpty(@interface.Namespace))
+                {
+                    nspace.Imports.Add(new CodeNamespaceImport(@interface.Namespace));
+                }
+            }
+        }
+
         CodeNamespace CreateTypedQueriesNamespace(SchemaInfo schema)
         {
             CodeNamespace nspace = new CodeNamespace(Project.OutputNamespace + ".TypedQueries");
@@ -1458,6 +1561,7 @@ namespace Sooda.CodeGen
             AddImportsFromIncludedSchema(nspace, schema.Includes, false);
             AddImportsFromIncludedSchema(nspace, schema.Includes, true);
             AddTypedQueryImportsFromIncludedSchema(nspace, schema.Includes);
+            AddInterfaceImports(nspace, schema.Interfaces);
             return nspace;
         }
 
@@ -1471,6 +1575,7 @@ namespace Sooda.CodeGen
             nspace.Imports.Add(new CodeNamespaceImport("Sooda"));
             nspace.Imports.Add(new CodeNamespaceImport(Project.OutputNamespace.Replace(".", "") + "Stubs = " + Project.OutputNamespace + ".Stubs"));
             AddImportsFromIncludedSchema(nspace, schema.Includes, false);
+            AddInterfaceImports(nspace, schema.Interfaces);
             return nspace;
         }
 
@@ -1492,6 +1597,7 @@ namespace Sooda.CodeGen
             nspace.Imports.Add(new CodeNamespaceImport(Project.OutputNamespace.Replace(".", "") + " = " + Project.OutputNamespace));
             AddImportsFromIncludedSchema(nspace, schema.Includes, false);
             AddImportsFromIncludedSchema(nspace, schema.Includes, true);
+            AddInterfaceImports(nspace, schema.Interfaces);
             return nspace;
         }
     }

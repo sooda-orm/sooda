@@ -1,0 +1,101 @@
+class ${LoaderClass}
+    extends System.Object
+
+    constructor ()
+        attributes Private
+    begin
+    end
+
+
+method Load(${PrimaryKeyFormalParameters})
+    attributes Public,Static,Overloaded,Final
+    returns ${ClassName}
+begin
+    return defaultscope.Load(typeref(SoodaTransaction).ActiveTransaction, ${PrimaryKeyActualParameters})
+end
+
+method Load(SoodaTransaction tran, ${PrimaryKeyFormalParameters})
+    attributes Public,Static,Overloaded,Final
+    returns ${ClassName}
+begin
+    var ${ClassName} retVal = typeref(${LoaderClass}).GetRef(arg(tran), ${PrimaryKeyActualParameters});
+    call typeref(Sooda.ObjectMapper.SoodaObjectImpl).LoadAllData(cast(SoodaObject, var(retVal)));
+    return var(retVal)
+end
+
+method GetRef(${PrimaryKeyFormalParameters})
+    attributes Public,Static,Overloaded,Final
+    returns ${ClassName}
+begin
+    return defaultscope.GetRef(typeref(SoodaTransaction).ActiveTransaction, ${PrimaryKeyActualParameters})
+end
+
+method TryGet(${PrimaryKeyFormalParameters})
+    attributes Public,Static,Overloaded,Final
+    returns ${ClassName}
+    customattribute System.Diagnostics.DebuggerStepThroughAttribute
+begin
+    return defaultscope.TryGet(typeref(SoodaTransaction).ActiveTransaction, ${PrimaryKeyActualParameters})
+end
+
+method GetRef(SoodaTransaction tran, ${PrimaryKeyFormalParameters})
+    attributes Public,Static,Overloaded,Final
+    returns ${ClassName}
+begin
+    return cast(${ClassName}, typeref(Sooda.SoodaObject).GetRefHelper(arg(tran), typeref(${ClassName}_Factory).TheFactory, ${PrimaryKeyActualParametersTuple}))
+end
+
+method TryGet(SoodaTransaction tran, ${PrimaryKeyFormalParameters})
+    attributes Public,Static,Overloaded,Final
+    returns ${ClassName}
+    customattribute System.Diagnostics.DebuggerStepThroughAttribute
+begin
+    return cast(${ClassName}, arg(tran).FindObjectWithKey('${ClassName}', ${PrimaryKeyActualParametersTuple}, typeof(${ClassName})))
+end
+
+method GetRef(SoodaTransaction tran, SoodaTuple tuple)
+    attributes Public,Static,Overloaded,Final
+    returns ${ClassName}
+begin
+    return cast(${ClassName}, typeref(Sooda.SoodaObject).GetRefHelper(arg(tran), typeref(${ClassName}_Factory).TheFactory, arg(tuple)))
+end
+
+method TryGet(SoodaTransaction tran, SoodaTuple tuple)
+    attributes Public,Static,Overloaded,Final
+    returns ${ClassName}
+    customattribute System.Diagnostics.DebuggerStepThroughAttribute
+begin
+    return cast(${ClassName}, arg(tran).FindObjectWithKey('${ClassName}', arg(tuple), typeof(${ClassName})))
+end
+
+
+
+
+method Linq()
+    attributes Public,Static,Overloaded,Final
+    returns generic(System.Linq.IQueryable, ${ClassName})
+begin
+    return defaultscope.Linq(typeref(SoodaTransaction).ActiveTransaction, typeref(SoodaSnapshotOptions).Default$);
+end
+
+method Linq(SoodaSnapshotOptions options)
+    attributes Public,Static,Overloaded,Final
+    returns generic(System.Linq.IQueryable, ${ClassName})
+begin
+    return defaultscope.Linq(typeref(SoodaTransaction).ActiveTransaction, arg(options));
+end
+
+method Linq(SoodaTransaction tran, SoodaSnapshotOptions options)
+    attributes Public,Static,Overloaded,Final
+    returns generic(System.Linq.IQueryable, ${ClassName})
+begin
+    return new generic(Sooda.Linq.SoodaQuerySource, ${ClassName})(arg(tran), typeref(${ClassName}_Factory).TheClassInfo, arg(options));
+end
+
+property generic(System.Linq.IQueryable, ${ClassName}) AllQuery
+    attributes Public,Static,Final
+get
+    return defaultscope.Linq(typeref(SoodaSnapshotOptions).NoWriteObjects);
+end
+
+end

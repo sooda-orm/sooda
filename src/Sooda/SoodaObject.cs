@@ -1428,7 +1428,7 @@ namespace Sooda
                 return retVal;
 
             ClassInfo classInfo = factory.GetClassInfo();
-            if (classInfo.InheritsFromClass != null && tran.ExistsObjectWithKey(classInfo.GetRootClass().Name, keyValue))
+            if (classInfo.InheritsFromClass != null && tran.ExistsObjectWithKey(classInfo.GetRootClass(), keyValue))
                 throw new SoodaObjectNotFoundException();
 
             if (classInfo.GetSubclassesForSchema(tran.Schema).Count > 0)

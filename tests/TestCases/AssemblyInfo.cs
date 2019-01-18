@@ -28,8 +28,11 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-using Sooda;
+using System;
 using System.Reflection;
+using Sooda;
+using Sooda.Schema;
+using Sooda.UnitTests.TestCases;
 
 [assembly: AssemblyTitle("Sooda.Utils")]
 [assembly: AssemblyDescription("Application framework for Sooda")]
@@ -40,5 +43,8 @@ using System.Reflection;
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyVersion("0.7.0.0")]
 
-[assembly: SoodaStubAssembly(typeof(Sooda.UnitTests.Objects._DatabaseSchema))]
+[assembly: InjectDependentSchemas]
+[assembly: SoodaStubAssembly(typeof(Sooda.Schema.MultiAssemblySchema))]
 [assembly: SoodaConfig(XmlConfigFileName = "Sooda.config.xml")]
+
+

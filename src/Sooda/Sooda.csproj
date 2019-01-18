@@ -37,7 +37,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyBuildInfo.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AssemblySign.cs" />
     <Compile Include="Caching\ISoodaCache.cs" />
@@ -64,6 +63,7 @@
     <Compile Include="Config\ISoodaConfigProvider.cs" />
     <Compile Include="Config\XmlConfigProvider.cs" />
     <Compile Include="IDefaultSoodaTransactionStrategy.cs" />
+    <Compile Include="IInterfaceProxyFactory.cs" />
     <Compile Include="ISoodaObjectFactory.cs" />
     <Compile Include="ISoodaObjectList.cs" />
     <Compile Include="Linq\LinqUtils.cs" />
@@ -202,6 +202,8 @@
     <Compile Include="Schema\FieldInfo.cs" />
     <Compile Include="Schema\IFieldContainer.cs" />
     <Compile Include="Schema\IncludeInfo.cs" />
+    <Compile Include="Schema\InterfaceInfo.cs" />
+    <Compile Include="Schema\MultiAssemblySchema.cs" />
     <Compile Include="Schema\PrecommitValueInfo.cs" />
     <Compile Include="Schema\RelationInfo.cs" />
     <Compile Include="Schema\SchemaInfo.cs" />

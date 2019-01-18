@@ -19,6 +19,26 @@
         </table>
     </class>
 
+
+    <class name="VehicleMileage">
+        <implements>IMileage</implements>
+        <table name="Mileage">
+            <field name="Id" type="Integer" dbcolumn="id" primaryKey="true" />
+            <field name="Total" type="Integer" dbcolumn="total" nullable="false" />
+        </table>
+        <collectionOneToMany name="Items" class="MileageItem" foreignField="VehicleMileage" />
+    </class>
+
+    <class name="MileageItem">
+        <implements>IMileageItem</implements>
+        <table name="MileageItem">
+            <field name="Id" type="Integer" dbcolumn="id" primaryKey="true" />
+            <field name="VehicleMileage" type="Integer" dbcolumn="vehicle_mileage" references="VehicleMileage" />
+            <field name="Miles" type="Integer" dbcolumn="miles" nullable="false" />
+            <field name="Description" type="String" dbcolumn="description" size="256" nullable="true" />
+        </table>
+    </class>
+
     <class name="AllDataTypes">
         <table name="AllDataTypes">
             <field name="Id" type="Integer" dbcolumn="id" primaryKey="true" />
@@ -152,4 +172,5 @@
             <field name="rr" dbcolumn="rr" type="Boolean" references="PKBool" />
         </table>
     </relation>
+
 </schema>
