@@ -56,21 +56,30 @@
     <target name="libraries" depends="Sooda, Sooda.Logging.NLog, Sooda.Logging.log4net" />
 
     <target name="update-build-number">
-
-        <loadfile file="build/Sooda.buildversion" property="sooda.oldversion" if="${file::exists('build/Sooda.buildversion')}" />
-        <if test="${not(property::exists('sooda.oldversion')) or sooda.version!=string::trim(sooda.oldversion)}">
-            <echo message="sooda.version=${sooda.version}" />
-            <foreach item="String" in="Sooda,Sooda.CodeGen,SoodaStubGen,SoodaCompileStubs,SoodaFixKeygen,SoodaSchemaTool,SoodaQuery,SoodaAddin.UI" delim="," property="assembly.dir">
-                <do>
-                    <property name="assemblybuildinfo.cs" value="src/${assembly.dir}/AssemblyBuildInfo.cs" />
-                    <echo message="using System.Reflection;
-// do not modify this file, it will be automatically regenerated
-[assembly: AssemblyVersion(&quot;2.0.0.0&quot;)]
-[assembly: AssemblyFileVersion(&quot;${sooda.version}&quot;)]
-" file="${assemblybuildinfo.cs}" />
-                </do>
-            </foreach>
-            <echo message="${sooda.version}" file="build/Sooda.buildversion" />
+        <exec program="git" commandline="show -s --format=%ci" output="build/Sooda.gitdate" failonerror="false" resultproperty="gitresult" />
+        <if test="${gitresult=='0'}">
+            <loadfile file="build/Sooda.gitdate" property="sooda.version.gitdate" />
+            <regex input="${sooda.version.gitdate}" pattern="^\d\d(?'YY'\d\d)-(?'MM'\d\d)-(?'DD'\d\d) (?'hh'\d\d):(?'mm'\d\d)" />
+            <property name="sooda.version" value="2.${YY}.${MM}${DD}.${hh}${mm}" />
+            <loadfile file="build/Sooda.buildversion" property="sooda.oldversion" if="${file::exists('build/Sooda.buildversion')}" />
+            <property name="sooda.oldversion" value="0.00.0000.0000" if="${not(property::exists('sooda.oldversion'))}" />
+            <if test="${sooda.version!=string::trim(sooda.oldversion)}">
+                <echo message="sooda.version=${sooda.version}" />
+                <foreach item="String" in="Sooda,Sooda.CodeGen,SoodaStubGen,SoodaCompileStubs,SoodaFixKeygen,SoodaSchemaTool,SoodaQuery,SoodaAddin.UI" delim="," property="assembly.dir">
+                    <do>
+                        <property name="assemblybuildinfo.cs" value="src/${assembly.dir}/AssemblyBuildInfo.cs" />
+                        <echo message="using System.Reflection;
+    // do not modify this file, it will be automatically regenerated
+    [assembly: AssemblyVersion(&quot;2.0.0.0&quot;)]
+    [assembly: AssemblyFileVersion(&quot;${sooda.version}&quot;)]
+    " file="${assemblybuildinfo.cs}" />
+                    </do>
+                </foreach>
+                <echo message="${sooda.version}" file="build/Sooda.buildversion" />
+            </if>
+        </if>
+        <if test="${gitresult!='0'}">
+            <echo message="Can't obtain version number from git (result=${gitresult}) - build number not updated!" level="Warning" />
         </if>
     </target>
 
