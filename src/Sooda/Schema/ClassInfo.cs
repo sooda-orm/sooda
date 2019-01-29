@@ -323,9 +323,15 @@ namespace Sooda.Schema
                 // Console.WriteLine("Setting OrdinalInClass for {0}.{1} to {2}", Name, t.DBTableName, ordinalInClass);
                 t.OrdinalInClass = ordinalInClass++;
                 t.NameToken = this.Name + "#" + t.OrdinalInClass;
-                t.Rehash();
+                t.RehashFields();
                 t.OwnerClass = this;
-                t.Resolve(this.Name, false);
+            }
+
+            foreach (TableInfo t in LocalTables)
+            {
+                // fields in table should be resolved once (per field), but they are referenced from many tables
+                // - so we resolve only class local tables
+                t.ResolveFields(this.Name, false);
             }
 
             // seems to be arbitrary .. and obsolete, as it limits number of dynamic fields
@@ -477,7 +483,7 @@ namespace Sooda.Schema
             return newArray;
         }
 
-        internal void Merge(ClassInfo merge)
+        internal void MergeSchema(ClassInfo merge)
         {
             foreach (var implementsInterface in merge.ImplementsInterfaces)
             {
@@ -491,7 +497,7 @@ namespace Sooda.Schema
             foreach (TableInfo ti in merge.LocalTables)
             {
                 if (mergeNames.ContainsKey(ti.DBTableName))
-                    ((TableInfo)mergeNames[ti.DBTableName]).Merge(ti);
+                    ((TableInfo)mergeNames[ti.DBTableName]).MergeSchema(ti);
                 else
                     LocalTables.Add(ti);
             }
@@ -568,7 +574,7 @@ namespace Sooda.Schema
                     mt.DBTableName = table.DBTableName;
                     mt.TableUsageType = table.TableUsageType;
                     mt.OrdinalInClass = table.IsDynamic ? table.OrdinalInClass : -1;
-                    mt.Rehash();
+                    mt.RehashFields();
                     mergedTables[table.DBTableName] = mt;
                     DatabaseTables.Add(mt);
                 }
@@ -584,7 +590,7 @@ namespace Sooda.Schema
 
                     mt.Fields.Add(fi);
                 }
-                mt.Rehash();
+                mt.RehashFields();
             }
         }
 
@@ -742,7 +748,7 @@ namespace Sooda.Schema
 
         public override string ToString()
         {
-            return string.Format("{0}[{1}]", GetType().Name, Name);
+            return Name;
         }
     }
 }

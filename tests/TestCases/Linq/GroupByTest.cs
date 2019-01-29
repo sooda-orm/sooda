@@ -56,7 +56,7 @@ namespace Sooda.UnitTests.TestCases.Linq
         {
             using (new SoodaTransaction())
             {
-                IEnumerable<string> se = from c in Contact.Linq() group c by c.Type into g orderby g.Key.Description select g.Key.Code;
+                IEnumerable<string> se = from c in Contact.Linq() group c by new { c.Type, c.Type.Code, c.Type.Description } into g orderby g.Key.Type.Description select g.Key.Type.Code;
                 CollectionAssert.AreEqual(new string[] { "Customer", "Employee", "Manager" }, se);
             }
         }

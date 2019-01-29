@@ -375,7 +375,7 @@ namespace Sooda.Schema
                         ClassInfo ci2;
                         if (classNames.TryGetValue(ci.Name, out ci2))
                         {
-                            ci.Merge(ci2);
+                            ci.MergeSchema(ci2);
                             classNames.Remove(ci.Name);
                         }
                     }

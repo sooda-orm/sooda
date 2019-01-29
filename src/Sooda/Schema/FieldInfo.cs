@@ -219,10 +219,17 @@ namespace Sooda.Schema
 
         public override string ToString()
         {
-            return String.Format("{0}.{1} ({2} ref {3})", ParentClass != null ? "class " + ParentClass.Name : "???", Name, DataType, References);
+            string parentClass = ParentClass != null ? ParentClass.Name : "???";
+            if (References != null)
+                return string.Format("{0}.{1} {2}~{3} {{{4}}}", parentClass, Name, DataType, References, NameTag);
+
+            if (Size > 0)
+                return string.Format(Precision > 0 ? "{0}.{1} {2}({3},{4}) /{5}/" : "{0}.{1} {2}({3}) /{5}/", parentClass, Name, DataType, Size, Precision, NameTag);
+
+            return string.Format("{0}.{1} {2} /{3}/", parentClass, Name, DataType, NameTag);
         }
 
-        internal void Merge(FieldInfo merge)
+        internal void MergeSchema(FieldInfo merge)
         {
             this.DataType = merge.DataType;
             if (merge.Description != null)
@@ -295,7 +302,14 @@ namespace Sooda.Schema
             get
             {
                 if (References != null)
+                {
+                    if (SoodaTransaction.HasActiveTransaction) // dirty fix: FieldInfo shouldn't know anything about transactions...
+                    {                                                         // ... but for now, only transaction has info about factories and classes.
+                        return SoodaTransaction.ActiveTransaction.GetFactory(References).TheType;
+                    }
                     return Type.GetType(ParentClass.Schema.Namespace + "." + References); // FIXME: included schema
+                }
+
                 SoodaFieldHandler handler = GetFieldHandler();
                 return IsNullable ? handler.GetNullableType() : handler.GetFieldType();
             }

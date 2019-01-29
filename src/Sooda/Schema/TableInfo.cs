@@ -114,7 +114,7 @@ namespace Sooda.Schema
                 return null;
 
             if (fieldsNameHash == null)
-                this.Rehash();
+                this.RehashFields();
 
             return (FieldInfo)fieldsNameHash[fieldName];
         }
@@ -136,7 +136,7 @@ namespace Sooda.Schema
                 Fields = new List<FieldInfo>();
 
             Fields.Add(fi);
-            Rehash();
+            RehashFields();
         }
 
         public void AddReference(string fieldName, string refTable)
@@ -162,7 +162,7 @@ namespace Sooda.Schema
         [XmlIgnore]
         public TableInfo[] ArraySingleton;
 
-        internal void Rehash()
+        internal void RehashFields()
         {
             ArraySingleton = new TableInfo[] { this };
 
@@ -178,7 +178,7 @@ namespace Sooda.Schema
             };
         }
 
-        internal void Resolve(string name, bool isInRelation)
+        internal void ResolveFields(string name, bool isInRelation)
         {
             int ordinal = 0;
             int pkCount = 0;
@@ -208,7 +208,7 @@ namespace Sooda.Schema
             return tableInfo;
         }
 
-        internal void Merge(TableInfo merge)
+        internal void MergeSchema(TableInfo merge)
         {
             Hashtable mergeNames = new Hashtable();
             foreach (FieldInfo fi in this.Fields)
@@ -217,7 +217,7 @@ namespace Sooda.Schema
                 if (!mergeNames.ContainsKey(mfi.Name))
                     this.AddField(mfi);
                 else
-                    ((FieldInfo)mergeNames[mfi.Name]).Merge(mfi);
+                    ((FieldInfo)mergeNames[mfi.Name]).MergeSchema(mfi);
         }
 
         public override string ToString()

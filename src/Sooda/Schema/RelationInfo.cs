@@ -94,8 +94,8 @@ namespace Sooda.Schema
 
             parentSchema = schemaInfo;
 
-            Table.Resolve(this.Name, true);
-            Table.Rehash();
+            Table.ResolveFields(this.Name, true);
+            Table.RehashFields();
 
             Table.Fields[0].ReferencedClass = schemaInfo.FindClassByName(Table.Fields[0].References);
             if (Table.Fields[0].ReferencedClass == null)

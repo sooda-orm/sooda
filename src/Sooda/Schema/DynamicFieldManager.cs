@@ -34,9 +34,11 @@ using Sooda.Sql;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Sooda.Utils;
 
 namespace Sooda.Schema
 {
@@ -81,21 +83,18 @@ namespace Sooda.Schema
             return table;
         }
 
-        static void Resolve(SchemaInfo schema, HashSet<ClassInfo> affectedClasses)
+        static void Resolve(SchemaInfo schema, string reason)
         {
-            // add subclasses
-            foreach (ClassInfo ci in affectedClasses.ToArray())
-            {
-                foreach (ClassInfo sci in schema.GetSubclasses(ci))
-                    affectedClasses.Add(sci);
-            }
+            logger.Trace("DynamicFieldManager.Resolve()... (reason: {0}", reason);
+            Stopwatch sw = Stopwatch.StartNew();
 
-            schema.Resolve(affectedClasses);
-        }
+            // we should resolve whole schema, because of consistency of outer references, back-references etc.
+            // It is executed once after application startup (when loading dynamic fields to memory),
+            // and once per add/ remove dynamic field.
 
-        static void Resolve(ClassInfo ci)
-        {
-            Resolve(ci.Schema, new HashSet<ClassInfo> { ci });
+            schema.Resolve();
+            sw.Stop();
+            logger.Info("DynamicFieldManager.Resolve()... done (reason: {0}, in {1}ms)", reason, sw.ElapsedMilliseconds);
         }
 
         static void Load(SoodaTransaction transaction)
@@ -135,7 +134,7 @@ namespace Sooda.Schema
                 }
             }
 
-            Resolve(schema, affectedClasses);
+            Resolve(schema, "load dynamic fields");
         }
 
         internal static void OpenTransaction(SoodaTransaction transaction)
@@ -215,7 +214,7 @@ namespace Sooda.Schema
                     ds.ExecuteNonQuery(sql);
 
                 ci.LocalTables.Add(table);
-                Resolve(ci);
+                Resolve(ci.Schema, "add field " + fi);
             }
             finally
             {
@@ -256,7 +255,7 @@ namespace Sooda.Schema
                 ds.ExecuteNonQuery("drop table " + fi.Table.DBTableName);
 
                 ci.LocalTables.Remove(fi.Table);
-                Resolve(ci);
+                Resolve(ci.Schema, "remove field " + fi);
             }
             finally
             {
