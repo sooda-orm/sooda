@@ -461,7 +461,7 @@ namespace Sooda.ObjectMapper
 
         public ISoodaObjectList Sort(SoqlExpression expression, SortOrder sortOrder)
         {
-            return new SoodaObjectListSnapshot(this).Sort(expression, sortOrder);
+            return new SoodaObjectListSnapshot(this, new SoodaOrderBy(expression, sortOrder).GetComparer());
         }
 
         public ISoodaObjectList Sort(SoqlExpression expression)

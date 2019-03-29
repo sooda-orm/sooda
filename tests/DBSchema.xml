@@ -132,6 +132,13 @@
         </table>
     </class>
     
+    <class name="EightFieldsEx" keygen="none">
+        <table name="EightFieldsEx">
+        <field name="Id" type="Integer" dbcolumn="id" primaryKey="true" references="EightFields"/>
+        <field name="Name" type="String" nullable="false" />
+        </table>
+    </class>
+    
     <class name="PersonConcrete" inheritFrom="PersonBase">
     
         <const key="1" name="TheBoss" />

@@ -49,6 +49,7 @@
     <Compile Include="ConcreteMegaSuperBikeA.cs" />
     <Compile Include="ConcreteMegaSuperBikeB.cs" />
     <Compile Include="EightFields.cs" />
+    <Compile Include="EightFieldsEx.cs" />
     <Compile Include="ExtendedBike.cs" />
     <Compile Include="MegaSuperBike.cs" />
     <Compile Include="MultiKey.cs" />
