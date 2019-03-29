@@ -21,6 +21,7 @@ Features
 * differential XML serialization and deserialization for moving data across layers
 * support for long-running transactions
 * data caching with copy-on-write support
+* support for dependency inversion (plugins) in data model
 
 The following database engines are supported:
 

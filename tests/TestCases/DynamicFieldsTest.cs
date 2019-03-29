@@ -112,6 +112,71 @@ namespace Sooda.UnitTests.TestCases
 #endif
 
         [Test]
+        public void TwoTransactions()
+        {
+            using (new SoodaTransaction()) 
+            {
+                object result = Contact.Mary["Name"];
+                Assert.AreEqual("Mary Manager", result);
+            }
+
+            using (new SoodaTransaction()) 
+            {
+                object result = Contact.Ed["Name"];
+                Assert.AreEqual("Ed Employee", result);
+            }
+        }
+
+        [Test]
+        public void DynamicFieldInTransactions()
+        {
+            const string birthYear = "BirthYear";
+            const string className = "Contact";
+            try
+            {
+                Console.WriteLine("----- Transaction 1 (setup) -----");
+                using (SoodaTransaction t = new SoodaTransaction())
+                {
+                    DynamicFieldManager.Add(new FieldInfo
+                    {
+                        ParentClass = t.Schema.FindClassByName(className),
+                        Name = birthYear,
+                        TypeName = "Integer",
+                        IsNullable = false
+                    }, t);
+
+                    t.Commit();
+                }
+
+                Console.WriteLine("----- Transaction 2 (set) -----");
+                using (SoodaTransaction t = new SoodaTransaction())
+                {
+                    Contact.Mary[birthYear] = 1988;
+                    t.Commit();
+                }
+
+                Console.WriteLine("----- Transaction 3 (test) -----");
+                using (SoodaTransaction t = new SoodaTransaction())
+                {
+                    var year = Contact.Mary[birthYear];
+                    Assert.That(year, Is.EqualTo(1988));
+                }
+            }
+            finally
+            {
+                Console.WriteLine("----- Transaction 4 (cleanup) -----");
+                using (SoodaTransaction t = new SoodaTransaction())
+                {
+                    var cls = t.Schema.FindClassByName(className);
+                    var fld = cls.FindFieldByName(birthYear);
+                    DynamicFieldManager.Remove(fld, t);
+                    t.Commit();
+                }
+            }
+
+        }
+
+        [Test]
         public void IndexerGetStatic()
         {
             using (new SoodaTransaction())
@@ -611,30 +676,45 @@ namespace Sooda.UnitTests.TestCases
             const int val = 1237;
             int pk;
             string serializedTran;
-            using (SoodaTransaction tran = new SoodaTransaction())
+            try
             {
-                AddIntField(tran);
-                PKInt32 o = new PKInt32();
-                o[IntField] = val;
-                pk = o.Id;
-
-                Assert.That(o[IntField], Is.EqualTo(val));
-
-                serializedTran = tran.Serialize();
-            }
-
-            Assert.That(serializedTran, Contains.Substring("name=\"" + IntField + "\"").And.ContainsSubstring("value=\"" + val + "\""));
-
-            using (SoodaTransaction t2 = new SoodaTransaction())
-            {
-                Assert.DoesNotThrow(() =>
+                using (SoodaTransaction tran = new SoodaTransaction())
                 {
-                    t2.Deserialize(serializedTran);
-                });
+                    AddIntField(tran);
+                    tran.Commit(); // commit only field, not value!
 
-                var o = PKInt32.Load(pk);
-                Assert.That(o[IntField], Is.EqualTo(val));
+                    PKInt32 o = new PKInt32();
+                    o[IntField] = val;
+                    pk = o.Id;
+
+                    Assert.That(o[IntField], Is.EqualTo(val));
+
+                    serializedTran = tran.Serialize();
+                }
+
+                Assert.That(serializedTran, Contains.Substring("name=\"" + IntField + "\"").And.ContainsSubstring("value=\"" + val + "\""));
+
+                using (SoodaTransaction t2 = new SoodaTransaction())
+                {
+                    Assert.DoesNotThrow(() =>
+                    {
+                        t2.Deserialize(serializedTran);
+                    });
+
+                    var o = PKInt32.Load(pk);
+                    Assert.That(o[IntField], Is.EqualTo(val));
+                }
             }
+            finally
+            {
+                using (SoodaTransaction t = new SoodaTransaction())
+                {
+                    Remove(IntField, t);
+                    t.Commit();
+                }
+            }
+
+
         }
 
         [Test]

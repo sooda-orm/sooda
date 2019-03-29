@@ -5,6 +5,10 @@ class _DatabaseSchema
         attributes Private
     end
 
+    field arrayof(Sooda.IInterfaceProxyFactory) _proxies
+        attributes Private
+    end
+
     field Sooda.Schema.SchemaInfo _theSchema
         attributes Private,Static
     end
@@ -36,5 +40,13 @@ class _DatabaseSchema
         implements Sooda.ObjectMapper.ISoodaSchema
     begin
         return this._factories$
+    end
+
+    method GetProxies()
+        returns arrayof(Sooda.IInterfaceProxyFactory)
+        attributes Public
+        implements Sooda.ObjectMapper.ISoodaSchema
+    begin
+        return this._proxies$
     end
 end

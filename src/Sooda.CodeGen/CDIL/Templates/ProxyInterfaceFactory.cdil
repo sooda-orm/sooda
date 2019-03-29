@@ -1,0 +1,131 @@
+class ${ClassName}_Factory
+    extends System.Object
+    implements IInterfaceProxyFactory
+
+    constructor ()
+        attributes Private
+    begin
+    end
+
+    field ${ClassName}_Factory _theFactory
+        attributes Private,Static
+        value new ${ClassName}_Factory()
+    end
+
+    field ISoodaObjectFactory _targetFactory
+        attributes Private
+    end
+
+    field Type _theType
+        attributes Private,Static
+        value typeof(${FullInterfaceName})
+    end
+
+    method SetTargetFactory(ISoodaObjectFactory concreteFactory)
+        attributes Public
+    begin
+        assign defaultscope._targetFactory$ = arg(concreteFactory)
+    end
+
+    property IInterfaceProxyFactory TheFactory
+        attributes Public,Static
+    get
+        return defaultscope._theFactory$;
+    end
+
+    property Sooda.Schema.ClassInfo TheClassInfo
+        attributes Public,Static
+    get
+        return defaultscope._theFactory$.GetClassInfo();
+    end
+
+    property Type TheInterface
+        attributes Public
+        implements ISoodaObjectFactory
+    get
+        return defaultscope._theType$;
+    end
+
+    property Type TheType
+        attributes Public
+        implements ISoodaObjectFactory
+    get
+        return defaultscope._theFactory$.TheType;
+    end
+
+    method GetTargetFactory()
+        returns ISoodaObjectFactory
+        attributes Private
+    begin
+        if refequal(defaultscope._targetFactory$, null) then
+            throw new InvalidOperationException('Not defined concrete type for ${ClassName} interface (target factory not found).');
+        else
+            return defaultscope._targetFactory$;
+        endif
+    end
+
+    method GetRef(SoodaTransaction tran, System.Object keyValue)
+        returns SoodaObject
+        attributes Public
+        implements ISoodaObjectFactory
+    begin
+        return defaultscope.GetTargetFactory().GetRef(arg(tran), arg(keyValue))
+    end
+
+     method TryGet(SoodaTransaction tran, System.Object keyValue)
+        returns SoodaObject
+        attributes Public
+        implements ISoodaObjectFactory
+    begin
+        return defaultscope.GetTargetFactory().TryGet(arg(tran), arg(keyValue))
+    end
+
+     method GetList(SoodaTransaction tran, SoodaWhereClause whereClause, SoodaOrderBy orderBy, SoodaSnapshotOptions options)
+        returns System.Collections.IList
+        attributes Public
+        implements ISoodaObjectFactory
+    begin
+        return new Sooda.ObjectMapper.SoodaObjectListSnapshot(arg(tran), arg(whereClause), arg(orderBy), 0, -1, arg(options), defaultscope.TheClassInfo$)
+    end
+
+    method GetClassInfo()
+        returns Sooda.Schema.ClassInfo
+        attributes Public
+        implements ISoodaObjectFactory
+    begin
+        return defaultscope.GetTargetFactory().GetClassInfo();
+    end
+
+    method GetPrimaryKeyFieldHandler()
+        returns Sooda.ObjectMapper.SoodaFieldHandler
+        attributes Public
+        implements ISoodaObjectFactory
+    begin
+        return defaultscope.GetTargetFactory().GetPrimaryKeyFieldHandler();
+    end
+
+     method GetFieldHandler(System.Int32 ordinal)
+        returns Sooda.ObjectMapper.SoodaFieldHandler
+        attributes Public
+        implements ISoodaObjectFactory
+    begin
+        return defaultscope.GetTargetFactory().GetFieldHandler(arg(ordinal));
+    end
+
+    method CreateNew(SoodaTransaction tran)
+        returns SoodaObject
+        attributes Public
+        implements ISoodaObjectFactory
+    begin
+        return defaultscope.GetTargetFactory().CreateNew(arg(tran))
+    end
+
+    method GetRawObject(SoodaTransaction tran)
+        returns SoodaObject
+        attributes Public
+        implements ISoodaObjectFactory
+    begin
+        return defaultscope.GetTargetFactory().GetRawObject(arg(tran))
+    end
+
+end

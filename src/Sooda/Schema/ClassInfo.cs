@@ -119,6 +119,9 @@ namespace Sooda.Schema
         [System.Xml.Serialization.XmlAttributeAttribute("label")]
         public string LabelField = null;
 
+        [System.Xml.Serialization.XmlElementAttribute("implements")]
+        public List<string> ImplementsInterfaces = new List<string>();
+
         [System.Xml.Serialization.XmlAttributeAttribute("subclassSelectorField")]
         public string SubclassSelectorFieldName = null;
 
@@ -151,6 +154,36 @@ namespace Sooda.Schema
         [System.Xml.Serialization.XmlAttributeAttribute("disableTypeCache")]
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool DisableTypeCache = false;
+
+
+        public ClassInfo()
+        {
+            // do nth.    
+        }
+
+        /// <summary>
+        /// 'virtual' class - plug for future interface
+        /// </summary>
+        /// <param name="interface"></param>
+        /// <param name="schemaInfo"></param>
+        public ClassInfo(string @interface, SchemaInfo schemaInfo)
+        {
+            Name = @interface;
+            _primaryKeyFields = new [] {
+                new FieldInfo()
+                {
+                    Name = "Id",
+                    ClassLocalOrdinal = 1,
+                    ClassUnifiedOrdinal = 1,
+                    DataType = FieldDataType.Integer,
+                    DBColumnName = "id",
+                    IsPrimaryKey = true,
+                    ReadOnly = true
+                }
+            };
+            OuterReferences = new List<FieldInfo>();
+            Schema = schemaInfo;
+        }
 
         public CollectionOnetoManyInfo FindCollectionOneToMany(string collectionName)
         {
@@ -290,9 +323,15 @@ namespace Sooda.Schema
                 // Console.WriteLine("Setting OrdinalInClass for {0}.{1} to {2}", Name, t.DBTableName, ordinalInClass);
                 t.OrdinalInClass = ordinalInClass++;
                 t.NameToken = this.Name + "#" + t.OrdinalInClass;
-                t.Rehash();
+                t.RehashFields();
                 t.OwnerClass = this;
-                t.Resolve(this.Name, false);
+            }
+
+            foreach (TableInfo t in LocalTables)
+            {
+                // fields in table should be resolved once (per field), but they are referenced from many tables
+                // - so we resolve only class local tables
+                t.ResolveFields(this.Name, false);
             }
 
             // seems to be arbitrary .. and obsolete, as it limits number of dynamic fields
@@ -445,15 +484,21 @@ namespace Sooda.Schema
             return newArray;
         }
 
-        internal void Merge(ClassInfo merge)
+        internal void MergeSchema(ClassInfo merge)
         {
+            foreach (var implementsInterface in merge.ImplementsInterfaces)
+            {
+                if (!ImplementsInterfaces.Contains(implementsInterface))
+                    ImplementsInterfaces.Add(implementsInterface);
+            }
+
             Hashtable mergeNames = new Hashtable();
             foreach (TableInfo mti in this.LocalTables)
                 mergeNames.Add(mti.DBTableName, mti);
             foreach (TableInfo ti in merge.LocalTables)
             {
                 if (mergeNames.ContainsKey(ti.DBTableName))
-                    ((TableInfo)mergeNames[ti.DBTableName]).Merge(ti);
+                    ((TableInfo)mergeNames[ti.DBTableName]).MergeSchema(ti);
                 else
                     LocalTables.Add(ti);
             }
@@ -530,7 +575,7 @@ namespace Sooda.Schema
                     mt.DBTableName = table.DBTableName;
                     mt.TableUsageType = table.TableUsageType;
                     mt.OrdinalInClass = table.IsDynamic ? table.OrdinalInClass : -1;
-                    mt.Rehash();
+                    mt.RehashFields();
                     mergedTables[table.DBTableName] = mt;
                     DatabaseTables.Add(mt);
                 }
@@ -546,7 +591,7 @@ namespace Sooda.Schema
 
                     mt.Fields.Add(fi);
                 }
-                mt.Rehash();
+                mt.RehashFields();
             }
         }
 
@@ -700,6 +745,11 @@ namespace Sooda.Schema
         public string GetSafeDataSourceName()
         {
             return DataSourceName ?? "default";
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }

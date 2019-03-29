@@ -75,5 +75,11 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CDIL\Templates\ProxyInterfaceFactory.cdil" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CDIL\Templates\ProxyInterface.cdil" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" />
 </Project>

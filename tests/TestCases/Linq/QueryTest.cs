@@ -423,6 +423,46 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
+        public void SelectReference()
+        {
+            using (new SoodaTransaction())
+            {
+                List<Contact> owners = Vehicle.Linq().Where(v => v.Owner != null).Select(v => v.Owner).ToList();
+                CollectionAssert.AreEquivalent(owners, new[] { Contact.Mary, Contact.Ed });
+            }
+        }
+
+        [Test]
+        public void SelectReferenceAndWhere()
+        {
+            using (new SoodaTransaction())
+            {
+                List<Contact> owners = Vehicle.Linq().Select(v => v.Owner).Where(c => c != null).ToList();
+                CollectionAssert.AreEquivalent(owners, new[] { Contact.Mary, Contact.Ed });
+            }
+        }
+
+        [Test]
+        public void SelectReferenceReference()
+        {
+            using (new SoodaTransaction())
+            {
+                List<Contact> owners = Vehicle.Linq().Select(v => v.Owner).Select(c => c.Manager).Where(c => c != null).ToList();
+                CollectionAssert.AreEquivalent(owners, new[] { Contact.Mary });
+            }
+        }
+
+        [Test]
+        public void SelectDirectReferenceReference()
+        {
+            using (new SoodaTransaction())
+            {
+                List<Contact> owners = Vehicle.Linq().Select(v => v.Owner.Manager).Where(c => c != null).ToList();
+                CollectionAssert.AreEquivalent(owners, new[] { Contact.Mary });
+            }
+        }
+
+        [Test]
         public void SelectPolymorphicSoodaObject()
         {
             using (new SoodaTransaction())

@@ -130,7 +130,7 @@ namespace Sooda.UnitTests.TestCases.Linq
         {
             using (new SoodaTransaction())
             {
-                IEnumerable<Contact> ce = Contact.Linq().Where(c => (c.Active == true) == (c.Active == true));
+                IEnumerable<Contact> ce = Contact.Linq().Where(c => (c.Active == c.Active));
                 Assert.AreEqual(7, ce.Count());
             }
         }

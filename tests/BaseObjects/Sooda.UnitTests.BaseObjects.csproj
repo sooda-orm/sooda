@@ -44,6 +44,9 @@
     <Compile Include="Contact.cs" />
     <Compile Include="ContactType.cs" />
     <Compile Include="Group.cs" />
+    <Compile Include="Interfaces\IContact.cs" />
+    <Compile Include="Interfaces\IMileage.cs" />
+    <Compile Include="Interfaces\IMileageItem.cs" />
     <Compile Include="KeyGen.cs" />
     <Compile Include="Role.cs" />
     <Compile Include="Vehicle.cs" />

@@ -612,7 +612,7 @@ namespace Sooda.CodeGen
                                         new CodePrimitiveExpression(fi.Table.OrdinalInClass),
                                         new CodePrimitiveExpression(fi.Name),
                                         new CodePrimitiveExpression(fi.ClassUnifiedOrdinal),
-                                        new CodePropertySetValueReferenceExpression(),
+                                        new CodeCastExpression(typeof(SoodaObject), new CodePropertySetValueReferenceExpression()),
                                         RefCacheArray(),
                                         new CodePrimitiveExpression(GetFieldRefCacheIndex(ci, fi)),
                                         Factory(returnType.BaseType)

@@ -1,6 +1,5 @@
-//
-// Copyright (c) 2003-2006 Jaroslaw Kowalski <jaak@jkowalski.net>
-// Copyright (c) 2006-2014 Piotr Fusik <piotr@fusik.info>
+﻿//
+// Copyright (c) 2018 Maciej Nowak <mjn82@nowaknet.com>
 //
 // All rights reserved.
 //
@@ -28,14 +27,31 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-using Sooda.Schema;
 
-namespace Sooda.ObjectMapper
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Xml.Serialization;
+
+namespace Sooda.Schema
 {
-    public interface ISoodaSchema
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace = "http://www.sooda.org/schemas/SoodaSchema.xsd")]
+    [Serializable]
+    public class InterfaceInfo
     {
-        ISoodaObjectFactory[] GetFactories();
-        IInterfaceProxyFactory[] GetProxies();
-        SchemaInfo Schema { get; }
+        [XmlAttribute("name")]
+        public string InterfaceName;
+
+        [XmlAttribute("namespace")]
+        public string Namespace;
+
+        [XmlIgnore]
+        public SchemaInfo Schema;
+
+        public override string ToString()
+        {
+            return string.Format("{0}[{1}]", GetType().Name, InterfaceName);
+        }
     }
 }

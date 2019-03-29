@@ -789,6 +789,17 @@ namespace Sooda.CodeGen.CDIL
                 return new CodeExpressionStatement(ParseExpression());
             }
 
+            if (IsKeyword("assign"))
+            {
+                GetNextToken();
+
+                CodeExpression left = ParseExpression();
+                Expect(CDILToken.Assign);
+                CodeExpression right = ParseExpression();
+
+                return new CodeAssignStatement(left, right);
+            }
+
             if (IsKeyword("return"))
             {
                 CodeMethodReturnStatement retVal;

@@ -213,41 +213,41 @@ namespace Sooda
             get { return _dirtyObjects; }
         }
 
-        private Dictionary<object, WeakSoodaObject> GetObjectDictionaryForClass(string className)
+        private Dictionary<object, WeakSoodaObject> GetObjectDictionaryForClass(ClassInfo @class)
         {
             Dictionary<object, WeakSoodaObject> dict;
-            if (!_objectDictByClass.TryGetValue(className, out dict))
+            if (!_objectDictByClass.TryGetValue(@class.Name, out dict))
             {
                 dict = new Dictionary<object, WeakSoodaObject>();
-                _objectDictByClass[className] = dict;
+                _objectDictByClass[@class.Name] = dict;
             }
             return dict;
         }
 
-        private void AddObjectWithKey(string className, object keyValue, SoodaObject obj)
+        private void AddObjectWithKey(ClassInfo @class, object keyValue, SoodaObject obj)
         {
             // Console.WriteLine("AddObjectWithKey('{0}',{1})", className, keyValue);
             if (keyValue == null) keyValue = "";
-            GetObjectDictionaryForClass(className)[keyValue] = new WeakSoodaObject(obj);
+            GetObjectDictionaryForClass(@class)[keyValue] = new WeakSoodaObject(obj);
         }
 
-        private void UnregisterObjectWithKey(string className, object keyValue)
+        private void UnregisterObjectWithKey(ClassInfo @class, object keyValue)
         {
             if (keyValue == null) keyValue = "";
-            GetObjectDictionaryForClass(className).Remove(keyValue);
+            GetObjectDictionaryForClass(@class).Remove(keyValue);
         }
 
-        internal bool ExistsObjectWithKey(string className, object keyValue)
+        internal bool ExistsObjectWithKey(ClassInfo @class, object keyValue)
         {
             if (keyValue == null) keyValue = "";
-            return FindObjectWithKey(className, keyValue) != null;
+            return FindObjectWithKey(@class, keyValue) != null;
         }
 
-        private SoodaObject FindObjectWithKey(string className, object keyValue)
+        private SoodaObject FindObjectWithKey(ClassInfo @class, object keyValue)
         {
             if (keyValue == null) keyValue = "";
             WeakSoodaObject wo;
-            if (!GetObjectDictionaryForClass(className).TryGetValue(keyValue, out wo))
+            if (!GetObjectDictionaryForClass(@class).TryGetValue(keyValue, out wo))
                 return null;
             return wo.TargetSoodaObject;
         }
@@ -260,7 +260,7 @@ namespace Sooda
             // Console.WriteLine("Adding key: " + o.GetObjectKey() + " of type " + o.GetType());
             for (ClassInfo ci = o.GetClassInfo(); ci != null; ci = ci.InheritsFromClass)
             {
-                AddObjectWithKey(ci.Name, pkValue, o);
+                AddObjectWithKey(ci, pkValue, o);
 
                 List<WeakSoodaObject> al;
                 if (!_objectsByClass.TryGetValue(ci.Name, out al))
@@ -301,7 +301,7 @@ namespace Sooda
         {
             object pkValue = o.GetPrimaryKeyValue();
 
-            return ExistsObjectWithKey(o.GetClassInfo().Name, pkValue);
+            return ExistsObjectWithKey(o.GetClassInfo(), pkValue);
         }
 
         private static void RemoveWeakSoodaObjectFromCollection(List<WeakSoodaObject> collection, SoodaObject o)
@@ -320,12 +320,12 @@ namespace Sooda
         {
             object pkValue = o.GetPrimaryKeyValue();
 
-            if (ExistsObjectWithKey(o.GetClassInfo().Name, pkValue))
+            if (ExistsObjectWithKey(o.GetClassInfo(), pkValue))
             {
-                UnregisterObjectWithKey(o.GetClassInfo().Name, pkValue);
+                UnregisterObjectWithKey(o.GetClassInfo(), pkValue);
                 for (ClassInfo ci = o.GetClassInfo().InheritsFromClass; ci != null; ci = ci.InheritsFromClass)
                 {
-                    UnregisterObjectWithKey(ci.Name, pkValue);
+                    UnregisterObjectWithKey(ci, pkValue);
                 }
                 RemoveWeakSoodaObjectFromCollection(_objectList, o);
 
@@ -340,17 +340,16 @@ namespace Sooda
         public object FindObjectWithKey(string className, object keyValue, Type expectedType)
         {
             if (keyValue == null) keyValue = "";
-            object o = FindObjectWithKey(className, keyValue);
+            var ci = _schema.FindClassByName(className);
+            object o = FindObjectWithKey(ci, keyValue);
             if (o == null)
                 return null;
 
-            if (expectedType.IsAssignableFrom(o.GetType()))
+            if (expectedType.IsInstanceOfType(o))
                 return o;
-            else
-            {
-                // Console.WriteLine("FAILING TryGet for {0}:{1} because it's of type {2} instead of {3}", className, keyValue, o.GetType(), expectedType);
-                return null;
-            }
+          
+            // Console.WriteLine("FAILING TryGet for {0}:{1} because it's of type {2} instead of {3}", className, keyValue, o.GetType(), expectedType);
+            return null;
         }
 
         public object FindObjectWithKey(string className, int keyValue, Type expectedType)
@@ -758,10 +757,43 @@ namespace Sooda
                     if (schema == null)
                         throw new ArgumentException("Invalid objects assembly: " + _assembly.FullName + ". Must define a class implementing ISoodaSchema interface.");
 
+                    Dictionary<Type, List<IInterfaceProxyFactory>> proxyFactories = new Dictionary<Type, List<IInterfaceProxyFactory>>(); // map interface -> proxy factory
+                    foreach (var proxy in schema.GetProxies())
+                    {
+                        Type @interface = proxy.TheInterface;
+                        factoryForClassName[@interface.Name] = proxy;   // we assert that interfaces with same name will be implemented by same target factories
+                        factoryForType[@interface] = proxy;
+
+                        List<IInterfaceProxyFactory> proxies;
+                        if (!proxyFactories.TryGetValue(@interface, out proxies))
+                        {
+                            proxies = new List<IInterfaceProxyFactory>();
+                            proxyFactories[@interface] = proxies;
+                        }
+
+                        proxies.Add(proxy);
+                    }
+
                     foreach (ISoodaObjectFactory fact in schema.GetFactories())
                     {
-                        factoryForClassName[fact.GetClassInfo().Name] = fact;
+                        var @class = fact.GetClassInfo();
+                        factoryForClassName[@class.Name] = fact;
                         factoryForType[fact.TheType] = fact;
+
+                        if (@class.ImplementsInterfaces.Count > 0)
+                        {
+                            foreach (var @interface in fact.TheType.GetInterfaces())
+                            {
+                                List<IInterfaceProxyFactory> proxies;
+                                if (proxyFactories.TryGetValue(@interface, out proxies))
+                                {
+                                    foreach (var proxy in proxies)
+                                    {
+                                        proxy.SetTargetFactory(fact);
+                                    }
+                                }
+                            }
+                        }
                     }
                     _schema = schema.Schema;
 #if DOTNET35

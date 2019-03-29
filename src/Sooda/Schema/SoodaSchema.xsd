@@ -6,6 +6,7 @@
       <xsd:element name="namespace" type="xsd:string" minOccurs="0" maxOccurs="1" />
       <xsd:element name="assembly" type="xsd:string" minOccurs="0" maxOccurs="1" />
       <xsd:element name="include" type="sooda:IncludeInfo" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element name="interface" type="sooda:InterfaceInfo" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="datasource" type="sooda:DataSourceInfo" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="cachingPolicy" type="sooda:CachingPolicy" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="defaultPrecommitValues" type="sooda:DefaultPrecommitValues" minOccurs="0" maxOccurs="1" />
@@ -20,6 +21,11 @@
   </xsd:complexType>
   <xsd:complexType name="IncludeInfo">
     <xsd:attribute name="schema" type="xsd:string" use="required" />
+    <xsd:attribute name="namespace" type="xsd:string" use="optional" />
+    <xsd:attribute name="assembly" type="xsd:string" use="optional" />
+  </xsd:complexType>
+  <xsd:complexType name="InterfaceInfo">
+    <xsd:attribute name="name" type="xsd:string" use="required" />
     <xsd:attribute name="namespace" type="xsd:string" use="optional" />
     <xsd:attribute name="assembly" type="xsd:string" use="optional" />
   </xsd:complexType>
@@ -54,6 +60,7 @@
   </xsd:complexType>
   <xsd:complexType name="ClassInfo">
     <xsd:sequence>
+      <xsd:element name="implements" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1" />
       <xsd:element name="table" type="sooda:TableInfo" minOccurs="0" maxOccurs="unbounded" />
       <xsd:element name="collectionOneToMany" type="sooda:CollectionOnetoManyInfo" minOccurs="0" maxOccurs="unbounded" />

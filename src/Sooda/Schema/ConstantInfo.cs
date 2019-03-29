@@ -47,5 +47,10 @@ namespace Sooda.Schema
 
         [XmlElement("description")]
         public string Description;
+
+        public override string ToString()
+        {
+            return string.Format("{0}[{1}]: {2}", base.ToString(), Name, Key);
+        }
     }
 }

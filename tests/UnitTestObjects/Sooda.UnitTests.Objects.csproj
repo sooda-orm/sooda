@@ -62,6 +62,8 @@
     <Compile Include="SuperBike.cs" />
     <Compile Include="_Stubs.cs" />
     <Compile Include="PersonConcrete.cs" />
+    <Compile Include="VehicleMileage.cs" />
+    <Compile Include="MileageItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sooda.UnitTests.Objects.soodaproject" />
