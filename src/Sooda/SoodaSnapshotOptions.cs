@@ -81,11 +81,5 @@ namespace Sooda
         /// Use prefetch definition from the schema to load related objects automatically
         /// </summary>
         PrefetchRelated = 128,
-
-        /// <summary>
-        /// Skip calculation of total (without paging) records (for PagedCount property)
-        /// (maybe expensive for large tables, eg. for FirstOrDefault()...)
-        /// </summary>
-        DisablePagedCount = 256
     }
 }

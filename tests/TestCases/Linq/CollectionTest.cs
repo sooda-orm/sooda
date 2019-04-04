@@ -475,6 +475,7 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
+        [Ignore]
         public void AnyArray()
         {
             using (new SoodaTransaction())
@@ -486,6 +487,7 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
+        [Ignore]
         public void AnySoodaCollection()
         {
             using (new SoodaTransaction())
@@ -496,6 +498,7 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
+        [Ignore]
         public void AnySoodaCollectionQuery()
         {
             using (new SoodaTransaction())

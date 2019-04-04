@@ -138,7 +138,7 @@ namespace Sooda.ObjectMapper
         {
             get
             {
-                return _theList.PagedCount;
+                throw new NotSupportedException("Paged count is no longer supported due to performance - it should be calculated it directly in business logic");
             }
         }
 

@@ -28,6 +28,7 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+using System;
 using Sooda.QL;
 using System.Collections;
 
@@ -36,6 +37,8 @@ namespace Sooda
     public interface ISoodaObjectList : System.Collections.IList
     {
         SoodaObject GetItem(int pos);
+
+        [Obsolete("Paged count is no longer supported due to performance - it should be calculated it directly in business logic", true)]
         int PagedCount { get; }
 
         ISoodaObjectList GetSnapshot();

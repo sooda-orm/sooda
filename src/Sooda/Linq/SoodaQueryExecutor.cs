@@ -1596,7 +1596,7 @@ namespace Sooda.Linq
                 return _select.GetList();
 #endif
             return new SoodaObjectListSnapshot(_transaction, new SoodaWhereClause(_where),
-                _orderBy, _startIdx, _topCount, _options|SoodaSnapshotOptions.DisablePagedCount, _classInfo);
+                _orderBy, _startIdx, _topCount, _options, _classInfo);
         }
 
         object Single(int topCount, MethodCallExpression orDefault)

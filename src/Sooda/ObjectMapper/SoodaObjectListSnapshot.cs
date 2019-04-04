@@ -95,7 +95,6 @@ namespace Sooda.ObjectMapper
             {
                 items.Add(list[start + i]);
             }
-            count = items.Count;
         }
 
         public SoodaObjectListSnapshot(IList list, IComparer comp)
@@ -106,7 +105,6 @@ namespace Sooda.ObjectMapper
                 items.Add(list[i]);
             }
             items.Sort(comp);
-            count = items.Count;
         }
 
         public SoodaObjectListSnapshot(SoodaTransaction tran, SoodaObjectFilter filter, ClassInfo ci)
@@ -135,14 +133,12 @@ namespace Sooda.ObjectMapper
                         items.Add(obj);
                     }
                 }
-                count = items.Count;
             }
         }
 
         protected void AddObjectToSnapshot(SoodaObject o)
         {
             items.Add(o);
-            count = items.Count;
         }
 
         public SoodaObjectListSnapshot(SoodaTransaction t, SoodaWhereClause whereClause, SoodaOrderBy orderBy, int startIdx, int pageCount, SoodaSnapshotOptions options, ClassInfo ci)
@@ -218,11 +214,10 @@ namespace Sooda.ObjectMapper
                     {
                         items.Sort(orderBy.GetComparer());
                     }
-                    count = items.Count;
 
                     if (startIdx > 0)
                     {
-                        if (startIdx < count)
+                        if (startIdx < items.Count)
                             items.RemoveRange(0, startIdx);
                         else
                             items.Clear();
@@ -239,22 +234,8 @@ namespace Sooda.ObjectMapper
 
             SoodaDataSource ds = transaction.OpenDataSource(classInfo.GetDataSource());
 
-            // we don't need PagedCount
-            bool calculatePagedCount = (options & SoodaSnapshotOptions.DisablePagedCount) == 0x0;
-            if (!calculatePagedCount)
-                count = -1;
-
             if ((options & SoodaSnapshotOptions.KeysOnly) != 0)
             {
-                if (pageCount != -1 && calculatePagedCount)
-                {
-                    using (IDataReader reader = ds.LoadMatchingPrimaryKeys(transaction.Schema, classInfo, whereClause, orderBy, 0, -1))
-                    {
-                        count = 0;
-                        while (reader.Read())
-                            count++;
-                    }
-                }
                 using (IDataReader reader = ds.LoadMatchingPrimaryKeys(transaction.Schema, classInfo, whereClause, orderBy, startIdx, pageCount))
                 {
                     while (reader.Read())
@@ -262,22 +243,10 @@ namespace Sooda.ObjectMapper
                         SoodaObject obj = SoodaObject.GetRefFromKeyRecordHelper(transaction, factory, reader);
                         items.Add(obj);
                     }
-                    if (pageCount == -1)
-                        count = items.Count;
                 }
             }
             else
             {
-                if (pageCount != -1 && calculatePagedCount)
-                {
-                    using (IDataReader reader = ds.LoadMatchingPrimaryKeys(transaction.Schema, classInfo, whereClause, orderBy, 0, -1))
-                    {
-                        count = 0;
-                        while (reader.Read())
-                            count++;
-                    }
-                }
-
                 TableInfo[] loadedTables;
 
                 using (IDataReader reader = ds.LoadObjectList(transaction.Schema, classInfo, whereClause, orderBy, startIdx, pageCount, options, out loadedTables))
@@ -289,8 +258,6 @@ namespace Sooda.ObjectMapper
                             continue; // don't add the object
                         items.Add(obj);
                     }
-                    if (pageCount == -1)
-                        count = items.Count;
                 }
             }
 
@@ -316,14 +283,12 @@ namespace Sooda.ObjectMapper
         public int Add(object obj)
         {
             items.Add(obj);
-            count = items.Count;
-            return count;
+            return items.Count;
         }
 
         public void Remove(object obj)
         {
             items.Remove(obj);
-            count = items.Count;
         }
 
         public bool Contains(object obj)
@@ -338,7 +303,6 @@ namespace Sooda.ObjectMapper
 
         private readonly ArrayList items = new ArrayList();
         private ClassInfo classInfo;
-        private int count;
 
         public bool IsReadOnly
         {
@@ -354,19 +318,16 @@ namespace Sooda.ObjectMapper
         public void RemoveAt(int index)
         {
             items.RemoveAt(index);
-            count = items.Count;
         }
 
         public void Insert(int index, object value)
         {
             items.Insert(index, value);
-            count = items.Count;
         }
 
         public void Clear()
         {
             items.Clear();
-            count = items.Count;
         }
 
         public int IndexOf(object value)
@@ -402,7 +363,7 @@ namespace Sooda.ObjectMapper
         {
             get
             {
-                return this.count;
+                throw new NotSupportedException("Paged count is no longer supported due to performance - it should be calculated it directly in business logic");
             }
         }
 
