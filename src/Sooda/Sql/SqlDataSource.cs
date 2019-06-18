@@ -194,27 +194,33 @@ namespace Sooda.Sql
             {
                 try
                 {
-                    Connection = (IDbConnection)Activator.CreateInstance(ConnectionType, new object[] { ConnectionString });
-                    Connection.Open();
-                    if (!DisableTransactions)
-                    {
-                        BeginTransaction();
-                        if (this.SqlBuilder is OracleBuilder && SoodaConfig.GetString("sooda.oracleClientAutoCommitBugWorkaround", "false") == "true")
-                        {
-                            // http://social.msdn.microsoft.com/forums/en-US/adodotnetdataproviders/thread/d4834ce2-482f-40ec-ad90-c3f9c9c4d4b1/
-                            // http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=351746
-                            Connection.GetType().GetProperty("TransactionState", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(Connection, 1, null);
-                        }
-                    }
+                    OpenConnection((IDbConnection)Activator.CreateInstance(ConnectionType, new object[] { ConnectionString }));
                     tries = 0;
                 }
                 catch (Exception e)
                 {
                     tries--;
-                    logger.Warn("Exception on Open#{0}: {1}", maxtries - tries, e);
+                    logger.Warn("Exception on open Conn#{0}: {1}", maxtries - tries, e);
                     bool eject = tries == 0 || SqlBuilder.HandleFatalException(Connection, e);
                     Close(); //release db connection
                     if (eject) throw e;
+                }
+            }
+        }
+
+        protected void OpenConnection(IDbConnection connection)
+        {
+            Connection = connection;
+            logger.Debug("Conn#{0}: open", Connection.GetHashCode());
+            Connection.Open();
+            if (!DisableTransactions)
+            {
+                BeginTransaction();
+                if (this.SqlBuilder is OracleBuilder && SoodaConfig.GetString("sooda.oracleClientAutoCommitBugWorkaround", "false") == "true")
+                {
+                    // http://social.msdn.microsoft.com/forums/en-US/adodotnetdataproviders/thread/d4834ce2-482f-40ec-ad90-c3f9c9c4d4b1/
+                    // http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=351746
+                    Connection.GetType().GetProperty("TransactionState", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(Connection, 1, null);
                 }
             }
         }
@@ -271,6 +277,7 @@ namespace Sooda.Sql
                     Transaction = null;
                     if (Connection != null)
                     {
+                        logger.Debug("Connn#{0}: dispose", Connection.GetHashCode());
                         Connection.Dispose();
                         Connection = null;
                     }
@@ -839,8 +846,12 @@ namespace Sooda.Sql
                 {
                     txt.AppendFormat(" {0}:{1}={2}", par.ParameterName, par.DbType, par.Value);
                 }
-                txt.AppendFormat(" ]", Connection.GetHashCode());
+                txt.Append(" ]");
             }
+            if (IndentQueries)
+                txt.AppendFormat("\nConn#{0}:{1}", Connection.GetHashCode(), Connection.State);
+            else
+                txt.AppendFormat(" Conn#{0}:{1}", Connection.GetHashCode(), Connection.State);
             // txt.AppendFormat(" DataSource: {0}", this.Name);
             return txt.ToString();
         }
@@ -1037,6 +1048,8 @@ namespace Sooda.Sql
             try
             {
                 sw.Start();
+                if (Connection.State != ConnectionState.Open)
+                    OpenConnection(Connection);
                 IDataReader retval = cmd.ExecuteReader(CmdBehavior);
                 sw.Stop();
                 return retval;
@@ -1078,6 +1091,8 @@ namespace Sooda.Sql
             try
             {
                 sw.Start();
+                if (Connection.State != ConnectionState.Open)
+                    OpenConnection(Connection);
                 int retval = cmd.ExecuteNonQuery();
                 sw.Stop();
                 return retval;
