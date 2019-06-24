@@ -27,9 +27,12 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+using System;
 using NUnit.Framework;
 using Sooda.UnitTests.BaseObjects;
 using System.Data;
+using System.Threading;
+using Sooda.Caching;
 
 namespace Sooda.UnitTests.TestCases
 {
@@ -66,6 +69,78 @@ namespace Sooda.UnitTests.TestCases
                     int c = Contact.GetList(true).Count;
                     Assert.AreEqual(7, c);
                 }
+            }
+        }
+
+        [Test]
+        public void ClearInTransactionCache()
+        {
+            const int cid = 53;
+            using (SoodaDataSource sds = _DatabaseSchema.GetSchema().GetDataSourceInfo("default").CreateDataSource())
+            {
+                sds.Open();
+                using (IDataReader r = sds.ExecuteRawQuery("select last_salary from Contact where id = {0}", cid))
+                {
+                    bool readOk = r.Read();
+                    Assert.That(readOk, Is.EqualTo(true), "read data");
+
+                    decimal retrivedSalary = r.GetDecimal(0);
+
+                    Assert.That(retrivedSalary, Is.EqualTo(-1.0m), "retrived salary");
+                }
+            }
+
+            try
+            {
+                
+                const decimal newSalary = 777.0m;
+
+                using (var t = new SoodaTransaction())
+                {
+                    Contact c = Contact.GetRef(cid);
+                    Assert.That(c.LastSalary.Value, Is.EqualTo(-1.0m), "previous salary");
+
+                    // simulates transaction from outer process
+                    Thread nested = new Thread(() =>
+                    {
+                        using (var nestedTransaction = new SoodaTransaction())
+                        {
+                            Contact.GetRef(cid).LastSalary = newSalary;
+                            Thread.Sleep(100);
+                            nestedTransaction.Commit();
+                            Thread.Sleep(100);
+                        }
+                    });
+
+                    Console.WriteLine("External request...");
+                    nested.Start();
+                    nested.Join();
+                    Console.WriteLine("External request... done.");
+
+                    Assert.That(c.LastSalary.Value, Is.Not.EqualTo(newSalary), "last salary is from transaction cache");
+
+                    Console.WriteLine("Invalidating cache...");
+
+                    SoodaTransaction.ActiveTransaction.Rollback();
+
+                    Console.WriteLine("Invalidating cache... done.");
+
+                    var updatedSalary = Contact.GetRef(53).LastSalary.Value;
+
+                    Assert.That(updatedSalary, Is.EqualTo(newSalary), "updated salary");
+
+                }
+            }
+            finally
+            {
+                Console.WriteLine("Finally - fix value in database...");
+                using (SoodaDataSource sds = _DatabaseSchema.GetSchema().GetDataSourceInfo("default").CreateDataSource())
+                {
+                    sds.Open();
+                    sds.ExecuteNonQuery("update Contact set last_salary = {0} where id = {1}", -1.0m, 53);
+                    sds.Commit();
+                }
+                Console.WriteLine("Finally - fix value in database... done.");
             }
         }
     }
