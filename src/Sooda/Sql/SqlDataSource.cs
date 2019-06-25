@@ -169,7 +169,7 @@ namespace Sooda.Sql
 
         protected virtual void BeginTransaction()
         {
-            logger.Debug("Conn#{0:X8}:{1} begin transaction (isolation level {2})...", Connection.GetHashCode(), Connection.State, IsolationLevel);
+            logger.Debug("{0}: begin transaction (isolation level {1})...", ConnectionLabel(), IsolationLevel);
             Transaction = Connection.BeginTransaction(IsolationLevel);
         }
 
@@ -201,7 +201,7 @@ namespace Sooda.Sql
                 catch (Exception e)
                 {
                     tries--;
-                    logger.Warn("Exception ({1}) on open Conn#{0:X8}: {2}", Connection.GetHashCode(), maxtries - tries, e);
+                    logger.Warn("Exception ({1}) when opening {0}: {2}", ConnectionLabel(), maxtries - tries, e);
                     bool eject = tries == 0 || SqlBuilder.HandleFatalException(Connection, e);
                     Close(); //release db connection
                     if (eject) throw e;
@@ -212,7 +212,7 @@ namespace Sooda.Sql
         protected void OpenConnection(IDbConnection connection)
         {
             Connection = connection;
-            logger.Debug("Conn#{0:X8}:{1} open connection...", Connection.GetHashCode(), connection.State);
+            logger.Debug("{0}: open connection...", ConnectionLabel());
             Connection.Open();
             if (!DisableTransactions)
             {
@@ -238,6 +238,7 @@ namespace Sooda.Sql
         {
             if (OwnConnection && !DisableTransactions)
             {
+                logger.Debug("{0}: rollback...", ConnectionLabel());
                 if (Transaction != null)
                 {
                     Transaction.Rollback();
@@ -252,6 +253,7 @@ namespace Sooda.Sql
         {
             if (OwnConnection && !DisableTransactions)
             {
+                logger.Debug("{0}: commit...", ConnectionLabel());
                 if (Transaction != null)
                 {
                     Transaction.Commit();
@@ -278,7 +280,7 @@ namespace Sooda.Sql
                     Transaction = null;
                     if (Connection != null)
                     {
-                        logger.Debug("Conn#{0:X8}: dispose...", Connection.GetHashCode());
+                        logger.Debug("{0}: dispose...", ConnectionLabel());
                         Connection.Dispose();
                         Connection = null;
                     }
@@ -494,9 +496,16 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in LoadMatchingPrimaryKeys: {0}\nConn#{1:X8}:{2}", ex, Connection?.GetHashCode(), Connection?.State);
+                logger.Error("Exception in LoadMatchingPrimaryKeys: {0}\n{1}", ex, ConnectionLabel());
                 throw;
             }
+        }
+
+        private string ConnectionLabel()
+        {
+            if (Connection == null)
+                return "Conn#- (???)";
+            return string.Format("Conn#{0:X8} ({1})", Connection.GetHashCode(), Connection.State);
         }
 
         public override IDataReader LoadObjectList(SchemaInfo schemaInfo, ClassInfo classInfo, SoodaWhereClause whereClause, SoodaOrderBy orderBy, int startIdx, int pageCount, SoodaSnapshotOptions options, out TableInfo[] tables)
@@ -597,7 +606,7 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in LoadObjectList: {0}\nConn#{1:X8}:{2}", ex, Connection?.GetHashCode(), Connection?.State);
+                logger.Error("Exception in LoadObjectList: {0}\n{1}", ex, ConnectionLabel());
                 throw;
             }
         }
@@ -611,7 +620,7 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in ExecuteQuery: {0}\nConn#{1:X8}:{2}", ex, Connection?.GetHashCode(), Connection?.State);
+                logger.Error("Exception in ExecuteQuery: {0}\n{1}", ex, ConnectionLabel());
                 throw;
             }
         }
@@ -638,7 +647,7 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in ExecuteRawQuery: {0}\nConn#{1:X8}:{2}", ex, Connection?.GetHashCode(), Connection?.State);
+                logger.Error("Exception in ExecuteRawQuery: {0}\n{1}", ex, ConnectionLabel());
                 throw;
             }
         }
@@ -666,7 +675,7 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in ExecuteNonQuery: {0}\nConn#{1:X8}:{2}", ex, Connection?.GetHashCode(), Connection?.State);
+                logger.Error("Exception in ExecuteNonQuery: {0}\n{1}", ex, ConnectionLabel());
                 throw;
             }
         }
@@ -700,7 +709,7 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in LoadRefObjectList: {0}\nConn#{1:X8}:{2}", ex, Connection?.GetHashCode(), Connection?.State);
+                logger.Error("Exception in LoadRefObjectList: {0}\n{1}", ex, ConnectionLabel());
                 throw;
             }
         }
@@ -850,9 +859,9 @@ namespace Sooda.Sql
                 txt.Append(" ]");
             }
             if (IndentQueries)
-                txt.AppendFormat("\nConn#{0:X8}:{1}", Connection.GetHashCode(), Connection.State);
+                txt.AppendFormat("\n{0}", ConnectionLabel());
             else
-                txt.AppendFormat(" Conn#{0:X8}:{1}", Connection.GetHashCode(), Connection.State);
+                txt.AppendFormat(" {0}", ConnectionLabel());
             // txt.AppendFormat(" DataSource: {0}", this.Name);
             return txt.ToString();
         }
@@ -1050,7 +1059,11 @@ namespace Sooda.Sql
             {
                 sw.Start();
                 if (Connection.State != ConnectionState.Open)
+                {
+                    logger.Warn("Connection {0} is in invalid state - force open...", ConnectionLabel());
                     OpenConnection(Connection);
+                }
+
                 IDataReader retval = cmd.ExecuteReader(CmdBehavior);
                 sw.Stop();
                 return retval;
@@ -1093,7 +1106,11 @@ namespace Sooda.Sql
             {
                 sw.Start();
                 if (Connection.State != ConnectionState.Open)
+                {
+                    logger.Warn("Connection {0} is in invalid state - force open...", ConnectionLabel());
                     OpenConnection(Connection);
+                }
+
                 int retval = cmd.ExecuteNonQuery();
                 sw.Stop();
                 return retval;
@@ -1125,7 +1142,7 @@ namespace Sooda.Sql
                 }
                 else if (sqllogger.IsTraceEnabled)
                 {
-                    sqllogger.Trace("Non-query time: {0} ms.{1}", Math.Round(timeInSeconds * 1000.0, 3), LogCommand(cmd));
+                    sqllogger.Trace("Non-query time: {0} ms. {1}", Math.Round(timeInSeconds * 1000.0, 3), LogCommand(cmd));
                 }
             }
         }
