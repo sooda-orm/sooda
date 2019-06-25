@@ -169,6 +169,7 @@ namespace Sooda.Sql
 
         protected virtual void BeginTransaction()
         {
+            logger.Debug("Conn#{0:X8}:{1} begin transaction (isolation level {2})...", Connection.GetHashCode(), Connection.State, IsolationLevel);
             Transaction = Connection.BeginTransaction(IsolationLevel);
         }
 
@@ -200,7 +201,7 @@ namespace Sooda.Sql
                 catch (Exception e)
                 {
                     tries--;
-                    logger.Warn("Exception on open Conn#{0}: {1}", maxtries - tries, e);
+                    logger.Warn("Exception ({1}) on open Conn#{0:X8}: {2}", Connection.GetHashCode(), maxtries - tries, e);
                     bool eject = tries == 0 || SqlBuilder.HandleFatalException(Connection, e);
                     Close(); //release db connection
                     if (eject) throw e;
@@ -211,7 +212,7 @@ namespace Sooda.Sql
         protected void OpenConnection(IDbConnection connection)
         {
             Connection = connection;
-            logger.Debug("Conn#{0}: open", Connection.GetHashCode());
+            logger.Debug("Conn#{0:X8}:{1} open connection...", Connection.GetHashCode(), connection.State);
             Connection.Open();
             if (!DisableTransactions)
             {
@@ -277,7 +278,7 @@ namespace Sooda.Sql
                     Transaction = null;
                     if (Connection != null)
                     {
-                        logger.Debug("Connn#{0}: dispose", Connection.GetHashCode());
+                        logger.Debug("Conn#{0:X8}: dispose...", Connection.GetHashCode());
                         Connection.Dispose();
                         Connection = null;
                     }
@@ -493,7 +494,7 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in LoadMatchingPrimaryKeys: {0}", ex);
+                logger.Error("Exception in LoadMatchingPrimaryKeys: {0}\nConn#{1:X8}:{2}", ex, Connection?.GetHashCode(), Connection?.State);
                 throw;
             }
         }
@@ -596,7 +597,7 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in LoadObjectList: {0}", ex);
+                logger.Error("Exception in LoadObjectList: {0}\nConn#{1:X8}:{2}", ex, Connection?.GetHashCode(), Connection?.State);
                 throw;
             }
         }
@@ -610,7 +611,7 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in ExecuteQuery: {0}", ex);
+                logger.Error("Exception in ExecuteQuery: {0}\nConn#{1:X8}:{2}", ex, Connection?.GetHashCode(), Connection?.State);
                 throw;
             }
         }
@@ -637,7 +638,7 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in ExecuteRawQuery: {0}", ex);
+                logger.Error("Exception in ExecuteRawQuery: {0}\nConn#{1:X8}:{2}", ex, Connection?.GetHashCode(), Connection?.State);
                 throw;
             }
         }
@@ -665,7 +666,7 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in ExecuteNonQuery: {0}", ex);
+                logger.Error("Exception in ExecuteNonQuery: {0}\nConn#{1:X8}:{2}", ex, Connection?.GetHashCode(), Connection?.State);
                 throw;
             }
         }
@@ -699,7 +700,7 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in LoadRefObjectList: {0}", ex);
+                logger.Error("Exception in LoadRefObjectList: {0}\nConn#{1:X8}:{2}", ex, Connection?.GetHashCode(), Connection?.State);
                 throw;
             }
         }
@@ -849,9 +850,9 @@ namespace Sooda.Sql
                 txt.Append(" ]");
             }
             if (IndentQueries)
-                txt.AppendFormat("\nConn#{0}:{1}", Connection.GetHashCode(), Connection.State);
+                txt.AppendFormat("\nConn#{0:X8}:{1}", Connection.GetHashCode(), Connection.State);
             else
-                txt.AppendFormat(" Conn#{0}:{1}", Connection.GetHashCode(), Connection.State);
+                txt.AppendFormat(" Conn#{0:X8}:{1}", Connection.GetHashCode(), Connection.State);
             // txt.AppendFormat(" DataSource: {0}", this.Name);
             return txt.ToString();
         }

@@ -78,6 +78,7 @@ namespace Sooda.Schema
             }
 
             fi.DBColumnName = "value";
+            fi.Table = table;
             table.Fields.Add(fi);
 
             return table;
