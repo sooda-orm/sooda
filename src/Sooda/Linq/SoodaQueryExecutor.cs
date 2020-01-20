@@ -971,8 +971,10 @@ namespace Sooda.Linq
                         // count(case when ... then 1 end) > 0
                         return TranslateGroupAny(TranslateEnumerableFilter(mc), SoqlRelationalOperator.Greater);
                     }
-                    if (TranslateConstSourceAny(mc, out var expr))
-                        return TranslateSubqueryAny(expr);
+
+                    MethodCallExpression translatedConstSourceAny = null;
+                    if (TranslateConstSourceAny(mc, out translatedConstSourceAny))
+                        return TranslateSubqueryAny(translatedConstSourceAny);
 
                     if (GetCollectionName(mc.Arguments[0]) != null)
                         return TranslateCollectionAny(mc);
@@ -1192,10 +1194,10 @@ namespace Sooda.Linq
             var allRecords = Expression.Call(elementType, "Linq", null);
 
             var containsParam = Expression.Parameter(elementType, "item");
-            var containsExpr = Expression.Call(typeof(Enumerable), nameof(Enumerable.Contains), new[] {elementType}, new Expression[] { source, containsParam });
+            var containsExpr = Expression.Call(typeof(Enumerable), "Contains", new[] {elementType}, new Expression[] { source, containsParam });
             var containsLambda = Expression.Lambda(containsExpr, containsParam); // item => array.Contains(item)
 
-            var currentRecords = Expression.Call(typeof(Queryable), nameof(Queryable.Where), new [] {elementType}, new Expression[]{ allRecords, containsLambda });
+            var currentRecords = Expression.Call(typeof(Queryable), "Where", new [] {elementType}, new Expression[]{ allRecords, containsLambda });
 
             newExpression = Expression.Call(mc.Method, currentRecords, mc.Arguments[1]);
             
