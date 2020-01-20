@@ -475,19 +475,28 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        [Ignore]
         public void AnyArray()
         {
             using (new SoodaTransaction())
             {
                 var array = new Contact[] {Contact.Mary, Contact.Eva};
                 IEnumerable<Contact> ce = Contact.Linq().Where(c => array.Any(i => i == c.Manager));
-                CollectionAssert.AreEquivalent(new Contact[] { Contact.Mary, Contact.Eva }, ce);
+                CollectionAssert.AreEquivalent(new Contact[] { Contact.Ed, Contact.Eva }, ce);
             }
         }
 
         [Test]
-        [Ignore]
+        public void AnyList()
+        {
+            using (new SoodaTransaction())
+            {
+                var list = new List<Contact>() { Contact.Mary, Contact.Eva };
+                IEnumerable<Contact> ce = Contact.Linq().Where(c => list.Any(i => i == c.Manager));
+                CollectionAssert.AreEquivalent(new Contact[] { Contact.Ed, Contact.Eva }, ce);
+            }
+        }
+
+        [Test]
         public void AnySoodaCollection()
         {
             using (new SoodaTransaction())
