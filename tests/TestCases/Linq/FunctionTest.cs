@@ -206,7 +206,7 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        public void StringStartsWith()
+        public void StringStartsWithStringConstant()
         {
             using (new SoodaTransaction())
             {
@@ -216,7 +216,17 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        public void StringEndsWith()
+        public void StringStartsWithString()
+        {
+            using (new SoodaTransaction())
+            {
+                IEnumerable<Contact> ce = Contact.Linq().Where(c => c.Name.StartsWith(c.Type.Code));
+                CollectionAssert.AreEqual(new Contact[] { }, ce);
+            }
+        }
+
+        [Test]
+        public void StringEndsWithStringConstant()
         {
             using (new SoodaTransaction())
             {
@@ -226,11 +236,41 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        public void StringContains()
+        public void StringEndsWithString()
+        {
+            using (new SoodaTransaction())
+            {
+                IEnumerable<Contact> ce = Contact.Linq().Where(c => c.Name.EndsWith(c.Type.Code));
+                Assert.That(ce.Count(), Is.EqualTo(7));
+            }
+        }
+
+        [Test]
+        public void StringConstantEndsWithString()
+        {
+            using (new SoodaTransaction())
+            {
+                IEnumerable<Contact> ce = Contact.Linq().Where(c => "... Mary Manager".EndsWith(c.Name));
+                CollectionAssert.AreEqual(new Contact[] { Contact.Mary }, ce);
+            }
+        }
+
+        [Test]
+        public void StringContainsStringConstant()
         {
             using (new SoodaTransaction())
             {
                 IEnumerable<Contact> ce = Contact.Linq().Where(c => c.Name.Contains("ry Ma"));
+                CollectionAssert.AreEqual(new Contact[] { Contact.Mary }, ce);
+            }
+        }
+
+        [Test]
+        public void StringConstantContainsString()
+        {
+            using (new SoodaTransaction())
+            {
+                IEnumerable<Contact> ce = Contact.Linq().Where(c => "...Mary Manager...".Contains(c.Name));
                 CollectionAssert.AreEqual(new Contact[] { Contact.Mary }, ce);
             }
         }

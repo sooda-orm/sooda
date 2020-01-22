@@ -92,6 +92,7 @@ namespace Sooda.UnitTests.TestCases.ObjectMapper
         }
 
         [Test]
+        [Ignore("Unsupported test case")]
         public void DateTimeTest()
         {
             string ser;
@@ -110,6 +111,7 @@ namespace Sooda.UnitTests.TestCases.ObjectMapper
         }
 
         [Test]
+        [Ignore("Unsupported test case")]
         public void BooleanTest()
         {
             string ser;

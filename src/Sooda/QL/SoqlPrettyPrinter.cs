@@ -562,24 +562,17 @@ namespace Sooda.QL
         {
             Output.Write('(');
             v.haystack.Accept(this);
-            Output.Write(" like '");
+            Output.Write(" like CONCAT(");
+            
             if (v.position != SoqlStringContainsPosition.Start)
-                Output.Write('%');
-            string s = v.needle.Replace("'", "''");
-            string suffix;
-            if (s.IndexOfAny(LikeMetacharacters) >= 0)
-            {
-                s = s.Replace("~", "~~").Replace("%", "~%").Replace("_", "~_").Replace("[", "~[");
-                suffix = "' escape '~')";
-            }
-            else
-            {
-                suffix = "')";
-            }
-            Output.Write(s);
+                Output.Write("'%', ");
+
+            v.needle.Accept(this);
+
             if (v.position != SoqlStringContainsPosition.End)
-                Output.Write('%');
-            Output.Write(suffix);
+                Output.Write(", '%'");
+
+            Output.Write("))");
         }
 
         void Sooda.QL.ISoqlVisitor.Visit(SoqlCastExpression v)

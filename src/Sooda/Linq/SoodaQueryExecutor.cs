@@ -748,7 +748,7 @@ namespace Sooda.Linq
 
         SoqlStringContainsExpression TranslateStringContains(MethodCallExpression mc, SoqlStringContainsPosition position)
         {
-            return new SoqlStringContainsExpression(TranslateExpression(mc.Object), position, GetStringArgument(mc));
+            return new SoqlStringContainsExpression(TranslateExpression(mc.Object), position, TranslateExpression(mc.Arguments[0]));
         }
 
         SoqlExpression TranslateGetLabel(Expression expr)

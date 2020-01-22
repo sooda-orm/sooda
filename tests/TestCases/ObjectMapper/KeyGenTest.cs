@@ -61,6 +61,7 @@ namespace Sooda.UnitTests.TestCases.ObjectMapper
         }
 
         [Test]
+        [Ignore("Long running test")]
         public void Test1()
         {
             Runner r = new Runner();
