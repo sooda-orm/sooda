@@ -562,15 +562,15 @@ namespace Sooda.QL
         {
             Output.Write('(');
             v.haystack.Accept(this);
-            Output.Write(" like CONCAT(");
-            
+            Output.Write(" like (");
+
             if (v.position != SoqlStringContainsPosition.Start)
-                Output.Write("'%', ");
+                Output.Write("'%' + ");
 
             v.needle.Accept(this);
 
             if (v.position != SoqlStringContainsPosition.End)
-                Output.Write(", '%'");
+                Output.Write(" + '%'");
 
             Output.Write("))");
         }
