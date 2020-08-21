@@ -42,9 +42,9 @@ namespace Sooda.QL
     {
         public readonly SoqlExpression haystack;
         public readonly SoqlStringContainsPosition position;
-        public readonly string needle;
+        public readonly SoqlExpression needle;
 
-        public SoqlStringContainsExpression(SoqlExpression haystack, SoqlStringContainsPosition position, string needle)
+        public SoqlStringContainsExpression(SoqlExpression haystack, SoqlStringContainsPosition position, SoqlExpression needle)
         {
             this.haystack = haystack;
             this.position = position;
@@ -62,16 +62,20 @@ namespace Sooda.QL
             object val = haystack.Evaluate(context);
             if (val == null)
                 return null;
+            var ned = needle.Evaluate(context);
+            if (ned == null)
+                return null;
             string s = (string) val;
+            string n = (string) ned;
 
             switch (position)
             {
                 case SoqlStringContainsPosition.Start:
-                    return s.StartsWith(needle);
+                    return s.StartsWith(n);
                 case SoqlStringContainsPosition.End:
-                    return s.EndsWith(needle);
+                    return s.EndsWith(n);
                 case SoqlStringContainsPosition.Any:
-                    return s.Contains(needle);
+                    return s.Contains(n);
             }
 
             throw new NotImplementedException(position.ToString());

@@ -68,6 +68,26 @@ namespace Sooda.UnitTests.TestCases
             }
         }
 
+
+        public static IEnumerable<TestCaseData> FieldTableInfoData()
+        {
+            foreach (var classInfo in Objects._DatabaseSchema.GetSchema().Classes)
+            {
+                yield return new TestCaseData(classInfo);
+            }
+        }
+
+        [Test]
+        [TestCaseSource("FieldTableInfoData")]
+        public void FieldTableInfo(ClassInfo @class)
+        {
+            foreach (var fld in @class.UnifiedFields)
+            {
+                Assert.That(fld.Table, Is.Not.Null);
+                Assert.That(@class.UnifiedTables.Any(ut => ut.DBTableName == fld.Table.DBTableName), Is.True);
+            }
+        }
+
         public static IEnumerable<TestCaseData> ResolveClassData()
         {
             foreach (var classInfo in Objects._DatabaseSchema.GetSchema().Classes)
@@ -154,6 +174,10 @@ namespace Sooda.UnitTests.TestCases
                 }, t);
 
                 FieldInfo fi = t.Schema.FindClassByName(className).FindFieldByName(StringField);
+
+                Assert.That(fi.Table, Is.Not.Null);
+                Assert.That(fi.ParentClass, Is.EqualTo(t.Schema.FindClassByName(className)));
+
                 DynamicFieldManager.Remove(fi, t);
 
                 var validate = DumpMembers(t.Schema, excludeMembers);

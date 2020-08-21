@@ -170,6 +170,7 @@ namespace Sooda.Sql
 
         protected virtual void BeginTransaction()
         {
+            logger.Debug("{0}: begin transaction (isolation level {1})...", ConnectionLabel(), IsolationLevel);
             Transaction = Connection.BeginTransaction(IsolationLevel);
         }
 
@@ -195,27 +196,33 @@ namespace Sooda.Sql
             {
                 try
                 {
-                    Connection = (IDbConnection)Activator.CreateInstance(ConnectionType, new object[] { ConnectionString });
-                    Connection.Open();
-                    if (!DisableTransactions)
-                    {
-                        BeginTransaction();
-                        if (this.SqlBuilder is OracleBuilder && SoodaConfig.GetString("sooda.oracleClientAutoCommitBugWorkaround", "false") == "true")
-                        {
-                            // http://social.msdn.microsoft.com/forums/en-US/adodotnetdataproviders/thread/d4834ce2-482f-40ec-ad90-c3f9c9c4d4b1/
-                            // http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=351746
-                            Connection.GetType().GetProperty("TransactionState", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(Connection, 1, null);
-                        }
-                    }
+                    OpenConnection((IDbConnection)Activator.CreateInstance(ConnectionType, new object[] { ConnectionString }));
                     tries = 0;
                 }
                 catch (Exception e)
                 {
                     tries--;
-                    logger.Warn("Exception on Open#{0}: {1}", maxtries - tries, e);
+                    logger.Warn("Exception ({1}) when opening {0}: {2}", ConnectionLabel(), maxtries - tries, e);
                     bool eject = tries == 0 || SqlBuilder.HandleFatalException(Connection, e);
                     Close(); //release db connection
                     if (eject) throw e;
+                }
+            }
+        }
+
+        protected void OpenConnection(IDbConnection connection)
+        {
+            Connection = connection;
+            logger.Debug("{0}: open connection...", ConnectionLabel());
+            Connection.Open();
+            if (!DisableTransactions)
+            {
+                BeginTransaction();
+                if (this.SqlBuilder is OracleBuilder && SoodaConfig.GetString("sooda.oracleClientAutoCommitBugWorkaround", "false") == "true")
+                {
+                    // http://social.msdn.microsoft.com/forums/en-US/adodotnetdataproviders/thread/d4834ce2-482f-40ec-ad90-c3f9c9c4d4b1/
+                    // http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=351746
+                    Connection.GetType().GetProperty("TransactionState", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(Connection, 1, null);
                 }
             }
         }
@@ -232,6 +239,7 @@ namespace Sooda.Sql
         {
             if (!DisableTransactions)
             {
+                logger.Debug("{0}: rollback...", ConnectionLabel());
                 if (Transaction != null)
                 {
                     Transaction.Rollback();
@@ -246,6 +254,7 @@ namespace Sooda.Sql
         {
             if (!DisableTransactions)
             {
+                logger.Debug("{0}: commit...", ConnectionLabel());
                 if (Transaction != null)
                 {
                     Transaction.Commit();
@@ -487,9 +496,16 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in LoadMatchingPrimaryKeys: {0}", ex);
+                logger.Error("Exception in LoadMatchingPrimaryKeys: {0}\n{1}", ex, ConnectionLabel());
                 throw;
             }
+        }
+
+        private string ConnectionLabel()
+        {
+            if (Connection == null)
+                return "Conn#- (???)";
+            return string.Format("Conn#{0:X8} ({1})", Connection.GetHashCode(), Connection.State);
         }
 
         public override IDataReader LoadObjectList(SchemaInfo schemaInfo, ClassInfo classInfo, SoodaWhereClause whereClause, SoodaOrderBy orderBy, int startIdx, int pageCount, SoodaSnapshotOptions options, out TableInfo[] tables)
@@ -590,7 +606,7 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in LoadObjectList: {0}", ex);
+                logger.Error("Exception in LoadObjectList: {0}\n{1}", ex, ConnectionLabel());
                 throw;
             }
         }
@@ -604,7 +620,7 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in ExecuteQuery: {0}", ex);
+                logger.Error("Exception in ExecuteQuery: {0}\n{1}", ex, ConnectionLabel());
                 throw;
             }
         }
@@ -631,7 +647,7 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in ExecuteRawQuery: {0}", ex);
+                logger.Error("Exception in ExecuteRawQuery: {0}\n{1}", ex, ConnectionLabel());
                 throw;
             }
         }
@@ -659,7 +675,7 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in ExecuteNonQuery: {0}", ex);
+                logger.Error("Exception in ExecuteNonQuery: {0}\n{1}", ex, ConnectionLabel());
                 throw;
             }
         }
@@ -693,7 +709,7 @@ namespace Sooda.Sql
             }
             catch (Exception ex)
             {
-                logger.Error("Exception in LoadRefObjectList: {0}", ex);
+                logger.Error("Exception in LoadRefObjectList: {0}\n{1}", ex, ConnectionLabel());
                 throw;
             }
         }
@@ -843,8 +859,12 @@ namespace Sooda.Sql
                 {
                     txt.AppendFormat(" {0}:{1}={2}", par.ParameterName, par.DbType, par.Value);
                 }
-                txt.AppendFormat(" ]", Connection.GetHashCode());
+                txt.Append(" ]");
             }
+            if (IndentQueries)
+                txt.AppendFormat("\n{0}", ConnectionLabel());
+            else
+                txt.AppendFormat(" {0}", ConnectionLabel());
             // txt.AppendFormat(" DataSource: {0}", this.Name);
             return txt.ToString();
         }
@@ -1041,6 +1061,12 @@ namespace Sooda.Sql
             try
             {
                 sw.Start();
+                if (Connection.State != ConnectionState.Open)
+                {
+                    logger.Warn("Connection {0} is in invalid state - force open...", ConnectionLabel());
+                    OpenConnection(Connection);
+                }
+
                 IDataReader retval = cmd.ExecuteReader(CmdBehavior);
                 sw.Stop();
                 return retval;
@@ -1082,6 +1108,12 @@ namespace Sooda.Sql
             try
             {
                 sw.Start();
+                if (Connection.State != ConnectionState.Open)
+                {
+                    logger.Warn("Connection {0} is in invalid state - force open...", ConnectionLabel());
+                    OpenConnection(Connection);
+                }
+
                 int retval = cmd.ExecuteNonQuery();
                 sw.Stop();
                 return retval;
@@ -1113,7 +1145,7 @@ namespace Sooda.Sql
                 }
                 else if (sqllogger.IsTraceEnabled)
                 {
-                    sqllogger.Trace("Non-query time: {0} ms.{1}", Math.Round(timeInSeconds * 1000.0, 3), LogCommand(cmd));
+                    sqllogger.Trace("Non-query time: {0} ms. {1}", Math.Round(timeInSeconds * 1000.0, 3), LogCommand(cmd));
                 }
             }
         }
