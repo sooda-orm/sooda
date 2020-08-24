@@ -243,6 +243,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SoodaTuple.cs" />
+    <Compile Include="SoodaVersionConflictException.cs" />
     <Compile Include="SoodaWhereClause.cs" />
     <Compile Include="Sql\DbParameterConverter.cs" />
     <Compile Include="Sql\ISqlBuilder.cs" />
