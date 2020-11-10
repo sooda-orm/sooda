@@ -8,6 +8,8 @@
     <AssemblyName>Sooda.Logging.log4net</AssemblyName>
     <RootNamespace>Sooda.Logging.log4net</RootNamespace>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,9 +29,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net">
-      <HintPath>..\..\external\log4net.dll</HintPath>
-    </Reference>
     <ProjectReference Include="..\Sooda\Sooda.csproj">
       <Name>Sooda</Name>
       <Project>{FCC9B644-9093-41F6-8F0D-F98F22474CB5}</Project>
@@ -41,6 +40,16 @@
     <Compile Include="AssemblySign.cs" />
     <Compile Include="LoggerWrapper.cs" />
     <Compile Include="LoggingImplementation.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\log4net.2.0.12\lib\net40\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" />
 </Project>
