@@ -71,4 +71,5 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" />
+  <Import Project=".\..\..\Sooda.common.targets" /> 
 </Project>

@@ -1,0 +1,27 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">		
+	<PropertyGroup>
+        <MSBuildCommunityTasksPath>$(SolutionDir)\.build</MSBuildCommunityTasksPath>
+    </PropertyGroup>
+    <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
+
+    <Target Name="SetProjectProperties">
+        <Time Format="2.yy.MMdd.HHmm">
+            <Output TaskParameter="FormattedTime" PropertyName="ModuleVersion" />
+        </Time>
+
+        <Computer>
+            <Output TaskParameter="Name" PropertyName="BuildMachineName" />
+            <Output TaskParameter="IPAddressV4" PropertyName="BuildMachineIPAddressV4" />
+        </Computer>
+    </Target>
+	
+    <Target Name="UpdateBuildNumber" BeforeTargets="BeforeCompile" DependsOnTargets="SetProjectProperties">
+        <Message Text="Do not modify this file, it will be automatically regenerated" Importance="normal" />
+        <AssemblyInfo CodeLanguage="CS"
+                      OutputFile="$(MSBuildProjectDirectory)\AssemblyBuildInfo.cs"
+                      AssemblyVersion="2.0.0.0"
+                      AssemblyFileVersion="$(ModuleVersion)" />
+
+        <Touch Files="$(MSBuildProjectDirectory)\AssemblyBuildInfo.cs" Time="2020-10-10 00:00:00" />
+    </Target>
+</Project>

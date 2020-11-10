@@ -3,3 +3,5 @@ AssemblyBuildInfo.cs
 bin
 obj
 *.suo
+/.vs
+/src/Sooda/Sooda.csproj.user
