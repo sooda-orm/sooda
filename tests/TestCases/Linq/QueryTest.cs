@@ -987,15 +987,17 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        [ExpectedException(typeof(NotSupportedException))]
         public void OnServer()
         {
-            using (SoodaTransaction tran = new SoodaTransaction())
+            Assert.Throws<NotSupportedException>(() =>
             {
-                IQueryable<Contact> ce = Contact.Linq();
-                // just call any function that has no SQL translation
-                Assert.IsTrue(ce.All(c => c.Name.GetEnumerator() != null));
-            }
+                using (SoodaTransaction tran = new SoodaTransaction())
+                {
+                    IQueryable<Contact> ce = Contact.Linq();
+                    // just call any function that has no SQL translation
+                    Assert.IsTrue(ce.All(c => c.Name.GetEnumerator() != null));
+                }
+            });
         }
 
         [Test]
@@ -1010,15 +1012,17 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        [ExpectedException(typeof(NotSupportedException))]
         public void OnServer2()
         {
-            using (SoodaTransaction tran = new SoodaTransaction())
+            Assert.Throws<NotSupportedException>(() =>
             {
-                var ce = Contact.Linq();
-                // just call any function that has no SQL translation
-                Assert.IsTrue(ce.All(c => c.Name.GetEnumerator() != null));
-            }
+                using (SoodaTransaction tran = new SoodaTransaction())
+                {
+                    var ce = Contact.Linq();
+                    // just call any function that has no SQL translation
+                    Assert.IsTrue(ce.All(c => c.Name.GetEnumerator() != null));
+                }
+            });
         }
 
         [Test]

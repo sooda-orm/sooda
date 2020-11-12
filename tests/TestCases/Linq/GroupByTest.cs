@@ -324,6 +324,7 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
+        //[NoImplemented]
         public void NoSelect()
         {
             using (new SoodaTransaction())

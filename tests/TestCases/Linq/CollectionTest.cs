@@ -507,7 +507,7 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        [Ignore]
+        //[Ignore]
         public void AnySoodaCollectionQuery()
         {
             using (new SoodaTransaction())

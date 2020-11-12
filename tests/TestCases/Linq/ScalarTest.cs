@@ -195,13 +195,15 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void AverageEmpty()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                Contact.Linq().Where(c => c.ContactId > 1000).Average(c => c.ContactId);
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.Linq().Where(c => c.ContactId > 1000).Average(c => c.ContactId);
+                }
+            });
         }
 
         [Test]
@@ -305,23 +307,27 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void MinEmpty()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                Contact.Linq().Where(c => c.ContactId > 1000).Min(c => c.ContactId);
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.Linq().Where(c => c.ContactId > 1000).Min(c => c.ContactId);
+                }
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void SelectMinEmpty()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                Contact.Linq().Where(c => c.ContactId > 1000).Select(c => c.ContactId).Min();
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.Linq().Where(c => c.ContactId > 1000).Select(c => c.ContactId).Min();
+                }
+            });
         }
 
         [Test]
@@ -385,23 +391,27 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void MaxEmpty()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                Contact.Linq().Where(c => c.ContactId > 1000).Max(c => c.ContactId);
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.Linq().Where(c => c.ContactId > 1000).Max(c => c.ContactId);
+                }
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void SelectMaxEmpty()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                Contact.Linq().Where(c => c.ContactId > 1000).Select(c => c.ContactId).Max();
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.Linq().Where(c => c.ContactId > 1000).Select(c => c.ContactId).Max();
+                }
+            });
         }
 
         [Test]

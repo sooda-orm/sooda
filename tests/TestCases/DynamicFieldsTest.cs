@@ -245,23 +245,27 @@ namespace Sooda.UnitTests.TestCases
         }
 
         [Test]
-        [ExpectedException(typeof(Exception))]
         public void IndexerGetNonExisting()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<Exception>(() =>
             {
-                object result = Contact.Mary["NoSuchField"];
-            }
+                using (new SoodaTransaction())
+                {
+                    object result = Contact.Mary["NoSuchField"];
+                }
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void IndexerSetStatic()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<Exception>(() =>
             {
-                Contact.Mary["Active"] = false;
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.Mary["Active"] = false;
+                }
+            });
         }
 
 #if DOTNET35
@@ -323,39 +327,43 @@ namespace Sooda.UnitTests.TestCases
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidCastException))]
         public void IndexerTypeCheck()
         {
-            using (SoodaTransaction tran = new SoodaTransaction())
+            Assert.Throws<InvalidCastException>(() =>
             {
-                AddIntField(tran);
-                try
+                using (SoodaTransaction tran = new SoodaTransaction())
                 {
-                    PKInt32.GetRef(7777777)[IntField] = "invalid";
+                    AddIntField(tran);
+                    try
+                    {
+                        PKInt32.GetRef(7777777)[IntField] = "invalid";
+                    }
+                    finally
+                    {
+                        Remove(IntField, tran);
+                    }
                 }
-                finally
-                {
-                    Remove(IntField, tran);
-                }
-            }
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidCastException))]
         public void IndexerTypeCheckReference()
         {
-            using (SoodaTransaction tran = new SoodaTransaction())
+            Assert.Throws<InvalidCastException>(() =>
             {
-                AddReferenceField(tran);
-                try
+                using (SoodaTransaction tran = new SoodaTransaction())
                 {
-                    PKInt32.GetRef(7777777)[ReferenceField] = PKInt32.GetRef(7777777);
+                    AddReferenceField(tran);
+                    try
+                    {
+                        PKInt32.GetRef(7777777)[ReferenceField] = PKInt32.GetRef(7777777);
+                    }
+                    finally
+                    {
+                        Remove(ReferenceField, tran);
+                    }
                 }
-                finally
-                {
-                    Remove(ReferenceField, tran);
-                }
-            }
+            });
         }
 
         [Test]
@@ -379,24 +387,26 @@ namespace Sooda.UnitTests.TestCases
         }
 
         [Test]
-        [ExpectedException(typeof(SoodaException))]
         public void NonNullReference()
         {
-            using (SoodaTransaction tran = new SoodaTransaction())
+            Assert.Throws<SoodaException>(() =>
             {
-                AddReferenceField(tran);
-                PKInt32 o = new PKInt32();
-                try
+                using (SoodaTransaction tran = new SoodaTransaction())
                 {
-                    o.Parent = o;
-                    tran.Commit();
+                    AddReferenceField(tran);
+                    PKInt32 o = new PKInt32();
+                    try
+                    {
+                        o.Parent = o;
+                        tran.Commit();
+                    }
+                    finally
+                    {
+                        o.MarkForDelete();
+                        Remove(ReferenceField, tran);
+                    }
                 }
-                finally
-                {
-                    o.MarkForDelete();
-                    Remove(ReferenceField, tran);
-                }
-            }
+            });
         }
 
         [Test]
@@ -509,36 +519,41 @@ namespace Sooda.UnitTests.TestCases
         }
 
         [Test]
-        [ExpectedException(typeof(SoodaSchemaException))]
         public void DuplicateFieldWithStatic()
         {
-            using (SoodaTransaction tran = new SoodaTransaction())
+            Assert.Throws<SoodaSchemaException>(() =>
             {
-                DynamicFieldManager.Add(new FieldInfo {
-                    ParentClass = tran.Schema.FindClassByName("PKInt32"),
-                    Name = "Data",
-                    TypeName = "Integer",
-                    IsNullable = false
-                }, tran);
-            }
+                using (SoodaTransaction tran = new SoodaTransaction())
+                {
+                    DynamicFieldManager.Add(new FieldInfo
+                    {
+                        ParentClass = tran.Schema.FindClassByName("PKInt32"),
+                        Name = "Data",
+                        TypeName = "Integer",
+                        IsNullable = false
+                    }, tran);
+                }
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(SoodaSchemaException))]
         public void DuplicateFieldWithDynamic()
         {
-            using (SoodaTransaction tran = new SoodaTransaction())
+            Assert.Throws<SoodaSchemaException>(() =>
             {
-                AddIntField(tran);
-                try
+                using (SoodaTransaction tran = new SoodaTransaction())
                 {
                     AddIntField(tran);
+                    try
+                    {
+                        AddIntField(tran);
+                    }
+                    finally
+                    {
+                        Remove(IntField, tran);
+                    }
                 }
-                finally
-                {
-                    Remove(IntField, tran);
-                }
-            }
+            });
         }
 
         static string TriggerText(string field, object oldVal, object newVal)
@@ -586,13 +601,15 @@ namespace Sooda.UnitTests.TestCases
         }
 
         [Test]
-        [ExpectedException(typeof(Exception))]
         public void WhereNonExisting()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<Exception>(() =>
             {
-                Contact.Linq().Any(c => (string)c["NoSuchField"] == "Mary Manager");
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.Linq().Any(c => (string)c["NoSuchField"] == "Mary Manager");
+                }
+            });
         }
 
         [Test]
@@ -692,7 +709,7 @@ namespace Sooda.UnitTests.TestCases
                     serializedTran = tran.Serialize();
                 }
 
-                Assert.That(serializedTran, Contains.Substring("name=\"" + IntField + "\"").And.ContainsSubstring("value=\"" + val + "\""));
+                Assert.That(serializedTran, Does.Contain("name=\"" + IntField + "\"").And.Contain("value=\"" + val + "\""));
 
                 using (SoodaTransaction t2 = new SoodaTransaction())
                 {
@@ -728,13 +745,15 @@ namespace Sooda.UnitTests.TestCases
         }
 
         [Test]
-        [ExpectedException(typeof(Exception))]
         public void SelectNonExisting()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<Exception>(() =>
             {
-                Contact.Linq().Select(c => c["NoSuchField"]).ToList();
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.Linq().Select(c => c["NoSuchField"]).ToList();
+                }
+            });
         }
 
         [Test]
@@ -908,14 +927,16 @@ namespace Sooda.UnitTests.TestCases
         }
 
         [Test]
-        [ExpectedException(typeof(Exception))]
         public void DynamicGetNonExisting()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<InvalidCastException>(() =>
             {
-                dynamic d = Contact.Mary;
-                object result = d.NoSuchField;
-            }
+                using (new SoodaTransaction())
+                {
+                    dynamic d = Contact.Mary;
+                    object result = d.NoSuchField;
+                }
+            });
         }
 
         [Test]
