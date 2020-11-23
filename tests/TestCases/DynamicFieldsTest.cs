@@ -259,7 +259,7 @@ namespace Sooda.UnitTests.TestCases
         [Test]
         public void IndexerSetStatic()
         {
-            Assert.Throws<Exception>(() =>
+            Assert.Throws<InvalidOperationException>(() =>
             {
                 using (new SoodaTransaction())
                 {
@@ -929,7 +929,7 @@ namespace Sooda.UnitTests.TestCases
         [Test]
         public void DynamicGetNonExisting()
         {
-            Assert.Throws<InvalidCastException>(() =>
+            Assert.Throws<Exception>(() =>
             {
                 using (new SoodaTransaction())
                 {

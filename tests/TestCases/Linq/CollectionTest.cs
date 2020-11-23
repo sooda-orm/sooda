@@ -507,7 +507,7 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        //[Ignore]
+        [Ignore("Feature \"Any()\" on execution-time query source not supported (yet)")]
         public void AnySoodaCollectionQuery()
         {
             using (new SoodaTransaction())
