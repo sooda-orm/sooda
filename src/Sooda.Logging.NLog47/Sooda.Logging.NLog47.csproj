@@ -52,7 +52,6 @@
     <Compile Include="Properties\AssemblySign.cs" />
     <Compile Include="LoggerWrapper.cs" />
     <Compile Include="LoggingImplementation.cs" />
-    <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
