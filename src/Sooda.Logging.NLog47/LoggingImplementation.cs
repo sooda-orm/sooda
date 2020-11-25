@@ -28,16 +28,14 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-using NLogLib = NLog;
-
-namespace Sooda.Logging.NLog
+namespace Sooda.Logging.NLog47
 {
 
     public sealed class LoggingImplementation : Sooda.Logging.ILoggingImplementation
     {
         public Sooda.Logging.Logger GetLogger(string name)
         {
-            return new NLogLib.LoggerWrapper(NLogLib.LogManager.GetLogger(name));
+            return new LoggerWrapper(NLog.LogManager.GetLogger(name));
         }
     }
 }

@@ -28,17 +28,18 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+using NLog;
 using System;
 
 // using NLog namespace makes NLog preserve the correct call stack
 
-namespace NLog
+namespace Sooda.Logging.NLog47
 {
     internal sealed class LoggerWrapper : Sooda.Logging.Logger
     {
-        private Logger _logger;
+        private readonly NLog.Logger _logger;
 
-        public LoggerWrapper(Logger logger)
+        public LoggerWrapper(NLog.Logger logger)
         {
             _logger = logger;
         }
