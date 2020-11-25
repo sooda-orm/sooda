@@ -226,13 +226,15 @@ namespace Sooda.UnitTests.TestCases.Soql
         }
 
         [Test]
-        [ExpectedException(typeof(SoqlException))]
         public void ChainedEquals()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<SoqlException>(() =>
             {
-                Contact.GetList(new SoodaWhereClause("Active == true == true != false"));
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.GetList(new SoodaWhereClause("Active == true == true != false"));
+                }
+            });
         }
     }
 }

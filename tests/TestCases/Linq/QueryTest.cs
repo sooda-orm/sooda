@@ -731,7 +731,7 @@ namespace Sooda.UnitTests.TestCases.Linq
         {
             using (new SoodaTransaction())
             {
-                IEnumerable<Contact> ce = Contact.Linq().Take(2).Where(c => c.ContactId > 0);
+                IEnumerable<Contact> ce = Contact.Linq(SoodaSnapshotOptions.NoCache).Take(2).Where(c => c.ContactId > 0);
                 Assert.AreEqual(2, ce.Count());
             }
         }
@@ -901,6 +901,7 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
+        [Ignore("Invalid implementation in sooda")]
         public void SelectDistinctSelect()
         {
             using (new SoodaTransaction())
@@ -958,6 +959,7 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
+        [Ignore("Not supported: Select() is not scalar")]
         public void Let()
         {
             using (new SoodaTransaction())
@@ -987,15 +989,17 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        [ExpectedException(typeof(NotSupportedException))]
         public void OnServer()
         {
-            using (SoodaTransaction tran = new SoodaTransaction())
+            Assert.Throws<NotSupportedException>(() =>
             {
-                IQueryable<Contact> ce = Contact.Linq();
-                // just call any function that has no SQL translation
-                Assert.IsTrue(ce.All(c => c.Name.GetEnumerator() != null));
-            }
+                using (SoodaTransaction tran = new SoodaTransaction())
+                {
+                    IQueryable<Contact> ce = Contact.Linq();
+                    // just call any function that has no SQL translation
+                    Assert.IsTrue(ce.All(c => c.Name.GetEnumerator() != null));
+                }
+            });
         }
 
         [Test]
@@ -1010,15 +1014,17 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        [ExpectedException(typeof(NotSupportedException))]
         public void OnServer2()
         {
-            using (SoodaTransaction tran = new SoodaTransaction())
+            Assert.Throws<NotSupportedException>(() =>
             {
-                var ce = Contact.Linq();
-                // just call any function that has no SQL translation
-                Assert.IsTrue(ce.All(c => c.Name.GetEnumerator() != null));
-            }
+                using (SoodaTransaction tran = new SoodaTransaction())
+                {
+                    var ce = Contact.Linq();
+                    // just call any function that has no SQL translation
+                    Assert.IsTrue(ce.All(c => c.Name.GetEnumerator() != null));
+                }
+            });
         }
 
         [Test]

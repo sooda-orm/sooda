@@ -8,6 +8,8 @@
     <AssemblyName>Sooda.CodeGen</AssemblyName>
     <RootNamespace>Sooda.CodeGen</RootNamespace>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -82,4 +84,5 @@
     <EmbeddedResource Include="CDIL\Templates\ProxyInterface.cdil" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" />
+  <Import Project=".\..\..\Sooda.common.targets" />
 </Project>

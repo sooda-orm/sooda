@@ -324,6 +324,7 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
+        [Ignore("Invalid implementation")]
         public void NoSelect()
         {
             using (new SoodaTransaction())

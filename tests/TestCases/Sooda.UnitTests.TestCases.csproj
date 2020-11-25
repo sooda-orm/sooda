@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\NUnit.3.12.0\build\NUnit.props" Condition="Exists('..\..\packages\NUnit.3.12.0\build\NUnit.props')" />
+  <Import Project="..\..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -8,6 +10,8 @@
     <AssemblyName>Sooda.UnitTests.TestCases</AssemblyName>
     <RootNamespace>Sooda.UnitTests.TestCases</RootNamespace>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -17,6 +21,7 @@
     <DefineConstants>DOTNET35;DOTNET4;DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,12 +33,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="nunit.framework, Version=3.12.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.3.12.0\lib\net40\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="NUnit.Framework">
-      <HintPath>..\..\external\NUnit.Framework.dll</HintPath>
-    </Reference>
     <ProjectReference Include="..\..\src\Sooda\Sooda.csproj">
       <Name>Sooda</Name>
       <Project>{FCC9B644-9093-41F6-8F0D-F98F22474CB5}</Project>
@@ -52,12 +57,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Caching\CachingTest.cs" />
     <Compile Include="Caching\CollectionEvictTest.cs" />
     <Compile Include="Caching\CollectionTest.cs" />
+    <Compile Include="Caching\TestFixtureSetup.cs" />
     <Compile Include="DynamicFieldsTest.cs" />
     <Compile Include="InjectDependentSchemasAttribute.cs" />
     <Compile Include="Linq\CollectionQueryTest.cs" />
@@ -73,6 +80,7 @@
     <Compile Include="Linq\ScalarTest.cs" />
     <Compile Include="Linq\SingleTest.cs" />
     <Compile Include="Linq\SubqueryTest.cs" />
+    <Compile Include="Linq\TestFixtureSetup.cs" />
     <Compile Include="Linq\UtilsTest.cs" />
     <Compile Include="DependencyInversion\ModelDependencyInjectionTest.cs" />
     <Compile Include="ObjectMapper\AbstractTest.cs" />
@@ -98,6 +106,7 @@
     <Compile Include="ObjectMapper\RetrievalTest.cs" />
     <Compile Include="ObjectMapper\SerializationTest.cs" />
     <Compile Include="ObjectMapper\SoodaObjectReflectionBasedFieldValues.cs" />
+    <Compile Include="ObjectMapper\TestFixtureSetup.cs" />
     <Compile Include="ObjectMapper\TriggerTest.cs" />
     <Compile Include="SchemaTest.cs" />
     <Compile Include="Soql\CollectionTest.cs" />
@@ -107,8 +116,16 @@
     <Compile Include="Soql\QueryTest.cs" />
     <Compile Include="Soql\RelationalOperatorsTest.cs" />
     <Compile Include="Soql\SoqlTranslatorTest.cs" />
+    <Compile Include="TestFixtureSetup.cs" />
     <Compile Include="TestSqlDataSource.cs" />
     <Compile Include="TransactionTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props'))" />
+    <Error Condition="!Exists('..\..\packages\NUnit.3.12.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NUnit.3.12.0\build\NUnit.props'))" />
+  </Target>
 </Project>

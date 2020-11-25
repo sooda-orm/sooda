@@ -53,4 +53,5 @@
     <Compile Include="SchemaImporter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" />
+  <Import Project=".\..\..\Sooda.common.targets" /> 
 </Project>

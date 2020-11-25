@@ -77,14 +77,16 @@ namespace Sooda.UnitTests.TestCases.ObjectMapper
         }
 
         [Test]
-        [ExpectedException(typeof(SoodaObjectNotFoundException))]
         public void LoadTest3()
         {
-            using (SoodaTransaction tran = new SoodaTransaction())
+            Assert.Throws<SoodaObjectNotFoundException>(() =>
             {
-                Bike b = Bike.Load(1);
-                Console.WriteLine("t: {0}", b.GetType());
-            }
+                using (SoodaTransaction tran = new SoodaTransaction())
+                {
+                    Bike b = Bike.Load(1);
+                    Console.WriteLine("t: {0}", b.GetType());
+                }
+            });
         }
 
         [Test]

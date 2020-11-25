@@ -43,8 +43,6 @@ using Sooda.UnitTests.TestCases;
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyVersion("0.7.0.0")]
 
-[assembly: InjectDependentSchemas]
-[assembly: SoodaStubAssembly(typeof(Sooda.Schema.MultiAssemblySchema))]
-[assembly: SoodaConfig(XmlConfigFileName = "Sooda.config.xml")]
+//[assembly: SoodaConfig(XmlConfigFileName = "Sooda.config.xml")]
 
 

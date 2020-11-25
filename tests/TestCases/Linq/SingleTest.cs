@@ -50,13 +50,15 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void FirstNotFound()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                Contact.Linq().Where(c => c.ContactId > 1000).First();
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.Linq().Where(c => c.ContactId > 1000).First();
+                }
+            });
         }
 
         [Test]
@@ -70,13 +72,15 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void FirstFilteredNotFound()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                Contact.Linq().First(c => c.ContactId > 1000);
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.Linq().First(c => c.ContactId > 1000);
+                }
+            });
         }
 
         [Test]
@@ -160,13 +164,15 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void LastNotFound()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                Contact.Linq().Where(c => c.ContactId > 1000).Last();
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.Linq().Where(c => c.ContactId > 1000).Last();
+                }
+            });
         }
 
         [Test]
@@ -180,13 +186,15 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void LastFilteredNotFound()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                Contact.Linq().Last(c => c.ContactId > 1000);
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.Linq().Last(c => c.ContactId > 1000);
+                }
+            });
         }
 
         [Test]
@@ -270,13 +278,15 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void SingleNotFound()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                Contact.Linq().Where(c => c.ContactId > 1000).Single();
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.Linq().Where(c => c.ContactId > 1000).Single();
+                }
+            });
         }
 
         [Test]
@@ -290,23 +300,27 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void SingleFilteredNotFound()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                Contact.Linq().Single(c => c.ContactId > 1000);
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.Linq().Single(c => c.ContactId > 1000);
+                }
+            });
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void SingleMultiple()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                Contact.Linq().OrderBy(c => c.ContactId).Single(c => c.Active);
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.Linq().OrderBy(c => c.ContactId).Single(c => c.Active);
+                }
+            });
         }
 
         [Test]
@@ -330,13 +344,15 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void SingleOrDefaultMultiple()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                Contact.Linq().OrderBy(c => c.ContactId).SingleOrDefault();
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.Linq().OrderBy(c => c.ContactId).SingleOrDefault();
+                }
+            });
         }
 
         [Test]
@@ -360,13 +376,15 @@ namespace Sooda.UnitTests.TestCases.Linq
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void SingleOrDefaultFilteredMultiple()
         {
-            using (new SoodaTransaction())
+            Assert.Throws<InvalidOperationException>(() =>
             {
-                Contact.Linq().OrderBy(c => c.ContactId).SingleOrDefault(c => c.Active);
-            }
+                using (new SoodaTransaction())
+                {
+                    Contact.Linq().OrderBy(c => c.ContactId).SingleOrDefault(c => c.Active);
+                }
+            });
         }
 
         [Test]
