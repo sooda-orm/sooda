@@ -1,8 +1,8 @@
 @echo off
 set DBNAME=SoodaUnitTests
 
-set SCRIPT_NAME=createdb.sql
-if not (%1)==() set SCRIPT_NAME=%1\createdb.sql
+set SCRIPT_NAME=dropdb.sql
+if not (%1)==() set SCRIPT_NAME=%1\dropdb.sql
 echo %SCRIPT_NAME%
 
 echo Dropping %DBNAME% database on %MSSQLSERVER_HOST%...
