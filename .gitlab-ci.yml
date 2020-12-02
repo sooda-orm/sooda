@@ -48,14 +48,15 @@ unittests:
   stage: test
   tags: [nunit]
   when: manual
-  variables: 
-    SCRIPT_FOLDER: 'tests\Database\mssql'
   before_script:
-    - '& "tests\Database\mssql\createdb.bat" "tests\Database\mssql"'
+    - '& "echo -S $env:MSSQLSERVER_HOST -U $env:MSSQLSERVER_SA_USER -P $env:MSSQLSERVER_SA_PASS -i tests\Database\mssql\createdb.sql"'
+    - '& "sqlcmd -S $env:MSSQLSERVER_HOST -U $env:MSSQLSERVER_SA_USER -P $env:MSSQLSERVER_SA_PASS -i tests\Database\mssql\createdb.sql"'
+# creating a database for testing
   script:
     - '& "$env:NUNIT3_CONSOLE_EXE" ".\$env:TEST_FOLDER\$env:TEST_DLL" $env:NUNIT3_OUTPUT'  # running NUnit tests, exclude database-related tests, output to xml and junit format (for gitlab)
   after_script:
-    - '& "tests\Database\mssql\dropdb.bat" "tests\Database\mssql"'
+    - '& "echo -S $env:MSSQLSERVER_HOST -U $env:MSSQLSERVER_SA_USER -P $env:MSSQLSERVER_SA_PASS -i tests\Database\mssql\dropdb.sql"'
+    - '& "sqlcmd -S $env:MSSQLSERVER_HOST -U $env:MSSQLSERVER_SA_USER -P $env:MSSQLSERVER_SA_PASS -i tests\Database\mssql\dropdb.sql"'
   artifacts:
     when: always            # save test results even when the task fails
     expire_in: 1 week       # save gitlab server space, we copy the files we need to deploy folder later on
