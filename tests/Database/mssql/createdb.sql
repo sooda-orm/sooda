@@ -11,7 +11,7 @@ go
 
 -- create user for web application, giving it default access to SoodaUnitTests
 -- database
-exec sp_addlogin 'soodatest','PASS',SoodaUnitTests
+exec sp_addlogin 'soodatest','PASS123@',SoodaUnitTests
 go
 
 use SoodaUnitTests;
