@@ -14,10 +14,10 @@ go
 exec sp_addlogin 'soodatest','PASS123@',SoodaUnitTests
 go
 
-grant control to soodatest;
+use SoodaUnitTests;
 go
 
-use SoodaUnitTests;
+grant control to soodatest;
 go
 
 create table KeyGen
