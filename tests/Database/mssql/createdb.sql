@@ -14,6 +14,9 @@ go
 exec sp_addlogin 'soodatest','PASS123@',SoodaUnitTests
 go
 
+grant control to soodatest;
+go
+
 use SoodaUnitTests;
 go
 
