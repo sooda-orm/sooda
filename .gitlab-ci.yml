@@ -27,7 +27,7 @@ variables:
   CONFIGURATION: 'Debug'
   TEST_FOLDER: 'tests\TestCases\bin\Debug'
   TEST_DLL: 'Sooda.UnitTests.TestCases.dll'
-  SOODA_default_connectionString: 'Data Source=$env:MSSQLSERVER_HOST,$env:MSSQLSERVER_PORT;Initial Catalog=SoodaUnitTests;User Id=soodatest;Password=PASS123@;Pooling=false'
+  SOODA_default_connectionString: 'Data Source=$MSSQLSERVER_HOST,$MSSQLSERVER_PORT;Initial Catalog=SoodaUnitTests;User Id=soodatest;Password=PASS123@;Pooling=false'
 
 stages:
   - build
