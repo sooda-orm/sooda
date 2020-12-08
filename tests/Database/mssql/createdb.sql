@@ -17,9 +17,6 @@ go
 use SoodaUnitTests;
 go
 
-alter role db_owner add member soodatest;
-go
-
 create table KeyGen
 (
 	key_name varchar(64) primary key,
@@ -344,6 +341,9 @@ go
 exec sp_grantdbaccess 'soodatest','soodatest'
 go
 
+alter role db_owner add member soodatest;
+go
+
 print 'Granting table permissions...'
 
 grant select,insert,update on KeyGen to soodatest
@@ -366,6 +366,8 @@ grant select,insert,update,delete on Bike to soodatest
 grant select,insert,update,delete on ExtendedBike to soodatest
 grant select,insert,update,delete on MultiKey to soodatest
 grant select,insert,update,delete on EightFields to soodatest
+grant select,insert,update,delete on MileageItem to soodatest
+grant select,insert,update,delete on Mileage to soodatest
 
 go
 
