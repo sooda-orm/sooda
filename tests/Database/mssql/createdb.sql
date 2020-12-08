@@ -17,7 +17,7 @@ go
 use SoodaUnitTests;
 go
 
-grant control to soodatest;
+alter role db_owner add member soodatest;
 go
 
 create table KeyGen
