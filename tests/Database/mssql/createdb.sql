@@ -275,6 +275,9 @@ insert into ContactRole values(53,3);
 insert into KeyGen values('Contact',100);
 insert into KeyGen values('Group',100);
 insert into KeyGen values('Vehicle',100);
+insert into KeyGen values('Role',10);
+insert into KeyGen values('EightFields',10);
+insert into KeyGen values('AllDataTypes',10);
 
 insert into Mileage values(1, 0);
 insert into Mileage values(2, 0);
