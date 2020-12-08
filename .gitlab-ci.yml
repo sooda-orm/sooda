@@ -27,6 +27,7 @@ variables:
   CONFIGURATION: 'Debug'
   TEST_FOLDER: 'tests\TestCases\bin\Debug'
   TEST_DLL: 'Sooda.UnitTests.TestCases.dll'
+  SOODA_default_connectionString: 'Data Source=$MSSQLSERVER_HOST,$MSSQLSERVER_PORT;Initial Catalog=SoodaUnitTests;User Id=soodatest;Password=PASS123@;Pooling=false'
 
 stages:
   - build
@@ -47,9 +48,14 @@ msbuild:
 unittests:
   stage: test
   tags: [nunit]
-  when: manual
+  before_script:
+    - 'sqlcmd -S tcp:$env:MSSQLSERVER_HOST,$env:MSSQLSERVER_PORT -U $env:MSSQLSERVER_SA_USER -P $env:MSSQLSERVER_SA_PASS -i tests\Database\mssql\createdb.sql'
+# creating a database for testing
   script:
+    - 'echo "$env:SOODA_default_connectionString"'
     - '& "$env:NUNIT3_CONSOLE_EXE" ".\$env:TEST_FOLDER\$env:TEST_DLL" $env:NUNIT3_OUTPUT'  # running NUnit tests, exclude database-related tests, output to xml and junit format (for gitlab)
+  after_script:
+    - 'sqlcmd -S tcp:$env:MSSQLSERVER_HOST,$env:MSSQLSERVER_PORT -U $env:MSSQLSERVER_SA_USER -P $env:MSSQLSERVER_SA_PASS -i tests\Database\mssql\dropdb.sql'
   artifacts:
     when: always            # save test results even when the task fails
     expire_in: 1 week       # save gitlab server space, we copy the files we need to deploy folder later on

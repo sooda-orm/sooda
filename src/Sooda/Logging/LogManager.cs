@@ -41,52 +41,17 @@ namespace Sooda.Logging
             // set up null implementation first so that any logging statements
             // from SoodaConfig will not result in NullReferenceException
 
-            _implementation = new NullLoggingImplementation();
-            try
-            {
-                string loggingImplementationName = SoodaConfig.GetString("sooda.logging", "null");
-                string typeName;
+            _implementation = new NullLoggingImplementation();            
+        }
 
-                switch (loggingImplementationName)
-                {
-                    case "console":
-                        _implementation = new ConsoleLoggingImplementation();
-                        break;
-
-                    case "null":
-                        _implementation = new NullLoggingImplementation();
-                        break;
-
-                    case "nlog":
-                        typeName = "Sooda.Logging.NLog.LoggingImplementation, Sooda.Logging.NLog";
-                        _implementation = Activator.CreateInstance(Type.GetType(typeName)) as ILoggingImplementation;
-                        break;
-
-                    case "log4net":
-                        typeName = "Sooda.Logging.log4net.LoggingImplementation, Sooda.Logging.log4net";
-                        _implementation = Activator.CreateInstance(Type.GetType(typeName)) as ILoggingImplementation;
-                        break;
-
-                    default:
-                        _implementation = Activator.CreateInstance(Type.GetType(loggingImplementationName)) as ILoggingImplementation;
-                        break;
-                }
-            }
-            catch (Exception)
-            {
-                _implementation = new NullLoggingImplementation();
-            }
-            finally
-            {
-                if (_implementation == null)
-                    _implementation = new NullLoggingImplementation();
-            }
+        public static void SetLoggingImplementation(ILoggingImplementation logging)
+        {
+            _implementation = logging;
         }
 
         public static ILoggingImplementation Implementation
         {
             get { return _implementation; }
-            set { _implementation = value; }
         }
 
         public static Logger GetLogger(string name)

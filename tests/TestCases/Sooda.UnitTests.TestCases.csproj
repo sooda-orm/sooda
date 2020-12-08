@@ -65,6 +65,7 @@
     <Compile Include="Caching\CollectionEvictTest.cs" />
     <Compile Include="Caching\CollectionTest.cs" />
     <Compile Include="Caching\TestFixtureSetup.cs" />
+    <Compile Include="ConfigProvider\EnvironmentConfigProvider.cs" />
     <Compile Include="DynamicFieldsTest.cs" />
     <Compile Include="InjectDependentSchemasAttribute.cs" />
     <Compile Include="Linq\CollectionQueryTest.cs" />

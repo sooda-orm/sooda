@@ -11,7 +11,7 @@ go
 
 -- create user for web application, giving it default access to SoodaUnitTests
 -- database
-exec sp_addlogin 'soodatest','PASS',SoodaUnitTests
+exec sp_addlogin 'soodatest','PASS123@',SoodaUnitTests
 go
 
 use SoodaUnitTests;
@@ -275,6 +275,9 @@ insert into ContactRole values(53,3);
 insert into KeyGen values('Contact',100);
 insert into KeyGen values('Group',100);
 insert into KeyGen values('Vehicle',100);
+insert into KeyGen values('Role',10);
+insert into KeyGen values('EightFields',10);
+insert into KeyGen values('AllDataTypes',10);
 
 insert into Mileage values(1, 0);
 insert into Mileage values(2, 0);
@@ -341,6 +344,9 @@ go
 exec sp_grantdbaccess 'soodatest','soodatest'
 go
 
+alter role db_owner add member soodatest;
+go
+
 print 'Granting table permissions...'
 
 grant select,insert,update on KeyGen to soodatest
@@ -363,6 +369,8 @@ grant select,insert,update,delete on Bike to soodatest
 grant select,insert,update,delete on ExtendedBike to soodatest
 grant select,insert,update,delete on MultiKey to soodatest
 grant select,insert,update,delete on EightFields to soodatest
+grant select,insert,update,delete on MileageItem to soodatest
+grant select,insert,update,delete on Mileage to soodatest
 
 go
 

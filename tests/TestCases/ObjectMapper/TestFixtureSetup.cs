@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Sooda.Schema;
+using Sooda.UnitTests.TestCases.ConfigProvider;
 
 namespace Sooda.UnitTests.TestCases.ObjectMapper
 {
@@ -13,8 +10,10 @@ namespace Sooda.UnitTests.TestCases.ObjectMapper
         [OneTimeSetUp]
         public void SoodaConfig()
         {
+            Sooda.Logging.LogManager.SetLoggingImplementation(new Sooda.Logging.ConsoleLoggingImplementation());
             MultiAssemblySchema.RegisterSchema(typeof(Sooda.UnitTests.BaseObjects._DatabaseSchema));
             MultiAssemblySchema.RegisterSchema(typeof(Sooda.UnitTests.Objects._DatabaseSchema));
+            Sooda.SoodaConfig.SetConfigProvider(new EnvironmentConfigProvider());
             SoodaTransaction.DefaultObjectsAssembly = typeof(MultiAssemblySchema).Assembly;
         }
     }
