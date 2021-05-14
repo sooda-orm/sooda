@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "tests\Consol
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.Logging.NLog47", "src\Sooda.Logging.NLog47\Sooda.Logging.NLog47.csproj", "{91FA7F7B-1B19-4323-B8BB-CEC244916E5F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.SqlServer", "Sooda.SqlServer\Sooda.SqlServer.csproj", "{86261519-2836-47C7-9B46-31EF25CF33A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{91FA7F7B-1B19-4323-B8BB-CEC244916E5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91FA7F7B-1B19-4323-B8BB-CEC244916E5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91FA7F7B-1B19-4323-B8BB-CEC244916E5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86261519-2836-47C7-9B46-31EF25CF33A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86261519-2836-47C7-9B46-31EF25CF33A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86261519-2836-47C7-9B46-31EF25CF33A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86261519-2836-47C7-9B46-31EF25CF33A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

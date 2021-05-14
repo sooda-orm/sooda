@@ -99,36 +99,9 @@ namespace Sooda.Sql
             if (at != null)
                 this.CreateIndex = at;
 
-            string dialect = GetParameter("sqlDialect", false);
-            if (dialect == null)
-                dialect = "microsoft";
-
             this.DisableUpdateBatch = true;
 
-            switch (dialect)
-            {
-                default:
-                case "msde":
-                case "mssql":
-                case "microsoft":
-                    this.SqlBuilder = new SqlServerBuilder();
-                    this.DisableUpdateBatch = false;
-                    break;
-
-                case "postgres":
-                case "postgresql":
-                    this.SqlBuilder = new PostgreSqlBuilder();
-                    break;
-
-                case "mysql":
-                case "mysql4":
-                    this.SqlBuilder = new MySqlBuilder();
-                    break;
-
-                case "oracle":
-                    this.SqlBuilder = new OracleBuilder();
-                    break;
-            }
+            this.SqlBuilder = SqlBuilderMenager.GetBuilder();
 
             if (GetParameter("useSafeLiterals", false) == "false")
                 this.SqlBuilder.UseSafeLiterals = false;
