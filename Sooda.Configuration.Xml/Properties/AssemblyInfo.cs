@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PostgreSql")]
+[assembly: AssemblyTitle("Sooda.Configuration.Xml")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PostgreSql")]
+[assembly: AssemblyProduct("Sooda.Configuration.Xml")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("31c73e17-1aab-4243-a692-6d600629afeb")]
+[assembly: Guid("1175f5f5-9704-4384-90d6-fa39b0326061")]
 
 // Version information for an assembly consists of the following four values:
 //
