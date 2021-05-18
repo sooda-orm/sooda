@@ -29,7 +29,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "tests\Consol
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.Logging.NLog47", "src\Sooda.Logging.NLog47\Sooda.Logging.NLog47.csproj", "{91FA7F7B-1B19-4323-B8BB-CEC244916E5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.SqlServer", "Sooda.SqlServer\Sooda.SqlServer.csproj", "{86261519-2836-47C7-9B46-31EF25CF33A0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.Configuration", "src\Sooda.Configuration\Sooda.Configuration.csproj", "{D2EBC586-53AC-4386-91CE-8E677A1DF09D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.Oracle", "src\Sooda.Oracle\Sooda.Oracle.csproj", "{4FC8B23E-E228-4607-A17F-6CA4D7DF5BC7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.MySql", "src\Sooda.MySql\Sooda.MySql.csproj", "{C9035993-00B6-42D7-82DF-6ABB7C2A4484}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.TransactionStrategy", "src\Sooda.TransactionStrategy\Sooda.TransactionStrategy.csproj", "{0F905C92-4D79-409A-B12E-1BA2C630F7F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.SqlServer", "src\Sooda.SqlServer\Sooda.SqlServer.csproj", "{86261519-2836-47C7-9B46-31EF25CF33A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.PostgreSql", "src\Sooda.PostgreSql\Sooda.PostgreSql.csproj", "{31C73E17-1AAB-4243-A692-6D600629AFEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,10 +99,30 @@ Global
 		{91FA7F7B-1B19-4323-B8BB-CEC244916E5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91FA7F7B-1B19-4323-B8BB-CEC244916E5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91FA7F7B-1B19-4323-B8BB-CEC244916E5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2EBC586-53AC-4386-91CE-8E677A1DF09D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2EBC586-53AC-4386-91CE-8E677A1DF09D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2EBC586-53AC-4386-91CE-8E677A1DF09D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2EBC586-53AC-4386-91CE-8E677A1DF09D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FC8B23E-E228-4607-A17F-6CA4D7DF5BC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FC8B23E-E228-4607-A17F-6CA4D7DF5BC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FC8B23E-E228-4607-A17F-6CA4D7DF5BC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FC8B23E-E228-4607-A17F-6CA4D7DF5BC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9035993-00B6-42D7-82DF-6ABB7C2A4484}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9035993-00B6-42D7-82DF-6ABB7C2A4484}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9035993-00B6-42D7-82DF-6ABB7C2A4484}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9035993-00B6-42D7-82DF-6ABB7C2A4484}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F905C92-4D79-409A-B12E-1BA2C630F7F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F905C92-4D79-409A-B12E-1BA2C630F7F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F905C92-4D79-409A-B12E-1BA2C630F7F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F905C92-4D79-409A-B12E-1BA2C630F7F8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{86261519-2836-47C7-9B46-31EF25CF33A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{86261519-2836-47C7-9B46-31EF25CF33A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86261519-2836-47C7-9B46-31EF25CF33A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86261519-2836-47C7-9B46-31EF25CF33A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31C73E17-1AAB-4243-A692-6D600629AFEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31C73E17-1AAB-4243-A692-6D600629AFEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31C73E17-1AAB-4243-A692-6D600629AFEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31C73E17-1AAB-4243-A692-6D600629AFEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

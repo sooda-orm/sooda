@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +31,7 @@
     <DefineConstants>DOTNET35;DOTNET4;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -39,9 +41,17 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <ProjectReference Include="..\..\Sooda.SqlServer\Sooda.SqlServer.csproj">
+    <ProjectReference Include="..\..\src\Sooda.Configuration\Sooda.Configuration.csproj">
+      <Project>{d2ebc586-53ac-4386-91ce-8e677a1df09d}</Project>
+      <Name>Sooda.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Sooda.SqlServer\Sooda.SqlServer.csproj">
       <Project>{86261519-2836-47c7-9b46-31ef25cf33a0}</Project>
       <Name>Sooda.SqlServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Sooda.TransactionStrategy\Sooda.TransactionStrategy.csproj">
+      <Project>{0f905c92-4d79-409a-b12e-1ba2c630f7f8}</Project>
+      <Name>Sooda.TransactionStrategy</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Sooda\Sooda.csproj">
       <Project>{fcc9b644-9093-41f6-8f0d-f98f22474cb5}</Project>

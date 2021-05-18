@@ -14,6 +14,8 @@ namespace Sooda.UnitTests.TestCases
         public void SoodaConfig()
         {
             Sooda.Logging.LogManager.SetLoggingImplementation(new Sooda.Logging.ConsoleLoggingImplementation());
+            Sooda.TransactionStrategyMenager.SetTransactionStrategy(new TransactionStrategy.SoodaThreadBoundTransactionStrategy());
+            Sooda.Sql.SqlBuilderMenager.SetSqlBuilder(new SqlServer.SqlServerBuilder());
             MultiAssemblySchema.RegisterSchema(typeof(Sooda.UnitTests.BaseObjects._DatabaseSchema));
             MultiAssemblySchema.RegisterSchema(typeof(Sooda.UnitTests.Objects._DatabaseSchema));
             Sooda.SoodaConfig.SetConfigProvider(new EnvironmentConfigProvider());

@@ -19,6 +19,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,6 +29,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -62,9 +64,7 @@
     <Compile Include="Caching\SoodaNoCachingPolicy.cs" />
     <Compile Include="Collections\ObjectToSoodaObjectFactoryAssociation.cs" />
     <Compile Include="Collections\StringToObjectToSoodaObjectFactoryAssociation.cs" />
-    <Compile Include="Config\AppSettingsConfigProvider.cs" />
     <Compile Include="Config\ISoodaConfigProvider.cs" />
-    <Compile Include="Config\XmlConfigProvider.cs" />
     <Compile Include="IDefaultSoodaTransactionStrategy.cs" />
     <Compile Include="IInterfaceProxyFactory.cs" />
     <Compile Include="ISoodaObjectFactory.cs" />
@@ -219,7 +219,6 @@
     <Compile Include="SoodaException.cs" />
     <Compile Include="SoodaFieldSizeAttribute.cs" />
     <Compile Include="SoodaFieldUpdateDelegate.cs" />
-    <Compile Include="SoodaHttpContextBoundTransactionStrategy.cs" />
     <Compile Include="SoodaNullable.cs" />
     <Compile Include="SoodaObject.cs" />
     <Compile Include="SoodaObjectArrayFieldValues.cs" />
@@ -233,12 +232,10 @@
     <Compile Include="SoodaObjectReflectionCachingFieldValues.cs" />
     <Compile Include="SoodaObjectsAssemblyAttribute.cs" />
     <Compile Include="SoodaOrderBy.cs" />
-    <Compile Include="SoodaProcessBoundTransactionStrategy.cs" />
     <Compile Include="SoodaSerializeOptions.cs" />
     <Compile Include="SoodaSnapshotOptions.cs" />
     <Compile Include="SoodaStatistics.cs" />
     <Compile Include="SoodaStubAssemblyAttribute.cs" />
-    <Compile Include="SoodaThreadBoundTransactionStrategy.cs" />
     <Compile Include="SoodaTransaction.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -255,6 +252,7 @@
     <Compile Include="Sql\SqlDataSourceDT.cs" />
     <Compile Include="Sql\SqlOuterJoinSyntax.cs" />
     <Compile Include="Sql\SqlTopSupportMode.cs" />
+    <Compile Include="TransactionStrategyMenager.cs" />
     <Compile Include="Utils\QPCStopWatch.cs" />
     <Compile Include="Utils\SqlTypesUtil.cs" />
     <Compile Include="Utils\StopWatch.cs" />

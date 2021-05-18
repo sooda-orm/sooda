@@ -30,7 +30,6 @@
 
 using Sooda.Config;
 using System;
-using System.Reflection;
 
 namespace Sooda
 {
@@ -40,77 +39,14 @@ namespace Sooda
 
         static SoodaConfig()
         {
-            try
-            {
-                Assembly a = Assembly.GetEntryAssembly();
-                if (a != null)
-                {
-                    SetConfigProviderFromAttribute((SoodaConfigAttribute)Attribute.GetCustomAttribute(a, typeof(SoodaConfigAttribute), false));
-                }
-
-                if (configProvider == null)
-                {
-                    try
-                    {
-                        string typeName = System.Configuration.ConfigurationManager.AppSettings["sooda.config"];
-                        // Console.WriteLine("typeName: {0}", typeName);
-                        if (typeName == "xmlconfig")
-                        {
-                            string xmlconfigfile = System.Configuration.ConfigurationManager.AppSettings["sooda.xmlconfigfile"];
-                            if (xmlconfigfile == null)
-                                xmlconfigfile = "sooda.config.xml";
-                            SetConfigProvider(XmlConfigProvider.FindConfigFile(xmlconfigfile));
-                        }
-                        else if (typeName != null)
-                        {
-                            Type t = Type.GetType(typeName);
-                            SetConfigProvider(Activator.CreateInstance(t) as ISoodaConfigProvider);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        throw new SoodaConfigException(String.Format("Error while loading configuration provider {0}", e));
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new SoodaConfigException(String.Format("Error while loading configuration provider {0}", ex));
-            }
-            finally
-            {
-
-                if (configProvider == null)
-                {
-                    SetConfigProvider(new AppSettingsConfigProvider());
-                }
-            }
+            
         }
-
         public static void SetConfigProvider(ISoodaConfigProvider provider)
         {
             if (provider == null)
                 throw new ArgumentException("provider");
             configProvider = provider;
-        }
-
-        private static void SetConfigProviderFromAttribute(SoodaConfigAttribute at)
-        {
-            if (at == null)
-                return;
-
-            if (at.XmlConfigFileName != null)
-            {
-                SetConfigProvider(XmlConfigProvider.FindConfigFile(at.XmlConfigFileName));
-                return;
-            }
-            if (at.ProviderType != null)
-            {
-                SetConfigProvider(Activator.CreateInstance(at.ProviderType) as ISoodaConfigProvider);
-                return;
-            }
-        }
-
+        }        
         public static string GetString(string itemName)
         {
             return GetString(itemName, null);

@@ -55,15 +55,15 @@ namespace Sooda
     public class SoodaTransaction : Component, IDisposable
     {
         private static readonly Logger transactionLogger = LogManager.GetLogger("Sooda.Transaction");
-        private static IDefaultSoodaTransactionStrategy _defaultTransactionStrategy = new SoodaThreadBoundTransactionStrategy();
+        private static IDefaultSoodaTransactionStrategy _defaultTransactionStrategy = TransactionStrategyMenager.GetTransactionStrategy();
 
-        private SoodaTransaction previousTransaction;
+        private readonly SoodaTransaction previousTransaction;
 
-        private SoodaTransactionOptions transactionOptions;
+        private readonly SoodaTransactionOptions transactionOptions;
         private readonly Dictionary<Type, SoodaRelationTable> _relationTables = new Dictionary<Type, SoodaRelationTable>();
         //private KeyToSoodaObjectMap _objects = new KeyToSoodaObjectMap();
         private bool _useWeakReferences = false;
-        private SoodaStatistics _statistics = new SoodaStatistics();
+        private readonly SoodaStatistics _statistics = new SoodaStatistics();
         private readonly List<WeakSoodaObject> _objectList = new List<WeakSoodaObject>();
         private Queue _precommitQueue = null;
         private readonly List<SoodaObject> _deletedObjects = new List<SoodaObject>();

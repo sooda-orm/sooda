@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Sooda.SqlServer")]
+[assembly: AssemblyTitle("Sooda.MySql")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Sooda.SqlServer")]
+[assembly: AssemblyProduct("Sooda.MySql")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("86261519-2836-47c7-9b46-31ef25cf33a0")]
+[assembly: Guid("c9035993-00b6-42d7-82df-6abb7c2a4484")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -17,6 +17,7 @@
     <DefineConstants>DOTNET35;DOTNET4;DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -25,6 +26,7 @@
     <DefineConstants>DOTNET35;DOTNET4;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -40,5 +42,5 @@
     <Compile Include="EntryPoint.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" />
-  <Import Project=".\..\..\Sooda.common.targets" /> 
+  <Import Project=".\..\..\Sooda.common.targets" />
 </Project>
