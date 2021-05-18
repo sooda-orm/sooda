@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F3243ECF-E834-4A09-9581-B3C0431A9F7C}</ProjectGuid>
+    <ProjectGuid>{1175F5F5-9704-4384-90D6-FA39B0326061}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Sooda.Configuration.AppSettings</RootNamespace>
-    <AssemblyName>Sooda.Configuration.AppSettings</AssemblyName>
+    <RootNamespace>Sooda.Configuration.Xml</RootNamespace>
+    <AssemblyName>Sooda.Configuration.Xml</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -61,17 +61,17 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppSettingsConfigProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\src\Sooda\Sooda.csproj">
-      <Project>{fcc9b644-9093-41f6-8f0d-f98f22474cb5}</Project>
-      <Name>Sooda</Name>
-    </ProjectReference>
+    <Compile Include="XmlConfigProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sooda\Sooda.csproj">
+      <Project>{9cc760f9-0bac-4e98-adea-02ea1c2cc5c1}</Project>
+      <Name>Sooda</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

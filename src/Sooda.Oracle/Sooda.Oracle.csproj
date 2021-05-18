@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sooda\Sooda.csproj">
-      <Project>{fcc9b644-9093-41f6-8f0d-f98f22474cb5}</Project>
+      <Project>{9cc760f9-0bac-4e98-adea-02ea1c2cc5c1}</Project>
       <Name>Sooda</Name>
     </ProjectReference>
   </ItemGroup>

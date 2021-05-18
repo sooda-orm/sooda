@@ -44,7 +44,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <ProjectReference Include="..\..\Sooda.Configuration.Xml\Sooda.Configuration.Xml.csproj">
+    <ProjectReference Include="..\..\src\Sooda.Configuration.Xml\Sooda.Configuration.Xml.csproj">
       <Project>{1175f5f5-9704-4384-90d6-fa39b0326061}</Project>
       <Name>Sooda.Configuration.Xml</Name>
     </ProjectReference>
@@ -57,7 +57,7 @@
       <Name>Sooda.TransactionStrategy.ThreadBound</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Sooda\Sooda.csproj">
-      <Project>{fcc9b644-9093-41f6-8f0d-f98f22474cb5}</Project>
+      <Project>{9cc760f9-0bac-4e98-adea-02ea1c2cc5c1}</Project>
       <Name>Sooda</Name>
     </ProjectReference>
     <ProjectReference Include="..\BaseObjects\Sooda.UnitTests.BaseObjects.csproj">
