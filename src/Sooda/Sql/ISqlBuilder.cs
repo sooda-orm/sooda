@@ -45,9 +45,7 @@ namespace Sooda.Sql
         int MaxIdentifierLength { get; }
         bool UseSafeLiterals { get; set; }
         string StringConcatenationOperator { get; }
-
         void BuildCommandWithParameters(IDbCommand command, bool append, string query, object[] par, bool isRaw);
-
         void GenerateCreateTable(TextWriter tw, TableInfo tableInfo, string additionalSettings, string terminator);
         void GeneratePrimaryKey(TextWriter tw, TableInfo tableInfo, string additionalSettings, string terminator);
         void GenerateForeignKeys(TextWriter tw, TableInfo tableInfo, string terminator);
@@ -58,5 +56,6 @@ namespace Sooda.Sql
         string GetTruncatedIdentifier(string identifier);
         bool HandleFatalException(IDbConnection connection, Exception e);
         bool IsNullValue(object val, Sooda.Schema.FieldInfo fi);
+
     }
 }

@@ -85,7 +85,6 @@ namespace Sooda.Sql
         {
             get { return "||"; }
         }
-
         public virtual int MaxIdentifierLength
         {
             get
