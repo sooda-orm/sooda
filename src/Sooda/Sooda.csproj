@@ -170,7 +170,6 @@
     <Compile Include="QL\TypedWrappers\SoqlDecimalWrapperExpression.cs" />
     <Compile Include="QL\TypedWrappers\SoqlDoubleWrapperExpression.cs" />
     <Compile Include="QL\TypedWrappers\SoqlGuidWrapperExpression.cs" />
-    <Compile Include="QL\TypedWrappers\SoqlImageWrapperExpression.cs" />
     <Compile Include="QL\TypedWrappers\SoqlInt16WrapperExpression.cs" />
     <Compile Include="QL\TypedWrappers\SoqlInt32WrapperExpression.cs" />
     <Compile Include="QL\TypedWrappers\SoqlInt64WrapperExpression.cs" />
@@ -179,7 +178,6 @@
     <Compile Include="QL\TypedWrappers\SoqlNullableDecimalWrapperExpression.cs" />
     <Compile Include="QL\TypedWrappers\SoqlNullableDoubleWrapperExpression.cs" />
     <Compile Include="QL\TypedWrappers\SoqlNullableGuidWrapperExpression.cs" />
-    <Compile Include="QL\TypedWrappers\SoqlNullableImageWrapperExpression.cs" />
     <Compile Include="QL\TypedWrappers\SoqlNullableInt16WrapperExpression.cs" />
     <Compile Include="QL\TypedWrappers\SoqlNullableInt32WrapperExpression.cs" />
     <Compile Include="QL\TypedWrappers\SoqlNullableInt64WrapperExpression.cs" />
