@@ -113,19 +113,7 @@ namespace Sooda.Sql
                 this.DisableUpdateBatch = true;
 
             string connectionTypeName = GetParameter("connectionType", false);
-            if (connectionTypeName == null)
-                connectionTypeName = "sqlclient";
-
-            switch (connectionTypeName)
-            {
-                case "sqlclient":
-                    ConnectionType = typeof(System.Data.SqlClient.SqlConnection);
-                    break;
-
-                default:
-                    ConnectionType = Type.GetType(connectionTypeName);
-                    break;
-            }
+            ConnectionType = Type.GetType(connectionTypeName);
 
             ConnectionString = GetParameter("connectionString", false);
         }
@@ -190,12 +178,13 @@ namespace Sooda.Sql
             if (!DisableTransactions)
             {
                 BeginTransaction();
-                if (this.SqlBuilder is OracleBuilder && SoodaConfig.GetString("sooda.oracleClientAutoCommitBugWorkaround", "false") == "true")
-                {
-                    // http://social.msdn.microsoft.com/forums/en-US/adodotnetdataproviders/thread/d4834ce2-482f-40ec-ad90-c3f9c9c4d4b1/
-                    // http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=351746
-                    Connection.GetType().GetProperty("TransactionState", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(Connection, 1, null);
-                }
+                // We don't support Oracle for now
+                //if (this.SqlBuilder is OracleBuilder && SoodaConfig.GetString("sooda.oracleClientAutoCommitBugWorkaround", "false") == "true")
+                //{
+                //    // http://social.msdn.microsoft.com/forums/en-US/adodotnetdataproviders/thread/d4834ce2-482f-40ec-ad90-c3f9c9c4d4b1/
+                //    // http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=351746
+                //    Connection.GetType().GetProperty("TransactionState", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(Connection, 1, null);
+                //}
             }
         }
 

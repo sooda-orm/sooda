@@ -95,7 +95,6 @@
     <Compile Include="ObjectMapper\FieldHandlers\FieldHandlerFactory.cs" />
     <Compile Include="ObjectMapper\FieldHandlers\FloatFieldHandler.cs" />
     <Compile Include="ObjectMapper\FieldHandlers\GuidFieldHandler.cs" />
-    <Compile Include="ObjectMapper\FieldHandlers\ImageFieldHandler.cs" />
     <Compile Include="ObjectMapper\FieldHandlers\Int32FieldHandler.cs" />
     <Compile Include="ObjectMapper\FieldHandlers\Int64FieldHandler.cs" />
     <Compile Include="ObjectMapper\FieldHandlers\StringFieldHandler.cs" />
@@ -249,9 +248,6 @@
     <Compile Include="SoodaWhereClause.cs" />
     <Compile Include="Sql\DbParameterConverter.cs" />
     <Compile Include="Sql\ISqlBuilder.cs" />
-    <Compile Include="Sql\MySqlBuilder.cs" />
-    <Compile Include="Sql\OracleBuilder.cs" />
-    <Compile Include="Sql\PostgreSqlBuilder.cs" />
     <Compile Include="Sql\SoqlToSqlConverter.cs" />
     <Compile Include="Sql\SqlBuilderBase.cs" />
     <Compile Include="Sql\SqlBuilderMenager.cs" />

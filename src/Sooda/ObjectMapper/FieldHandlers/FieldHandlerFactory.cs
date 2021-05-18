@@ -54,7 +54,6 @@ namespace Sooda.ObjectMapper.FieldHandlers
                 new StringFieldHandler(nullable),
                 new BlobFieldHandler(nullable),
                 new GuidFieldHandler(nullable),
-                new ImageFieldHandler(nullable),
                 new TimeSpanFieldHandler(nullable),
                 new AnsiStringFieldHandler(nullable)
             };

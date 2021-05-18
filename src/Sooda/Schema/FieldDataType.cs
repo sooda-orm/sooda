@@ -45,7 +45,7 @@ namespace Sooda.Schema
         String,
         Blob,
         Guid,
-        Image,
+        //Image,
         TimeSpan,
         AnsiString,
     }

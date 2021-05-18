@@ -213,9 +213,9 @@ namespace SoodaSchemaTool
                     fi.DataType = FieldDataType.Long;
                     break;
 
-                case "image":
-                    fi.DataType = FieldDataType.Image;
-                    break;
+                //case "image":
+                //    fi.DataType = FieldDataType.Image;
+                //    break;
 
                 case "binary":
                 case "varbinary":
