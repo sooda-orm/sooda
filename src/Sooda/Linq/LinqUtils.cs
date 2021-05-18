@@ -27,8 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#if DOTNET35
-
 using Sooda.ObjectMapper;
 using System.Collections.Generic;
 
@@ -58,5 +56,3 @@ namespace Sooda.Linq
         }
     }
 }
-
-#endif

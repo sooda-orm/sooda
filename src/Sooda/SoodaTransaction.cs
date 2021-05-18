@@ -139,9 +139,7 @@ namespace Sooda
                     {
                         source.Close();
                     }
-#if DOTNET35
                     DynamicFieldManager.CloseTransaction(this);
-#endif
                     if ((transactionOptions & SoodaTransactionOptions.Implicit) != 0 && this != _defaultTransactionStrategy.SetDefaultTransaction(previousTransaction))
                     {
                         transactionLogger.Warn("ActiveTransactionDataStoreSlot has been overwritten by someone.");
@@ -796,9 +794,7 @@ namespace Sooda
                         }
                     }
                     _schema = schema.Schema;
-#if DOTNET35
                     DynamicFieldManager.OpenTransaction(this);
-#endif
                 }
             }
         }

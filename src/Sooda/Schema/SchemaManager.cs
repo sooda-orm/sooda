@@ -87,11 +87,6 @@ namespace Sooda.Schema
 
         public static SchemaInfo ReadAndValidateSchema(XmlReader reader, string baseDirectoryForIncludes, IncludeInfo include)
         {
-#if SOODA_NO_VALIDATING_READER
-            XmlSerializer ser = new XmlSerializer(typeof(Sooda.Schema.SchemaInfo));
-            SchemaInfo schemaInfo = (SchemaInfo)ser.Deserialize(reader);
-#else
-
             XmlReaderSettings readerSettings = new XmlReaderSettings();
             readerSettings.ValidationType = ValidationType.Schema;
             readerSettings.Schemas.Add(NamespaceURI, GetSchemaXsdStreamXmlReader());
@@ -99,7 +94,6 @@ namespace Sooda.Schema
 
             XmlSerializer ser = new XmlSerializer(typeof(Sooda.Schema.SchemaInfo));
             SchemaInfo schemaInfo = (SchemaInfo)ser.Deserialize(validatingReader);
-#endif
 
             if (baseDirectoryForIncludes != null)
             {
