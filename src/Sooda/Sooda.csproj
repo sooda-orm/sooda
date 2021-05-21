@@ -11,4 +11,14 @@
    <AssemblyOriginatorKeyFile>Sooda.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
+  <ItemGroup>
+	<EmbeddedResource Include="Schema\SoodaSchema.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="QL\TypedWrappers\makewrappers.pl" />
+    <None Include="Schema\SoodaSchema.xsx">
+      <DependentUpon>SoodaSchema.xsd</DependentUpon>
+    </None>
+  </ItemGroup>
+
 </Project>

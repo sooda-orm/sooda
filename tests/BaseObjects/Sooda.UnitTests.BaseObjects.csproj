@@ -62,5 +62,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" />
-  
+  <PropertyGroup>
+    <PreBuildEvent>$(ProjectDir)..\..\src\SoodaStubGen\bin\$(ConfigurationName)\SoodaStubGen.exe $(ProjectDir)Sooda.UnitTests.BaseObjects.soodaproject</PreBuildEvent>
+  </PropertyGroup>
 </Project>
