@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="8.0.25" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Sooda\Sooda.csproj" />
   </ItemGroup>
 

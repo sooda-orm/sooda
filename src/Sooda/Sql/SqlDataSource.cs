@@ -46,6 +46,8 @@ namespace Sooda.Sql
         protected static readonly Logger logger = LogManager.GetLogger("Sooda.SqlDataSource");
         protected static readonly Logger sqllogger = LogManager.GetLogger("Sooda.SQL");
 
+        protected static readonly DbConnection dbConnection = DbConnectionMenager.GetConnection();
+
         private IDbCommand _updateCommand = null;
         private IsolationLevel _isolationLevel = IsolationLevel.ReadCommitted;
 
@@ -101,7 +103,11 @@ namespace Sooda.Sql
 
             this.DisableUpdateBatch = true;
 
-            this.SqlBuilder = SqlBuilderMenager.GetBuilder();
+            string dialect = GetParameter("sqlDialect", false);
+
+            this.SqlBuilder = string.IsNullOrEmpty(dialect) ?
+                SqlBuilderMenager.GetDefaultBuilder() : 
+                SqlBuilderMenager.GetBuilder(dialect);
 
             if (GetParameter("useSafeLiterals", false) == "false")
                 this.SqlBuilder.UseSafeLiterals = false;
@@ -112,10 +118,8 @@ namespace Sooda.Sql
             if (GetParameter("disableUpdateBatch", false) == "true")
                 this.DisableUpdateBatch = true;
 
-            string connectionTypeName = GetParameter("connectionType", false);
-            ConnectionType = Type.GetType(connectionTypeName);
-
             ConnectionString = GetParameter("connectionString", false);
+
         }
 
         public SqlDataSource(Sooda.Schema.DataSourceInfo dataSourceInfo) : this(dataSourceInfo.Name)
@@ -138,8 +142,8 @@ namespace Sooda.Sql
         {
             if (ConnectionString == null)
                 throw new SoodaDatabaseException("connectionString parameter not defined for datasource: " + Name);
-            if (ConnectionType == null)
-                throw new SoodaDatabaseException("connectionType parameter not defined for datasource: " + Name);
+            //if (ConnectionType == null)
+            //    throw new SoodaDatabaseException("connectionType parameter not defined for datasource: " + Name);
             string stries = SoodaConfig.GetString("sooda.connectionopenretries", "2");
             int tries;
             try
@@ -156,7 +160,8 @@ namespace Sooda.Sql
             {
                 try
                 {
-                    OpenConnection((IDbConnection)Activator.CreateInstance(ConnectionType, new object[] { ConnectionString }));
+                    dbConnection.Create(ConnectionString);
+                    OpenConnection();
                     tries = 0;
                 }
                 catch (Exception e)
@@ -170,21 +175,14 @@ namespace Sooda.Sql
             }
         }
 
-        protected void OpenConnection(IDbConnection connection)
+        protected void OpenConnection()
         {
-            Connection = connection;
+            Connection = dbConnection.Get();
             logger.Debug("{0}: open connection...", ConnectionLabel());
-            Connection.Open();
             if (!DisableTransactions)
-            {
-                BeginTransaction();
-                if (this.SqlBuilder.GetType().Name == "OracleBuilder" && SoodaConfig.GetString("sooda.oracleClientAutoCommitBugWorkaround", "false") == "true")
-                {
-                    // http://social.msdn.microsoft.com/forums/en-US/adodotnetdataproviders/thread/d4834ce2-482f-40ec-ad90-c3f9c9c4d4b1/
-                    // http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=351746
-                    Connection.GetType().GetProperty("TransactionState", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(Connection, 1, null);
-                }
-            }
+                dbConnection.Open(BeginTransaction);
+            else
+                dbConnection.Open();
         }
 
         public override bool IsOpen
@@ -1022,7 +1020,7 @@ namespace Sooda.Sql
                 if (Connection.State != ConnectionState.Open)
                 {
                     logger.Warn("Connection {0} is in invalid state - force open...", ConnectionLabel());
-                    OpenConnection(Connection);
+                    OpenConnection();
                 }
 
                 IDataReader retval = cmd.ExecuteReader(CmdBehavior);
@@ -1069,7 +1067,7 @@ namespace Sooda.Sql
                 if (Connection.State != ConnectionState.Open)
                 {
                     logger.Warn("Connection {0} is in invalid state - force open...", ConnectionLabel());
-                    OpenConnection(Connection);
+                    OpenConnection();
                 }
 
                 int retval = cmd.ExecuteNonQuery();

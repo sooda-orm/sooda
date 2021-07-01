@@ -29,9 +29,10 @@
 //
 
 using Sooda.Schema;
+using Sooda.Sql;
 using System;
 
-namespace Sooda.Sql
+namespace Sooda.PostgreSql
 {
     public class PostgreSqlBuilder : SqlBuilderNamedArg
     {

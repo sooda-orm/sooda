@@ -30,11 +30,12 @@
 
 using Sooda.QL;
 using Sooda.Schema;
+using Sooda.Sql;
 using System;
 using System.Data;
 using System.Data.OracleClient;
 
-namespace Sooda.Sql
+namespace Sooda.Oracle
 {
     public class OracleBuilder : SqlBuilderPositionalArg
     {
