@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DbConnectionWrapper.cs" />
+    <Compile Include="OracleDbConnectionFactory.cs" />
     <Compile Include="OracleBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

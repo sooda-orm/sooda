@@ -46,7 +46,7 @@ namespace Sooda.Sql
         protected static readonly Logger logger = LogManager.GetLogger("Sooda.SqlDataSource");
         protected static readonly Logger sqllogger = LogManager.GetLogger("Sooda.SQL");
 
-        protected static readonly DbConnection dbConnection = DbConnectionMenager.GetConnection();
+        protected static readonly ISoodaDbConnectionFactory dbConnection = SoodaDbConnectionMenager.GetConnection();
 
         private IDbCommand _updateCommand = null;
         private IsolationLevel _isolationLevel = IsolationLevel.ReadCommitted;
@@ -62,7 +62,6 @@ namespace Sooda.Sql
         public double QueryTimeTraceWarn = 10.0;
         public double QueryTimeTraceInfo = 2.0;
         public int CommandTimeout = 30;
-        public Type ConnectionType;
         public string ConnectionString;
         public string CreateTable = "";
         public string CreateIndex = "";
@@ -159,9 +158,8 @@ namespace Sooda.Sql
             while(tries > 0)
             {
                 try
-                {
-                    dbConnection.Create(ConnectionString);
-                    OpenConnection();
+                {                    
+                    OpenConnection(dbConnection.Create(ConnectionString));
                     tries = 0;
                 }
                 catch (Exception e)
@@ -175,14 +173,14 @@ namespace Sooda.Sql
             }
         }
 
-        protected void OpenConnection()
+        protected void OpenConnection(IDbConnection connection)
         {
-            Connection = dbConnection.Get();
+            Connection = connection;
             logger.Debug("{0}: open connection...", ConnectionLabel());
             if (!DisableTransactions)
-                dbConnection.Open(BeginTransaction);
+                dbConnection.Open(connection, BeginTransaction);
             else
-                dbConnection.Open();
+                dbConnection.Open(connection);
         }
 
         public override bool IsOpen
@@ -1020,7 +1018,7 @@ namespace Sooda.Sql
                 if (Connection.State != ConnectionState.Open)
                 {
                     logger.Warn("Connection {0} is in invalid state - force open...", ConnectionLabel());
-                    OpenConnection();
+                    OpenConnection(Connection);
                 }
 
                 IDataReader retval = cmd.ExecuteReader(CmdBehavior);
@@ -1067,7 +1065,7 @@ namespace Sooda.Sql
                 if (Connection.State != ConnectionState.Open)
                 {
                     logger.Warn("Connection {0} is in invalid state - force open...", ConnectionLabel());
-                    OpenConnection();
+                    OpenConnection(Connection);
                 }
 
                 int retval = cmd.ExecuteNonQuery();
