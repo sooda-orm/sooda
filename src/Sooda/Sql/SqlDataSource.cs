@@ -46,6 +46,8 @@ namespace Sooda.Sql
         protected static readonly Logger logger = LogManager.GetLogger("Sooda.SqlDataSource");
         protected static readonly Logger sqllogger = LogManager.GetLogger("Sooda.SQL");
 
+        protected static readonly ISoodaDbConnectionFactory dbConnection = SoodaDbConnectionMenager.GetConnection();
+
         private IDbCommand _updateCommand = null;
         private IsolationLevel _isolationLevel = IsolationLevel.ReadCommitted;
 
@@ -60,7 +62,6 @@ namespace Sooda.Sql
         public double QueryTimeTraceWarn = 10.0;
         public double QueryTimeTraceInfo = 2.0;
         public int CommandTimeout = 30;
-        public Type ConnectionType;
         public string ConnectionString;
         public string CreateTable = "";
         public string CreateIndex = "";
@@ -99,36 +100,13 @@ namespace Sooda.Sql
             if (at != null)
                 this.CreateIndex = at;
 
-            string dialect = GetParameter("sqlDialect", false);
-            if (dialect == null)
-                dialect = "microsoft";
-
             this.DisableUpdateBatch = true;
 
-            switch (dialect)
-            {
-                default:
-                case "msde":
-                case "mssql":
-                case "microsoft":
-                    this.SqlBuilder = new SqlServerBuilder();
-                    this.DisableUpdateBatch = false;
-                    break;
+            string dialect = GetParameter("sqlDialect", false);
 
-                case "postgres":
-                case "postgresql":
-                    this.SqlBuilder = new PostgreSqlBuilder();
-                    break;
-
-                case "mysql":
-                case "mysql4":
-                    this.SqlBuilder = new MySqlBuilder();
-                    break;
-
-                case "oracle":
-                    this.SqlBuilder = new OracleBuilder();
-                    break;
-            }
+            this.SqlBuilder = string.IsNullOrEmpty(dialect) ?
+                SqlBuilderMenager.GetDefaultBuilder() : 
+                SqlBuilderMenager.GetBuilder(dialect);
 
             if (GetParameter("useSafeLiterals", false) == "false")
                 this.SqlBuilder.UseSafeLiterals = false;
@@ -139,22 +117,8 @@ namespace Sooda.Sql
             if (GetParameter("disableUpdateBatch", false) == "true")
                 this.DisableUpdateBatch = true;
 
-            string connectionTypeName = GetParameter("connectionType", false);
-            if (connectionTypeName == null)
-                connectionTypeName = "sqlclient";
-
-            switch (connectionTypeName)
-            {
-                case "sqlclient":
-                    ConnectionType = typeof(System.Data.SqlClient.SqlConnection);
-                    break;
-
-                default:
-                    ConnectionType = Type.GetType(connectionTypeName);
-                    break;
-            }
-
             ConnectionString = GetParameter("connectionString", false);
+
         }
 
         public SqlDataSource(Sooda.Schema.DataSourceInfo dataSourceInfo) : this(dataSourceInfo.Name)
@@ -177,8 +141,8 @@ namespace Sooda.Sql
         {
             if (ConnectionString == null)
                 throw new SoodaDatabaseException("connectionString parameter not defined for datasource: " + Name);
-            if (ConnectionType == null)
-                throw new SoodaDatabaseException("connectionType parameter not defined for datasource: " + Name);
+            //if (ConnectionType == null)
+            //    throw new SoodaDatabaseException("connectionType parameter not defined for datasource: " + Name);
             string stries = SoodaConfig.GetString("sooda.connectionopenretries", "2");
             int tries;
             try
@@ -194,8 +158,8 @@ namespace Sooda.Sql
             while(tries > 0)
             {
                 try
-                {
-                    OpenConnection((IDbConnection)Activator.CreateInstance(ConnectionType, new object[] { ConnectionString }));
+                {                    
+                    OpenConnection(dbConnection.Create(ConnectionString));
                     tries = 0;
                 }
                 catch (Exception e)
@@ -213,17 +177,10 @@ namespace Sooda.Sql
         {
             Connection = connection;
             logger.Debug("{0}: open connection...", ConnectionLabel());
-            Connection.Open();
             if (!DisableTransactions)
-            {
-                BeginTransaction();
-                if (this.SqlBuilder is OracleBuilder && SoodaConfig.GetString("sooda.oracleClientAutoCommitBugWorkaround", "false") == "true")
-                {
-                    // http://social.msdn.microsoft.com/forums/en-US/adodotnetdataproviders/thread/d4834ce2-482f-40ec-ad90-c3f9c9c4d4b1/
-                    // http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=351746
-                    Connection.GetType().GetProperty("TransactionState", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(Connection, 1, null);
-                }
-            }
+                dbConnection.Open(connection, BeginTransaction);
+            else
+                dbConnection.Open(connection);
         }
 
         public override bool IsOpen

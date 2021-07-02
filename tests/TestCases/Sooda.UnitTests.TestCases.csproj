@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\..\packages\NUnit.3.12.0\build\NUnit.props" Condition="Exists('..\..\packages\NUnit.3.12.0\build\NUnit.props')" />
   <Import Project="..\..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props')" />
   <PropertyGroup>
@@ -9,9 +9,10 @@
     <OutputType>Library</OutputType>
     <AssemblyName>Sooda.UnitTests.TestCases</AssemblyName>
     <RootNamespace>Sooda.UnitTests.TestCases</RootNamespace>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,6 +23,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>8.0</LangVersion>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +33,8 @@
     <DefineConstants>DOTNET35;DOTNET4;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -39,10 +44,21 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <ProjectReference Include="..\..\src\Sooda.Configuration.Xml\Sooda.Configuration.Xml.csproj">
+      <Project>{1175f5f5-9704-4384-90d6-fa39b0326061}</Project>
+      <Name>Sooda.Configuration.Xml</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Sooda.SqlServer\Sooda.SqlServer.csproj">
+      <Project>{86261519-2836-47c7-9b46-31ef25cf33a0}</Project>
+      <Name>Sooda.SqlServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Sooda.TransactionStrategy.ThreadBound\Sooda.TransactionStrategy.ThreadBound.csproj">
+      <Project>{715d0b24-daeb-46da-900e-122661e2b6af}</Project>
+      <Name>Sooda.TransactionStrategy.ThreadBound</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Sooda\Sooda.csproj">
+      <Project>{9cc760f9-0bac-4e98-adea-02ea1c2cc5c1}</Project>
       <Name>Sooda</Name>
-      <Project>{FCC9B644-9093-41F6-8F0D-F98F22474CB5}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
     <ProjectReference Include="..\BaseObjects\Sooda.UnitTests.BaseObjects.csproj">
       <Name>Sooda.UnitTests.BaseObjects</Name>

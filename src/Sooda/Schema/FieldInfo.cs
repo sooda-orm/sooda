@@ -275,23 +275,11 @@ namespace Sooda.Schema
             }
             set
             {
-#if DOTNET4
                 if (Enum.TryParse(value, out DataType))
                 {
                     References = null;
                     return;
                 }
-#else
-                try
-                {
-                    DataType = (FieldDataType) Enum.Parse(typeof(FieldDataType), value);
-                    References = null;
-                    return;
-                }
-                catch (ArgumentException)
-                {
-                }
-#endif
                 References = value;
             }
         }

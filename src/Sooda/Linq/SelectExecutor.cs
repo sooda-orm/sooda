@@ -27,9 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#if DOTNET4
-
-using System.Threading;
 using Sooda.QL;
 using Sooda.Utils;
 using System;
@@ -202,5 +199,3 @@ namespace Sooda.Linq
         }
     }
 }
-
-#endif

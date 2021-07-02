@@ -27,8 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#if !MONO
-
 namespace Sooda.Sql
 {
     /// <summary>
@@ -74,5 +72,3 @@ namespace Sooda.Sql
         }
     }
 }
-
-#endif

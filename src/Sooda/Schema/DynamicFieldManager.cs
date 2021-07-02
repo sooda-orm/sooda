@@ -27,8 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#if DOTNET35
-
 using Sooda.Logging;
 using Sooda.Sql;
 using System;
@@ -265,5 +263,3 @@ namespace Sooda.Schema
         }
     }
 }
-
-#endif

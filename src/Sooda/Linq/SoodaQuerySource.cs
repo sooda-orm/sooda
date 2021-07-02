@@ -27,8 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#if DOTNET35
-
 using Sooda.QL;
 
 namespace Sooda.Linq
@@ -97,5 +95,3 @@ namespace Sooda.Linq
         }
     }
 }
-
-#endif

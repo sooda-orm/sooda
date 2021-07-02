@@ -95,12 +95,9 @@ namespace Sooda.Schema
         [NonSerialized]
         private Dictionary<string, StringCollection> _backRefCollections;
 
-#if DOTNET35
         [XmlIgnore]
         [NonSerialized]
         internal ReaderWriterLock _rwLock;
-#endif
-
         public bool Contains(string className)
         {
             return FindClassByName(className) != null;

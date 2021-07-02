@@ -55,15 +55,15 @@ namespace Sooda
     public class SoodaTransaction : Component, IDisposable
     {
         private static readonly Logger transactionLogger = LogManager.GetLogger("Sooda.Transaction");
-        private static IDefaultSoodaTransactionStrategy _defaultTransactionStrategy = new SoodaThreadBoundTransactionStrategy();
+        private static IDefaultSoodaTransactionStrategy _defaultTransactionStrategy = TransactionStrategyMenager.GetTransactionStrategy();
 
-        private SoodaTransaction previousTransaction;
+        private readonly SoodaTransaction previousTransaction;
 
-        private SoodaTransactionOptions transactionOptions;
+        private readonly SoodaTransactionOptions transactionOptions;
         private readonly Dictionary<Type, SoodaRelationTable> _relationTables = new Dictionary<Type, SoodaRelationTable>();
         //private KeyToSoodaObjectMap _objects = new KeyToSoodaObjectMap();
         private bool _useWeakReferences = false;
-        private SoodaStatistics _statistics = new SoodaStatistics();
+        private readonly SoodaStatistics _statistics = new SoodaStatistics();
         private readonly List<WeakSoodaObject> _objectList = new List<WeakSoodaObject>();
         private Queue _precommitQueue = null;
         private readonly List<SoodaObject> _deletedObjects = new List<SoodaObject>();
@@ -139,9 +139,7 @@ namespace Sooda
                     {
                         source.Close();
                     }
-#if DOTNET35
                     DynamicFieldManager.CloseTransaction(this);
-#endif
                     if ((transactionOptions & SoodaTransactionOptions.Implicit) != 0 && this != _defaultTransactionStrategy.SetDefaultTransaction(previousTransaction))
                     {
                         transactionLogger.Warn("ActiveTransactionDataStoreSlot has been overwritten by someone.");
@@ -796,9 +794,7 @@ namespace Sooda
                         }
                     }
                     _schema = schema.Schema;
-#if DOTNET35
                     DynamicFieldManager.OpenTransaction(this);
-#endif
                 }
             }
         }

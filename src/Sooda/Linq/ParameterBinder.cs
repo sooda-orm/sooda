@@ -27,9 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#if DOTNET4
-
-using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
@@ -58,5 +55,3 @@ namespace Sooda.Linq
         }
     }
 }
-
-#endif

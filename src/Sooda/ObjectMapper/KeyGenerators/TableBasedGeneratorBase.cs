@@ -56,14 +56,10 @@ namespace Sooda.ObjectMapper.KeyGenerators
 
         protected long AcquireNextRange()
         {
-#if MONO
-            return AcquireNextRangeInternal();
-#else
             using (System.Transactions.TransactionScope ts = new System.Transactions.TransactionScope(System.Transactions.TransactionScopeOption.Suppress))
             {
                 return AcquireNextRangeInternal();
             }
-#endif
         }
 
         long AcquireNextRangeInternal()

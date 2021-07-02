@@ -28,6 +28,7 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+using Sooda.Logging;
 using System;
 
 // using NLog namespace makes NLog preserve the correct call stack

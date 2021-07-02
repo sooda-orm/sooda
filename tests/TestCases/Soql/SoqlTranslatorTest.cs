@@ -29,6 +29,7 @@
 //
 
 using NUnit.Framework;
+using Sooda.Sql;
 using Sooda.UnitTests.Objects;
 using System;
 using System.IO;
@@ -62,7 +63,7 @@ namespace Sooda.UnitTests.TestCases.Soql
         private void AssertTranslation(string input, string output)
         {
             StringWriter sw = new StringWriter();
-            Sooda.Sql.SoqlToSqlConverter converter = new Sooda.Sql.SoqlToSqlConverter(sw, _DatabaseSchema.GetSchema(), new Sooda.Sql.SqlServerBuilder());
+            Sooda.Sql.SoqlToSqlConverter converter = new Sooda.Sql.SoqlToSqlConverter(sw, _DatabaseSchema.GetSchema(), SqlBuilderMenager.GetDefaultBuilder());
             Sooda.QL.SoqlPrettyPrinter prettyPrinter = new Sooda.QL.SoqlPrettyPrinter(Console.Out);
 
             Sooda.QL.SoqlQueryExpression query = Sooda.QL.SoqlParser.ParseQuery(input);

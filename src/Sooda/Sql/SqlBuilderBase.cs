@@ -85,7 +85,6 @@ namespace Sooda.Sql
         {
             get { return "||"; }
         }
-
         public virtual int MaxIdentifierLength
         {
             get
@@ -263,8 +262,8 @@ namespace Sooda.Sql
             paramTypes[typeof(Guid)] = DbType.Guid;
             paramTypes[typeof(TimeSpan)] = DbType.Int32;
             paramTypes[typeof(byte[])] = DbType.Binary;
-            paramTypes[typeof(System.Drawing.Image)] = DbType.Binary;
-            paramTypes[typeof(System.Drawing.Bitmap)] = DbType.Binary;
+            //paramTypes[typeof(System.Drawing.Image)] = DbType.Binary;
+            //paramTypes[typeof(System.Drawing.Bitmap)] = DbType.Binary;
         }
 
         public virtual string QuoteIdentifier(string s)

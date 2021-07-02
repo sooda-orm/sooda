@@ -27,8 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#if DOTNET35
-
 using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
@@ -359,5 +357,3 @@ namespace Sooda.Linq
         }
     }
 }
-
-#endif

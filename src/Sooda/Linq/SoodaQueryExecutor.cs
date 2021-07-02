@@ -27,8 +27,6 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#if DOTNET35
-
 using Sooda.ObjectMapper;
 using Sooda.ObjectMapper.FieldHandlers;
 using Sooda.QL;
@@ -43,7 +41,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.Remoting.Messaging;
 
 namespace Sooda.Linq
 {
@@ -59,9 +56,7 @@ namespace Sooda.Linq
         SoodaTransaction _transaction;
         ClassInfo _classInfo;
         SoodaSnapshotOptions _options;
-#if DOTNET4
         SelectExecutor _select = null;
-#endif
         bool _distinct = false;
         SoqlBooleanExpression _where = null;
         SoodaOrderBy _orderBy = null;
@@ -135,17 +130,13 @@ namespace Sooda.Linq
             switch (expr.NodeType)
             {
                 case ExpressionType.Constant:
-#if DOTNET4
                 case ExpressionType.DebugInfo:
                 case ExpressionType.Default:
                 case ExpressionType.Label:
-#endif
                     return true;
                 case ExpressionType.Parameter:
                     // FIXME: local variables are fine
-#if DOTNET4
                 case ExpressionType.Throw:
-#endif
                     return false;
                 case ExpressionType.UnaryPlus:
                 case ExpressionType.Negate:
@@ -156,7 +147,6 @@ namespace Sooda.Linq
                 case ExpressionType.ArrayLength:
                 case ExpressionType.Quote:
                 case ExpressionType.TypeAs:
-#if DOTNET4
                 case ExpressionType.Increment:
                 case ExpressionType.Decrement:
                 case ExpressionType.Unbox:
@@ -167,12 +157,9 @@ namespace Sooda.Linq
                 case ExpressionType.OnesComplement:
                 case ExpressionType.IsTrue:
                 case ExpressionType.IsFalse:
-#endif
                     return IsConstant(((UnaryExpression) expr).Operand);
                 case ExpressionType.TypeIs:
-#if DOTNET4
                 case ExpressionType.TypeEqual:
-#endif
                     return IsConstant(((TypeBinaryExpression) expr).Expression);
                 case ExpressionType.Add:
                 case ExpressionType.AddChecked:
@@ -198,7 +185,6 @@ namespace Sooda.Linq
                 case ExpressionType.ArrayIndex:
                 case ExpressionType.LeftShift:
                 case ExpressionType.RightShift:
-#if DOTNET4
                 case ExpressionType.Assign:
                 case ExpressionType.AddAssign:
                 case ExpressionType.AddAssignChecked:
@@ -214,7 +200,6 @@ namespace Sooda.Linq
                 case ExpressionType.LeftShiftAssign:
                 case ExpressionType.RightShiftAssign:
                 case ExpressionType.PowerAssign:
-#endif
                     BinaryExpression be = (BinaryExpression) expr;
                     return IsConstant(be.Left) && IsConstant(be.Right);
                 case ExpressionType.Conditional:
@@ -241,7 +226,6 @@ namespace Sooda.Linq
                 case ExpressionType.MemberInit:
                     MemberInitExpression mie = (MemberInitExpression) expr;
                     return IsConstant(mie.NewExpression) && IsConstant(mie.Bindings);
-#if DOTNET4
                 case ExpressionType.Block:
                     return ((BlockExpression) expr).Expressions.All(IsConstant);
                 case ExpressionType.Index:
@@ -258,7 +242,6 @@ namespace Sooda.Linq
                 case ExpressionType.Extension:
                 case ExpressionType.Goto:
                 case ExpressionType.RuntimeVariables:
-#endif
                 default:
                     throw new NotSupportedException(expr.NodeType.ToString());
             }
@@ -401,7 +384,6 @@ namespace Sooda.Linq
         {
             if (pe == _parameter)
             {
-#if DOTNET4
                 if (_select != null)
                 {
                     Type type;
@@ -410,7 +392,6 @@ namespace Sooda.Linq
                         throw new NotSupportedException("Intermediate Select() is not a path");
                     return path;
                 }
-#endif
                 return null;
             }
             for (SoodaQueryExecutor p = _parent; p != null; p = p._parent)
@@ -525,11 +506,7 @@ namespace Sooda.Linq
                 expr = lambda.Body;
             else
             {
-#if DOTNET4
                 expr = new ParameterBinder(exprName, lambda.Parameters, arguments).Visit(lambda.Body);
-#else
-                throw new NotSupportedException(string.Format("{0} requires .NET 4", exprName));
-#endif
             }
             return expr;
         }
@@ -813,7 +790,6 @@ namespace Sooda.Linq
         {
             SoqlExpression expr;
             Type type;
-#if DOTNET4
             if (mc.Arguments.Count == 1)
             {
                 if (_select == null)
@@ -821,7 +797,6 @@ namespace Sooda.Linq
                 expr = _select.GetSingleColumnExpression(out type);
             }
             else
-#endif
             {
                 Expression arg = GetLambda(mc).Body;
                 type = arg.Type;
@@ -847,14 +822,12 @@ namespace Sooda.Linq
                 query.SelectExpressions.Add(selector(subquery));
                 query.SelectAliases.Add(string.Empty);
             }
-#if DOTNET4
             else if (subquery._select != null)
             {
                 Type type;
                 query.SelectExpressions.Add(subquery._select.GetSingleColumnExpression(out type));
                 query.SelectAliases.Add(string.Empty);
             }
-#endif
             return query;
         }
 
@@ -1354,13 +1327,9 @@ namespace Sooda.Linq
 
         void Select(MethodCallExpression mc)
         {
-#if DOTNET4
             SelectExecutor select = new SelectExecutor(this);
             select.Process(GetLambda(mc));
             _select = select;
-#else
-            throw new NotImplementedException("Select() requires Sooda for .NET 4, this is .NET 3.5");
-#endif
         }
 
         void GroupBy(MethodCallExpression mc)
@@ -1581,13 +1550,11 @@ namespace Sooda.Linq
                     break;
 
                 case SoodaLinqMethod.Queryable_Distinct:
-#if DOTNET4
                     if (_select != null)
                     {
                         SkipTakeNotSupported();
                         _distinct = true;
                     }
-#endif
                     break;
 
                 case SoodaLinqMethod.Queryable_OfType:
@@ -1648,10 +1615,8 @@ namespace Sooda.Linq
 
         IList GetList()
         {
-#if DOTNET4
             if (_select != null)
                 return _select.GetList();
-#endif
             return new SoodaObjectListSnapshot(_transaction, new SoodaWhereClause(_where),
                 _orderBy, _startIdx, _topCount, _options, _classInfo);
         }
@@ -1700,11 +1665,7 @@ namespace Sooda.Linq
 
         int Count()
         {
-#if CACHE_LINQ_COUNT
-            return GetList().Count;
-#else
             return (int) ExecuteScalar(new SoqlFunctionCallExpression("count", new SoqlAsteriskExpression()), typeof(int));
-#endif
         }
 
         bool Contains(MethodCallExpression mc)
@@ -1712,14 +1673,11 @@ namespace Sooda.Linq
             TranslateQuery(mc.Arguments[0]);
             SkipTakeNotSupported();
             SoqlExpression haystack;
-#if DOTNET4
             if (_select != null)
             {
-                Type type;
-                haystack = _select.GetSingleColumnExpression(out type);
+                haystack = _select.GetSingleColumnExpression(out Type type);
             }
             else
-#endif
             {
                 haystack = TranslatePrimaryKey();
             }
@@ -1735,8 +1693,7 @@ namespace Sooda.Linq
 
         internal object Execute(Expression expr)
         {
-            MethodCallExpression mc = expr as MethodCallExpression;
-            if (mc != null)
+            if (expr is MethodCallExpression mc)
             {
                 switch (SoodaLinqMethodDictionary.Get(mc.Method))
                 {
@@ -1832,5 +1789,3 @@ namespace Sooda.Linq
         }
     }
 }
-
-#endif
