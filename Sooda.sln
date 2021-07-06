@@ -45,7 +45,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sooda.Logging.NLog", "src\S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sooda.Logging.NLog47", "src\Sooda.Logging.NLog47\Sooda.Logging.NLog47.csproj", "{7C033FC9-5CD7-4D6F-B7F0-778BFEAAAAF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.SqlServerCore", "Sooda.SqlServerCore\Sooda.SqlServerCore.csproj", "{5357052B-A6EB-43A6-93B7-7A76A491EE3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sooda.SqlServerCore", "src\Sooda.SqlServerCore\Sooda.SqlServerCore.csproj", "{C9EB3F14-543A-46A6-82A1-2B8D5A25F3C8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sooda.ConsoleApplicationExample", "examples\console\Sooda.ConsoleApplicationExample\Sooda.ConsoleApplicationExample.csproj", "{A94A6643-D10D-4C35-A862-C40D28CDB33C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -137,10 +139,14 @@ Global
 		{7C033FC9-5CD7-4D6F-B7F0-778BFEAAAAF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C033FC9-5CD7-4D6F-B7F0-778BFEAAAAF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C033FC9-5CD7-4D6F-B7F0-778BFEAAAAF3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5357052B-A6EB-43A6-93B7-7A76A491EE3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5357052B-A6EB-43A6-93B7-7A76A491EE3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5357052B-A6EB-43A6-93B7-7A76A491EE3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5357052B-A6EB-43A6-93B7-7A76A491EE3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9EB3F14-543A-46A6-82A1-2B8D5A25F3C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9EB3F14-543A-46A6-82A1-2B8D5A25F3C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9EB3F14-543A-46A6-82A1-2B8D5A25F3C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9EB3F14-543A-46A6-82A1-2B8D5A25F3C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A94A6643-D10D-4C35-A862-C40D28CDB33C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A94A6643-D10D-4C35-A862-C40D28CDB33C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A94A6643-D10D-4C35-A862-C40D28CDB33C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A94A6643-D10D-4C35-A862-C40D28CDB33C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

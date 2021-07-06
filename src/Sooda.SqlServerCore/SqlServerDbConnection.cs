@@ -3,7 +3,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace Sooda.SqlServer
+namespace Sooda.SqlServerCore
 {
     public sealed class SqlServerDbConnection : ISoodaDbConnectionFactory
     {
