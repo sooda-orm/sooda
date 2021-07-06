@@ -39,11 +39,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.Configuration.AppSett
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.Configuration.Xml", "src\Sooda.Configuration.Xml\Sooda.Configuration.Xml.csproj", "{1175F5F5-9704-4384-90D6-FA39B0326061}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.Logging.log4net", "src\Sooda.Logging.log4net\Sooda.Logging.log4net.csproj", "{A634F62E-15CE-4A9B-907C-4290E30D9AF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sooda.Logging.log4net", "src\Sooda.Logging.log4net\Sooda.Logging.log4net.csproj", "{A634F62E-15CE-4A9B-907C-4290E30D9AF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.Logging.NLog", "src\Sooda.Logging.NLog\Sooda.Logging.NLog.csproj", "{8005CB4D-0DCC-4004-91E9-EEC1DCF4AD85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sooda.Logging.NLog", "src\Sooda.Logging.NLog\Sooda.Logging.NLog.csproj", "{8005CB4D-0DCC-4004-91E9-EEC1DCF4AD85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.Logging.NLog47", "src\Sooda.Logging.NLog47\Sooda.Logging.NLog47.csproj", "{7C033FC9-5CD7-4D6F-B7F0-778BFEAAAAF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sooda.Logging.NLog47", "src\Sooda.Logging.NLog47\Sooda.Logging.NLog47.csproj", "{7C033FC9-5CD7-4D6F-B7F0-778BFEAAAAF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.SqlServerCore", "Sooda.SqlServerCore\Sooda.SqlServerCore.csproj", "{5357052B-A6EB-43A6-93B7-7A76A491EE3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -135,6 +137,10 @@ Global
 		{7C033FC9-5CD7-4D6F-B7F0-778BFEAAAAF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C033FC9-5CD7-4D6F-B7F0-778BFEAAAAF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C033FC9-5CD7-4D6F-B7F0-778BFEAAAAF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5357052B-A6EB-43A6-93B7-7A76A491EE3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5357052B-A6EB-43A6-93B7-7A76A491EE3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5357052B-A6EB-43A6-93B7-7A76A491EE3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5357052B-A6EB-43A6-93B7-7A76A491EE3B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
