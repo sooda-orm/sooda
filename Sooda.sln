@@ -6,8 +6,14 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.UnitTests.TestCases", "tests\TestCases\Sooda.UnitTests.TestCases.csproj", "{2DB9451B-8E35-45C3-94E6-32026E9DE8D1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.UnitTests.Objects", "tests\UnitTestObjects\Sooda.UnitTests.Objects.csproj", "{3574E1EF-2272-4474-85D9-0718B3D452E3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E4C24A3B-2359-4584-98B8-A0C1C660D958} = {E4C24A3B-2359-4584-98B8-A0C1C660D958}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.UnitTests.BaseObjects", "tests\BaseObjects\Sooda.UnitTests.BaseObjects.csproj", "{A1D122ED-CF84-4EF0-A138-72922DD50409}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E4C24A3B-2359-4584-98B8-A0C1C660D958} = {E4C24A3B-2359-4584-98B8-A0C1C660D958}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.Oracle", "src\Sooda.Oracle\Sooda.Oracle.csproj", "{4FC8B23E-E228-4607-A17F-6CA4D7DF5BC7}"
 EndProject
@@ -44,6 +50,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sooda.CodeGen", "src\Sooda.CodeGen\Sooda.CodeGen.csproj", "{BA509E46-F8D9-4C5B-ABCC-DB662D04DA27}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sooda.ConsoleApplicationExample", "examples\console\Sooda.ConsoleApplicationExample\Sooda.ConsoleApplicationExample.csproj", "{78F3D101-9D44-42DF-AC60-12805E5AE37C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E4C24A3B-2359-4584-98B8-A0C1C660D958} = {E4C24A3B-2359-4584-98B8-A0C1C660D958}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoodaFixKeygen", "src\SoodaFixKeygen\SoodaFixKeygen.csproj", "{84DAC270-9783-4B2D-B9A0-0F4475BB55B6}"
 EndProject
