@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Sooda.Logging.NLog\Sooda.Logging.NLog.csproj" />
+    <ProjectReference Include="..\..\..\src\Sooda.SqlServerCore\Sooda.SqlServerCore.csproj" />
+    <ProjectReference Include="..\..\..\src\Sooda.TransactionStrategy.ThreadBound\Sooda.TransactionStrategy.ThreadBound.csproj" />
+    <ProjectReference Include="..\..\..\src\Sooda\Sooda.csproj" />
+	<EmbeddedResource Include="_DBSchema.bin" />
+	<None Include="Sooda.ConsoleApplicationExample.soodaproject" />
+  </ItemGroup>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="$(ProjectDir)..\..\..\src\SoodaStubGen\bin\$(ConfigurationName)\net5.0\SoodaStubGen.exe $(ProjectDir)Sooda.ConsoleApplicationExample.soodaproject" />
+  </Target>
+</Project>

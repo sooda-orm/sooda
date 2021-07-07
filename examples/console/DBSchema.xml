@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../DBSchema.xsl" ?>
+<schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sooda.org/schemas/SoodaSchema.xsd">
+    <datasource name="default" type="Sooda.Sql.SqlDataSource" dynamicFields="true" />
+
+    <class name="Role" cached="false" triggers="false" label="Id">
+        <table name="_Role">
+            <field name="Id" dbcolumn="id" type="Integer" primaryKey="true" />
+            <field name="Name" dbcolumn="name" type="String" size="64" nullable="true" />
+        </table>
+
+        <const name="Employee" key="1" />
+        <const name="Manager" key="2" />
+        <const name="Customer" key="3" />
+        <const name="CustomerX" key="4" />
+    </class>
+</schema>

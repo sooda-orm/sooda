@@ -47,6 +47,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoodaStubGen", "src\SoodaSt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sooda.CodeGen", "src\Sooda.CodeGen\Sooda.CodeGen.csproj", "{BA509E46-F8D9-4C5B-ABCC-DB662D04DA27}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sooda.ConsoleApplicationExample", "examples\console\Sooda.ConsoleApplicationExample\Sooda.ConsoleApplicationExample.csproj", "{78F3D101-9D44-42DF-AC60-12805E5AE37C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -141,6 +143,10 @@ Global
 		{BA509E46-F8D9-4C5B-ABCC-DB662D04DA27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA509E46-F8D9-4C5B-ABCC-DB662D04DA27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA509E46-F8D9-4C5B-ABCC-DB662D04DA27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78F3D101-9D44-42DF-AC60-12805E5AE37C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78F3D101-9D44-42DF-AC60-12805E5AE37C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78F3D101-9D44-42DF-AC60-12805E5AE37C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78F3D101-9D44-42DF-AC60-12805E5AE37C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

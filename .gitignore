@@ -339,3 +339,5 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /builds/0
+/examples/console/Sooda.ConsoleApplicationExample/_DBSchema.bin
+/examples/console/Sooda.ConsoleApplicationExample/_Stubs.cs
