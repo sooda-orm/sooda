@@ -8,7 +8,6 @@
     <ProjectReference Include="..\..\..\src\Sooda.SqlServerCore\Sooda.SqlServerCore.csproj" />
     <ProjectReference Include="..\..\..\src\Sooda.TransactionStrategy.ThreadBound\Sooda.TransactionStrategy.ThreadBound.csproj" />
     <ProjectReference Include="..\..\..\src\Sooda\Sooda.csproj" />
-	<EmbeddedResource Include="_DBSchema.bin" />
 	<None Include="Sooda.ConsoleApplicationExample.soodaproject" />
   </ItemGroup>
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

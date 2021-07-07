@@ -8,4 +8,7 @@
   <not-null-representation>Raw</not-null-representation>
   <with-typed-queries>true</with-typed-queries>
   <embedded-schema-type>Binary</embedded-schema-type>
+	<external-projects>
+		<project type="null" file="Sooda.ConsoleApplicationExample.csproj"/>
+	</external-projects>
 </sooda-project>
