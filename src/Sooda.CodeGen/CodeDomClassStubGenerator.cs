@@ -339,7 +339,6 @@ namespace Sooda.CodeGen
                 return new CodeTypeReference("Sooda.ObjectMapper.SoodaObjectCollectionWrapperGeneric", new CodeTypeReference(className));
         }
 
-#if DOTNET35
         static CodeMemberProperty GetCollectionLinqQuery(CollectionBaseInfo coli, CodeExpression whereExpression)
         {
             string elementType = coli.GetItemClass().Name;
@@ -359,7 +358,6 @@ namespace Sooda.CodeGen
 
             return prop;
         }
-#endif
 
         public void GenerateProperties(CodeTypeDeclaration ctd, ClassInfo ci)
         {
@@ -715,7 +713,6 @@ namespace Sooda.CodeGen
                     prop.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(This, "_collectionCache_" + coli.Name)));
                     ctd.Members.Add(prop);
 
-#if DOTNET35
                     CodeExpression whereExpression = new CodeMethodInvokeExpression(
                         new CodeTypeReferenceExpression(typeof(Sooda.QL.Soql)),
                         "FieldEquals",
@@ -730,7 +727,6 @@ namespace Sooda.CodeGen
                     }
                     prop = GetCollectionLinqQuery(coli, whereExpression);
                     ctd.Members.Add(prop);
-#endif
                 }
             }
 
@@ -774,7 +770,6 @@ namespace Sooda.CodeGen
 
                     ctd.Members.Add(prop);
 
-#if DOTNET35
                     CodeExpression whereExpression = new CodeMethodInvokeExpression(
                         new CodeTypeReferenceExpression(typeof(Sooda.QL.Soql)),
                         "CollectionFor",
@@ -785,7 +780,6 @@ namespace Sooda.CodeGen
                         This);
                     prop = GetCollectionLinqQuery(coli, whereExpression);
                     ctd.Members.Add(prop);
-#endif
                 }
             }
         }

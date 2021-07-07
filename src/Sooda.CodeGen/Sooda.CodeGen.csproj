@@ -1,74 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0D67237B-4FBA-4BD9-95C3-24B5F427D014}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AssemblyName>Sooda.CodeGen</AssemblyName>
-    <RootNamespace>Sooda.CodeGen</RootNamespace>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
+    <TargetFramework>net5.0</TargetFramework>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<SignAssembly>true</SignAssembly>
+	<AssemblyOriginatorKeyFile>Sooda.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DOTNET35;DOTNET4;DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>8.0</LangVersion>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>DOTNET35;DOTNET4;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>8.0</LangVersion>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
+    <None Remove="CDIL\Templates\ClassField.cdil" />
+    <None Remove="CDIL\Templates\DatabaseSchema.cdil" />
+    <None Remove="CDIL\Templates\Factory.cdil" />
+    <None Remove="CDIL\Templates\ListWrapper.cdil" />
+    <None Remove="CDIL\Templates\Loader.cdil" />
+    <None Remove="CDIL\Templates\NullableTypedWrapper.cdil" />
+    <None Remove="CDIL\Templates\ProxyInterface.cdil" />
+    <None Remove="CDIL\Templates\ProxyInterfaceFactory.cdil" />
+    <None Remove="CDIL\Templates\Skeleton.cdil" />
+    <None Remove="CDIL\Templates\Stub.cdil" />
+    <None Remove="CDIL\Templates\TypedCollectionWrapper.cdil" />
+    <None Remove="CDIL\Templates\TypedWrapper.cdil" />
+    <None Remove="SoodaProject.xsd" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="AssemblyBuildInfo.cs" />
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="AssemblySign.cs" />
-    <Compile Include="CDIL\CDILContext.cs" />
-    <Compile Include="CDIL\CDILParser.cs" />
-    <Compile Include="CDIL\CDILPrettyPrinter.cs" />
-    <Compile Include="CDIL\CDILTemplate.cs" />
-    <Compile Include="CDIL\CDILToken.cs" />
-    <Compile Include="CDIL\CDILTokenizer.cs" />
-    <Compile Include="CodeDomClassSkeletonGenerator.cs" />
-    <Compile Include="CodeDomClassStubGenerator.cs" />
-    <Compile Include="CodeDomHelpers.cs" />
-    <Compile Include="CodeDomListRelationTableGenerator.cs" />
-    <Compile Include="CodeGenerator.cs" />
-    <Compile Include="EmbedSchema.cs" />
-    <Compile Include="ICodeGeneratorOutput.cs" />
-    <Compile Include="IProjectFile.cs" />
-    <Compile Include="NullProjectFile.cs" />
-    <Compile Include="SoodaCodeGenException.cs" />
-    <Compile Include="SoodaProject.cs">
-      <DependentUpon>SoodaProject.xsd</DependentUpon>
-    </Compile>
-    <Compile Include="VS2005csprojProjectFile.cs" />
-    <Compile Include="VS2005ProjectFileBase.cs" />
-    <Compile Include="VS2005vbprojProjectFile.cs" />
     <EmbeddedResource Include="CDIL\Templates\ClassField.cdil" />
     <EmbeddedResource Include="CDIL\Templates\DatabaseSchema.cdil" />
     <EmbeddedResource Include="CDIL\Templates\Factory.cdil" />
     <EmbeddedResource Include="CDIL\Templates\ListWrapper.cdil" />
     <EmbeddedResource Include="CDIL\Templates\Loader.cdil" />
     <EmbeddedResource Include="CDIL\Templates\NullableTypedWrapper.cdil" />
+    <EmbeddedResource Include="CDIL\Templates\ProxyInterface.cdil" />
+    <EmbeddedResource Include="CDIL\Templates\ProxyInterfaceFactory.cdil" />
     <EmbeddedResource Include="CDIL\Templates\Skeleton.cdil" />
     <EmbeddedResource Include="CDIL\Templates\Stub.cdil" />
     <EmbeddedResource Include="CDIL\Templates\TypedCollectionWrapper.cdil" />
@@ -77,18 +40,19 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+
   <ItemGroup>
-    <EmbeddedResource Include="CDIL\Templates\ProxyInterfaceFactory.cdil" />
+    <PackageReference Include="System.CodeDom" Version="5.0.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <EmbeddedResource Include="CDIL\Templates\ProxyInterface.cdil" />
+    <ProjectReference Include="..\Sooda\Sooda.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\Sooda\Sooda.csproj">
-      <Project>{9CC760F9-0BAC-4E98-ADEA-02EA1C2CC5C1}</Project>
-      <Name>Sooda</Name>
-    </ProjectReference>
+    <Compile Update="SoodaProject.cs">
+      <DependentUpon>SoodaProject.xsd</DependentUpon>
+    </Compile>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" />
-  <Import Project=".\..\..\Sooda.common.targets" />
+
 </Project>
