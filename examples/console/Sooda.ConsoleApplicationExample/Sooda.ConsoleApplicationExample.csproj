@@ -4,7 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Sooda.Logging.NLog\Sooda.Logging.NLog.csproj" />
+    <ProjectReference Include="..\..\..\src\Sooda.Logging.NLog47\Sooda.Logging.NLog47.csproj" />
     <ProjectReference Include="..\..\..\src\Sooda.SqlServerCore\Sooda.SqlServerCore.csproj" />
     <ProjectReference Include="..\..\..\src\Sooda.TransactionStrategy.ThreadBound\Sooda.TransactionStrategy.ThreadBound.csproj" />
     <ProjectReference Include="..\..\..\src\Sooda\Sooda.csproj" />
