@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <sooda-project xmlns="http://www.sooda.org/schemas/SoodaProject.xsd">
-  <schema-file>../DBSchema.xml</schema-file>
+  <schema-file>Schema/DBSchema.xml</schema-file>
   <language>c#</language>
   <output-namespace>Sooda.ConsoleApplicationExample</output-namespace>
   <output-path>.</output-path>

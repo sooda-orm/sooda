@@ -8,16 +8,16 @@ namespace Sooda.ConsoleApplicationExample
     using SoodaConsoleApplicationExampleStubs = Sooda.ConsoleApplicationExample.Stubs;
     
     
-    public class Role : SoodaConsoleApplicationExampleStubs.Role_Stub
+    public class OrderItem : SoodaConsoleApplicationExampleStubs.OrderItem_Stub
     {
         
-        public Role(SoodaConstructor c) : 
+        public OrderItem(SoodaConstructor c) : 
                 base(c)
         {
             // Do not modify this constructor.
         }
         
-        public Role(SoodaTransaction transaction) : 
+        public OrderItem(SoodaTransaction transaction) : 
                 base(transaction)
         {
             // 
@@ -25,7 +25,7 @@ namespace Sooda.ConsoleApplicationExample
             // 
         }
         
-        public Role() : 
+        public OrderItem() : 
                 this(SoodaTransaction.ActiveTransaction)
         {
             // Do not modify this constructor.
