@@ -34,7 +34,7 @@ namespace Sooda.Utils
     {
         public static StopWatch Create()
         {
-            return new QPCStopWatch();
+            return new SDStopWatch();
         }
 
         public abstract void Start();
