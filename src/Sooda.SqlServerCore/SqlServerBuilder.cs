@@ -28,6 +28,7 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+using Microsoft.Data.SqlClient;
 using Sooda.Schema;
 using Sooda.Sql;
 using System;
