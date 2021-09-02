@@ -26,4 +26,12 @@ jobs:
     - uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '5.0.x'
-    - run: dotnet build src/Sooda/Sooda.csproj
+    - run: dotnet pack src/Sooda/Sooda.csproj
+    - run: dotnet pack src/Sooda.MySql/Sooda.MySql.csproj
+    - run: dotnet pack src/Sooda.PostgreSql/Sooda.PostgreSql.csproj
+    - run: dotnet pack src/Sooda.SqlServerCore/Sooda.SqlServerCore.csproj
+    - run: dotnet pack src/Sooda.TransactionStrategy.ProcessBound/Sooda.TransactionStrategy.ProcessBound.csproj
+    - run: dotnet pack src/Sooda.TransactionStrategy.ThreadBound/Sooda.TransactionStrategy.ThreadBound.csproj
+    - run: dotnet pack src/Sooda.Logging.NLog47/Sooda.Logging.NLog47.csproj
+    - run: dotnet pack src/Sooda.Logging.log4net/Sooda.Logging.log4net.csproj
+    
