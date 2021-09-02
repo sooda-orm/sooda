@@ -33,7 +33,6 @@ using Sooda.Schema;
 using Sooda.Sql;
 using System;
 using System.Data;
-using System.Data.SqlClient;
 
 namespace Sooda.SqlServerCore
 {
