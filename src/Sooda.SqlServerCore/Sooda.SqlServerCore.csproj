@@ -1,15 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="3.0.0" />
-  </ItemGroup>
+        <PackageVersion>1.0.0</PackageVersion>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Sooda\Sooda.csproj" />
-  </ItemGroup>
+        <Authors>Jarosław Kowalski, Piotr Fusik, Maciej Figatowski, Marcin Krupiński, Rafał Gwizdała, Damian Załęcki, Maciej Nowak, &amp; others</Authors>
+        <Company>Sooda ORM</Company>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <Description>
+            Extension for 'Sooda': support for SQL Server using Microsoft.Data.SqlClient.
+
+            Sooda is an object-to-relational mapping (O/R Mapping) software for the .NET environment. It lets you automatically generate an object-oriented data access layer (DAL) for your application. Instead of writing SQL code, you can now focus on writing business rules in object-oriented .NET languages.
+
+            Sooda is an open source software distributed under the terms of the BSD license.
+        </Description>
+        <PackageTags>orm sql object relational mapping data access repository</PackageTags>
+        <TargetFrameworks>netstandard2.0</TargetFrameworks>
+        <RepositoryUrl>https://github.com/sooda-orm/sooda.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="3.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Sooda\Sooda.csproj" />
+    </ItemGroup>
 
 </Project>
