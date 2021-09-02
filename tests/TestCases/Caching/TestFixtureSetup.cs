@@ -12,8 +12,7 @@ namespace Sooda.UnitTests.TestCases.Caching
         {
             Sooda.Logging.LogManager.SetLoggingImplementation(new Sooda.Logging.ConsoleLoggingImplementation());
             Sooda.TransactionStrategyMenager.SetTransactionStrategy(new TransactionStrategy.SoodaThreadBoundTransactionStrategy());
-            Sooda.Sql.SqlBuilderMenager.SetDefaultBuilder(new SqlServer.SqlServerBuilder());
-            //Sooda.Sql.DBConnection.CreateConnectionDelegate = SqlServer.DBConnection.Create;
+            Sooda.Sql.SqlBuilderMenager.SetDefaultBuilder(new Sooda.SqlServerCore.SqlServerBuilder());
             MultiAssemblySchema.RegisterSchema(typeof(Sooda.UnitTests.BaseObjects._DatabaseSchema));
             MultiAssemblySchema.RegisterSchema(typeof(Sooda.UnitTests.Objects._DatabaseSchema));
             Sooda.SoodaConfig.SetConfigProvider(new EnvironmentConfigProvider());
