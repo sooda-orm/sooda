@@ -59,7 +59,7 @@ namespace Sooda.ConsoleApplicationExample
                                     Console.WriteLine("--\t----\t\t-----------");
                                     foreach (Category c in Category.AllQuery)
                                     {
-                                        Console.WriteLine("{0}.\t{1}\t\t{2}", c.Id, c.Name, c.Description.IsNull ? string.Empty : c.Description.Value);
+                                        Console.WriteLine("{0}.\t{1}\t\t{2}", c.Id, c.Name, c.Description == null ? string.Empty : c.Description);
                                     }
                                     break;
                                 }

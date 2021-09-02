@@ -1,19 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
-  
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Sooda.Logging.NLog47\Sooda.Logging.NLog47.csproj" />
-    <ProjectReference Include="..\..\..\src\Sooda.SqlServerCore\Sooda.SqlServerCore.csproj" />
-    <ProjectReference Include="..\..\..\src\Sooda.TransactionStrategy.ThreadBound\Sooda.TransactionStrategy.ThreadBound.csproj" />
-    <ProjectReference Include="..\..\..\src\Sooda\Sooda.csproj" />
-	<None Include="Sooda.ConsoleApplicationExample.soodaproject" />
-	<EmbeddedResource Include="_DBSchema.bin"/>
-	<Compile Include="_Stubs.cs" Condition="!Exists('_Stubs.cs')" />
-  </ItemGroup>
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="$(ProjectDir)..\..\..\src\SoodaStubGen\bin\$(ConfigurationName)\net5.0\SoodaStubGen.exe $(ProjectDir)Sooda.ConsoleApplicationExample.soodaproject" />
-  </Target>
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\src\Sooda.Logging.NLog47\Sooda.Logging.NLog47.csproj" />
+        <ProjectReference Include="..\..\..\src\Sooda.SqlServerCore\Sooda.SqlServerCore.csproj" />
+        <ProjectReference Include="..\..\..\src\Sooda.TransactionStrategy.ThreadBound\Sooda.TransactionStrategy.ThreadBound.csproj" />
+        <ProjectReference Include="..\..\..\src\Sooda\Sooda.csproj" />
+        <EmbeddedResource Include="_DBSchema.bin" />
+        <Compile Include="_Stubs.cs" Condition="!Exists('_Stubs.cs')" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <MainSchemaFile>Schema\DBSchema.xml</MainSchemaFile>
+        <OutputNamespace>Sooda.ConsoleApplicationExample</OutputNamespace>
+        <OutputDirectory>.\</OutputDirectory>
+        <NullableAsType>nullable</NullableAsType>
+        <BaseClass>SoodaObject</BaseClass>
+        <ApplicationIcon />
+        <StartupObject>Sooda.ConsoleApplicationExample.Program</StartupObject>
+    </PropertyGroup>
+    <ItemGroup>
+        <SchemaFiles Include="Schema\*.xml" />
+    </ItemGroup>
+
+    <Target Name="GenerateSchema" BeforeTargets="PreBuildEvent" Inputs="@(SchemaFiles)" Outputs="_DBSchema.bin">
+        <Exec Command="$(ProjectDir)..\..\..\src\SoodaStubGen\bin\$(ConfigurationName)\net5.0\SoodaStubGen.exe --lang csharp --schema $(MainSchemaFile) --namespace $(OutputNamespace) --base-class $(BaseClass) --output $(OutputDirectory) --schema-embed-bin --nullable-as $(NullableAsType) --no-typed-queries --no-soql" />
+    </Target>
 </Project>
