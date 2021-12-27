@@ -78,6 +78,7 @@ namespace Sooda.Schema
             }
 
             fi.DBColumnName = "value";
+            fi.Table = table;
             table.Fields.Add(fi);
 
             return table;
@@ -162,7 +163,7 @@ namespace Sooda.Schema
         internal static void CloseTransaction(SoodaTransaction transaction)
         {
             ReaderWriterLock rwLock = transaction.Schema._rwLock;
-            if (rwLock != null)
+            if (rwLock != null && rwLock.IsReaderLockHeld)
                 rwLock.ReleaseReaderLock();
         }
 

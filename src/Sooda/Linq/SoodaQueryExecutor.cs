@@ -43,6 +43,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 
 namespace Sooda.Linq
 {
@@ -747,7 +748,7 @@ namespace Sooda.Linq
 
         SoqlStringContainsExpression TranslateStringContains(MethodCallExpression mc, SoqlStringContainsPosition position)
         {
-            return new SoqlStringContainsExpression(TranslateExpression(mc.Object), position, GetStringArgument(mc));
+            return new SoqlStringContainsExpression(TranslateExpression(mc.Object), position, TranslateExpression(mc.Arguments[0]));
         }
 
         SoqlExpression TranslateGetLabel(Expression expr)
@@ -970,6 +971,11 @@ namespace Sooda.Linq
                         // count(case when ... then 1 end) > 0
                         return TranslateGroupAny(TranslateEnumerableFilter(mc), SoqlRelationalOperator.Greater);
                     }
+
+                    MethodCallExpression translatedConstSourceAny = null;
+                    if (TranslateConstSourceAny(mc, out translatedConstSourceAny))
+                        return TranslateSubqueryAny(translatedConstSourceAny);
+
                     if (GetCollectionName(mc.Arguments[0]) != null)
                         return TranslateCollectionAny(mc);
                     return TranslateSubqueryAny(mc);
@@ -1145,6 +1151,57 @@ namespace Sooda.Linq
                     }
                     return TranslateExpression(newExpr);
             }
+        }
+
+        private Type GetElementType(Type input)
+        {
+            var ret = input.GetElementType();
+            if (ret != null)
+                return ret;
+
+            var enumerableType = input.GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+            if (enumerableType != null)
+                return enumerableType.GetGenericArguments()[0];
+
+            return null;
+        }
+
+        /// <summary>
+        /// method rewrites &lt;const SoodaClass[]&gt;Any(x => ...) to
+        /// &lt;SoodaClass&gt;.Linq().Where(item =&gt; &lt;const SoodaClass[]&gt;.Contains(item)).Any(x =&gt;  ...)
+        /// </summary>
+        private bool TranslateConstSourceAny(MethodCallExpression mc, out MethodCallExpression newExpression)
+        {
+            newExpression = null;
+            var source = mc.Arguments[0];
+
+            if (typeof(IQueryable).IsAssignableFrom(source.Type) || !IsConstant(source))
+            {
+                // source isn't collection or is IQueryable. We don't allow translation of IQueryable for performance reasons
+                // - user can think, that "IQueryable.Any" subquery can be translated into complex db query, that isn't true
+                // and we don't need many items in "IN" clouse.
+                return false;
+            }
+
+            var elementType = GetElementType(source.Type);
+            if (elementType == null)
+                return false;
+
+            var elementClass = _transaction.Schema.FindClassByName(elementType.Name);
+            if (elementClass == null)   // element isn't sooda class
+                return false;
+
+            var allRecords = Expression.Call(elementType, "Linq", null);
+
+            var containsParam = Expression.Parameter(elementType, "item");
+            var containsExpr = Expression.Call(typeof(Enumerable), "Contains", new[] {elementType}, new Expression[] { source, containsParam });
+            var containsLambda = Expression.Lambda(containsExpr, containsParam); // item => array.Contains(item)
+
+            var currentRecords = Expression.Call(typeof(Queryable), "Where", new [] {elementType}, new Expression[]{ allRecords, containsLambda });
+
+            newExpression = Expression.Call(mc.Method, currentRecords, mc.Arguments[1]);
+            
+            return true;
         }
 
         SoqlExpression TranslateToFunction(string function, BinaryExpression expr)
@@ -1596,7 +1653,7 @@ namespace Sooda.Linq
                 return _select.GetList();
 #endif
             return new SoodaObjectListSnapshot(_transaction, new SoodaWhereClause(_where),
-                _orderBy, _startIdx, _topCount, _options|SoodaSnapshotOptions.DisablePagedCount, _classInfo);
+                _orderBy, _startIdx, _topCount, _options, _classInfo);
         }
 
         object Single(int topCount, MethodCallExpression orDefault)

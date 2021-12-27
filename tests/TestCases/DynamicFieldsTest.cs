@@ -54,11 +54,11 @@ namespace Sooda.UnitTests.TestCases
         static void AddIntField(SoodaTransaction tran)
         {
             DynamicFieldManager.Add(new FieldInfo {
-                    ParentClass = tran.Schema.FindClassByName("PKInt32"),
-                    Name = IntField,
-                    TypeName = "Integer",
-                    IsNullable = false
-                }, tran);
+                ParentClass = tran.Schema.FindClassByName("PKInt32"),
+                Name = IntField,
+                TypeName = "Integer",
+                IsNullable = false
+            }, tran);
         }
 
         static void Remove(string name, SoodaTransaction tran)
@@ -72,10 +72,10 @@ namespace Sooda.UnitTests.TestCases
         static void AddDateTimeField(SoodaTransaction tran)
         {
             DynamicFieldManager.Add(new FieldInfo {
-                    ParentClass = tran.Schema.FindClassByName("PKInt32"),
-                    Name = DateTimeField,
-                    Type = typeof(DateTime?)
-                }, tran);
+                ParentClass = tran.Schema.FindClassByName("PKInt32"),
+                Name = DateTimeField,
+                Type = typeof(DateTime?)
+            }, tran);
         }
 
         const string ReferenceField = "ContactDynamicField";
@@ -83,11 +83,11 @@ namespace Sooda.UnitTests.TestCases
         static void AddReferenceField(SoodaTransaction tran)
         {
             DynamicFieldManager.Add(new FieldInfo {
-                    ParentClass = tran.Schema.FindClassByName("PKInt32"),
-                    Name = ReferenceField,
-                    Type = typeof(Contact),
-                    IsNullable = false
-                }, tran);
+                ParentClass = tran.Schema.FindClassByName("PKInt32"),
+                Name = ReferenceField,
+                Type = typeof(Contact),
+                IsNullable = false
+            }, tran);
         }
 
         static void UpdateReferenceField(SoodaTransaction tran)
@@ -102,25 +102,25 @@ namespace Sooda.UnitTests.TestCases
         static void AddStringField(SoodaTransaction tran)
         {
             DynamicFieldManager.Add(new FieldInfo {
-                    ParentClass = tran.Schema.FindClassByName("PKInt32"),
-                    Name = StringField,
-                    TypeName = "String",
-                    Size = 128,
-                    IsNullable = false
-                }, tran);
+                ParentClass = tran.Schema.FindClassByName("PKInt32"),
+                Name = StringField,
+                TypeName = "String",
+                Size = 128,
+                IsNullable = false
+            }, tran);
         }
 #endif
 
         [Test]
         public void TwoTransactions()
         {
-            using (new SoodaTransaction()) 
+            using (new SoodaTransaction())
             {
                 object result = Contact.Mary["Name"];
                 Assert.AreEqual("Mary Manager", result);
             }
 
-            using (new SoodaTransaction()) 
+            using (new SoodaTransaction())
             {
                 object result = Contact.Ed["Name"];
                 Assert.AreEqual("Ed Employee", result);
@@ -515,11 +515,11 @@ namespace Sooda.UnitTests.TestCases
             using (SoodaTransaction tran = new SoodaTransaction())
             {
                 DynamicFieldManager.Add(new FieldInfo {
-                        ParentClass = tran.Schema.FindClassByName("PKInt32"),
-                        Name = "Data",
-                        TypeName = "Integer",
-                        IsNullable = false
-                    }, tran);
+                    ParentClass = tran.Schema.FindClassByName("PKInt32"),
+                    Name = "Data",
+                    TypeName = "Integer",
+                    IsNullable = false
+                }, tran);
             }
         }
 
@@ -580,7 +580,7 @@ namespace Sooda.UnitTests.TestCases
         {
             using (new SoodaTransaction())
             {
-                IEnumerable<Contact> ce = Contact.Linq().Where(c => (string) c["Name"] == "Mary Manager");
+                IEnumerable<Contact> ce = Contact.Linq().Where(c => (string)c["Name"] == "Mary Manager");
                 CollectionAssert.AreEquivalent(new Contact[] { Contact.Mary }, ce);
             }
         }
@@ -591,7 +591,7 @@ namespace Sooda.UnitTests.TestCases
         {
             using (new SoodaTransaction())
             {
-                Contact.Linq().Any(c => (string) c["NoSuchField"] == "Mary Manager");
+                Contact.Linq().Any(c => (string)c["NoSuchField"] == "Mary Manager");
             }
         }
 
@@ -606,10 +606,10 @@ namespace Sooda.UnitTests.TestCases
                 {
                     o.Parent = o;
                     o[IntField] = 42;
-                    IEnumerable<PKInt32> pe = PKInt32.Linq().Where(p => (int) p[IntField] == 5);
+                    IEnumerable<PKInt32> pe = PKInt32.Linq().Where(p => (int)p[IntField] == 5);
                     CollectionAssert.IsEmpty(pe);
 
-                    pe = PKInt32.Linq().Where(p => (int) p[IntField] == 42);
+                    pe = PKInt32.Linq().Where(p => (int)p[IntField] == 42);
                     CollectionAssert.AreEquivalent(new PKInt32[] { o }, pe);
                 }
                 finally
@@ -629,10 +629,10 @@ namespace Sooda.UnitTests.TestCases
                 try
                 {
                     PKInt32.GetRef(7777777)[IntField] = 42;
-                    IEnumerable<PKInt32> pe = PKInt32.Linq().Where(p => (int) p[IntField] == 5);
+                    IEnumerable<PKInt32> pe = PKInt32.Linq().Where(p => (int)p[IntField] == 5);
                     CollectionAssert.IsEmpty(pe);
 
-                    pe = PKInt32.Linq().Where(p => (int) p[IntField] == 42);
+                    pe = PKInt32.Linq().Where(p => (int)p[IntField] == 42);
                     CollectionAssert.AreEquivalent(new PKInt32[] { PKInt32.GetRef(7777777) }, pe);
                 }
                 finally
@@ -653,13 +653,13 @@ namespace Sooda.UnitTests.TestCases
                 {
                     o.Parent = o;
                     o[ReferenceField] = Contact.Mary;
-                    IEnumerable<PKInt32> pe = PKInt32.Linq().Where(p => ((Contact) p[ReferenceField]).LastSalary.Value == 42);
+                    IEnumerable<PKInt32> pe = PKInt32.Linq().Where(p => ((Contact)p[ReferenceField]).LastSalary.Value == 42);
                     CollectionAssert.IsEmpty(pe);
 
-                    pe = PKInt32.Linq().Where(p => ((Contact) p[ReferenceField]).LastSalary.Value == 123.123456789M);
+                    pe = PKInt32.Linq().Where(p => ((Contact)p[ReferenceField]).LastSalary.Value == 123.123456789M);
                     CollectionAssert.AreEquivalent(new PKInt32[] { o }, pe);
 
-                    pe = PKInt32.Linq().Where(p => ((Contact) p[ReferenceField]).GetLabel(false) == "Mary Manager");
+                    pe = PKInt32.Linq().Where(p => ((Contact)p[ReferenceField]).GetLabel(false) == "Mary Manager");
                     CollectionAssert.AreEquivalent(new PKInt32[] { o }, pe);
                 }
                 finally
@@ -722,7 +722,7 @@ namespace Sooda.UnitTests.TestCases
         {
             using (new SoodaTransaction())
             {
-                IEnumerable<string> se = from c in Contact.Linq() orderby c["Name"] select (string) c["Name"];
+                IEnumerable<string> se = from c in Contact.Linq() orderby c["Name"] select (string)c["Name"];
                 CollectionAssert.AreEqual(new string[] { "Caroline Customer", "Catie Customer", "Chris Customer", "Chuck Customer", "Ed Employee", "Eva Employee", "Mary Manager" }, se);
             }
         }
