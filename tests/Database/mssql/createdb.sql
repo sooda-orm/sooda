@@ -243,6 +243,12 @@ name nvarchar(50) not null
 )
 go
 
+create table VerTestSim(
+id int not null primary key,
+Name nvarchar(50) not null,
+Version int not null,
+LastModified datetime not null)
+go
 
 print 'Inserting sample data...'
 set nocount on

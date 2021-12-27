@@ -155,7 +155,8 @@ namespace Sooda.Schema
         [System.ComponentModel.DefaultValueAttribute(false)]
         public bool DisableTypeCache = false;
 
-
+        [System.Xml.Serialization.XmlAttributeAttribute("versionField")]
+        public string VersionField; 
         public ClassInfo()
         {
             // do nth.    
@@ -236,6 +237,12 @@ namespace Sooda.Schema
             return _primaryKeyFields[0];
         }
 
+        public FieldInfo GetVersionField()
+        {
+            if (string.IsNullOrEmpty(VersionField)) return null;
+            return this.FindFieldByName(VersionField);
+        }
+
         [NonSerialized]
         private SchemaInfo parentSchema;
 
@@ -269,6 +276,7 @@ namespace Sooda.Schema
             if (InheritFrom != null)
             {
                 InheritsFromClass = schema.FindClassByName(InheritFrom);
+                VersionField = InheritsFromClass.VersionField;
             }
             else
             {

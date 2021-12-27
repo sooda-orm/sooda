@@ -3,3 +3,4 @@ AssemblyBuildInfo.cs
 bin
 obj
 *.suo
+/.vs

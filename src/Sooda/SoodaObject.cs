@@ -969,6 +969,10 @@ namespace Sooda
                 EnsureFieldsInited();
                 ds.SaveObjectChanges(this, GetTransaction().IsPrecommit);
             }
+            catch (SoodaException e)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 throw new SoodaDatabaseException("Cannot save object to the database " + e.Message, e);
