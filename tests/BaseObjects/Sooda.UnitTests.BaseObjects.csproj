@@ -51,8 +51,10 @@
     <Compile Include="Role.cs" />
     <Compile Include="Vehicle.cs" />
     <Compile Include="_Stubs.cs" />
+    <Compile Include="PersonBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Sooda.UnitTests.BaseObjects.soodaproject" />
   </ItemGroup>
   <ItemGroup>
@@ -65,4 +67,10 @@
   <PropertyGroup>
     <PreBuildEvent>$(ProjectDir)..\..\src\SoodaStubGen\bin\$(ConfigurationName)\net5.0\SoodaStubGen.exe $(ProjectDir)Sooda.UnitTests.BaseObjects.soodaproject</PreBuildEvent>
   </PropertyGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\NUnitTestAdapter.2.3.0\build\NUnitTestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NUnitTestAdapter.2.3.0\build\NUnitTestAdapter.props'))" />
+  </Target>
 </Project>

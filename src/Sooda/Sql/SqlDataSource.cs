@@ -37,6 +37,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Sooda.Sql
@@ -193,7 +194,7 @@ namespace Sooda.Sql
 
         public override void Rollback()
         {
-            if (OwnConnection && !DisableTransactions)
+            if (!DisableTransactions)
             {
                 logger.Debug("{0}: rollback...", ConnectionLabel());
                 if (Transaction != null)
@@ -208,7 +209,7 @@ namespace Sooda.Sql
 
         public override void Commit()
         {
-            if (OwnConnection && !DisableTransactions)
+            if (!DisableTransactions)
             {
                 logger.Debug("{0}: commit...", ConnectionLabel());
                 if (Transaction != null)
@@ -223,24 +224,22 @@ namespace Sooda.Sql
 
         public override void Close()
         {
-            if (OwnConnection)
+            
+            try
             {
-                try
+                if (Transaction != null)
                 {
-                    if (!DisableTransactions && Transaction != null)
-                    {
-                        Transaction.Dispose();
-                    }
+                    Transaction.Dispose();
                 }
-                finally
+            }
+            finally
+            {
+                Transaction = null;
+                if (OwnConnection && Connection != null)
                 {
-                    Transaction = null;
-                    if (Connection != null)
-                    {
-                        logger.Debug("{0}: dispose...", ConnectionLabel());
-                        Connection.Dispose();
-                        Connection = null;
-                    }
+                    logger.Debug("{0}: dispose...", ConnectionLabel());
+                    Connection.Dispose();
+                    Connection = null;
                 }
             }
         }
@@ -267,17 +266,19 @@ namespace Sooda.Sql
             _updateCommand = null;
         }
 
-        private void FlushUpdateCommand(bool final)
+        private int FlushUpdateCommand(bool final)
         {
+            int ret = 0;
             if (final || DisableUpdateBatch || _updateCommand.Parameters.Count >= 100)
             {
                 if (_updateCommand.CommandText != "")
                 {
-                    TimedExecuteNonQuery(_updateCommand);
+                    ret = TimedExecuteNonQuery(_updateCommand);
                     _updateCommand.Parameters.Clear();
                     _updateCommand.CommandText = "";
                 }
             }
+            return ret;
         }
 
         static void FieldEquals(FieldInfo fi, object value, StringBuilder builder, ArrayList queryParams)
@@ -290,28 +291,51 @@ namespace Sooda.Sql
             builder.Append('}');
         }
 
-        void DoWithWhere(SoodaObject obj, StringBuilder builder, ArrayList queryParams, bool isRaw)
+        void DoWithWhere(SoodaObject obj, StringBuilder builder, ArrayList queryParams, bool isRaw, bool withVersion)
         {
             builder.Append(" where ");
             object primaryKeyValue = obj.GetPrimaryKeyValue();
-            FieldInfo[] primaryKeyFields = obj.GetClassInfo().GetPrimaryKeyFields();
+            
+            var ci = obj.GetClassInfo();
+            FieldInfo[] primaryKeyFields = ci.GetPrimaryKeyFields();
+            FieldInfo vf = withVersion ? ci.GetVersionField() : null;
+            
             for (int i = 0; i < primaryKeyFields.Length; i++)
             {
                 if (i > 0)
                     builder.Append(" and ");
                 FieldEquals(primaryKeyFields[i], SoodaTuple.GetValue(primaryKeyValue, i), builder, queryParams);
             }
+            if (vf != null)
+            {
+                builder.Append(" and ");
+                FieldEquals(vf,  obj.GetFieldValue(vf.ClassUnifiedOrdinal), builder, queryParams);
+            }
+            if (vf != null)
+            {
+                FlushUpdateCommand(true);
+            }
             SqlBuilder.BuildCommandWithParameters(_updateCommand, true, builder.ToString(), queryParams.ToArray(), isRaw);
-            FlushUpdateCommand(false);
+            if (vf != null)
+            {
+                int n = FlushUpdateCommand(true);
+                if (n != 1) throw new SoodaVersionConflictException(string.Format("{0}#{1}, ver={2}", obj.GetType().Name, obj.GetPrimaryKeyValue(), obj.GetFieldValue(vf.ClassUnifiedOrdinal)));
+            }
+            else
+            {
+                FlushUpdateCommand(false);
+            }
         }
 
         void DoDeletesForTable(SoodaObject obj, TableInfo table)
         {
+            var allRO = table.Fields.All(x => x.ReadOnly);
+            if (allRO) return; //ignore RO tables
             StringBuilder builder = new StringBuilder();
             ArrayList queryParams = new ArrayList();
             builder.Append("delete from ");
             builder.Append(table.DBTableName);
-            DoWithWhere(obj, builder, queryParams, true);
+            DoWithWhere(obj, builder, queryParams, true, false);
         }
 
         void DoDeletes(SoodaObject obj)
@@ -707,6 +731,8 @@ namespace Sooda.Sql
                 return;
             }
 
+            if (table.Fields.All(x => x.ReadOnly)) return;
+
             StringBuilder builder = new StringBuilder(500);
             builder.Append("insert into ");
             builder.Append(table.DBTableName);
@@ -769,6 +795,7 @@ namespace Sooda.Sql
                 return;
             }
 
+            
             StringBuilder builder = new StringBuilder(500);
             builder.Append("update ");
             builder.Append(table.DBTableName);
@@ -776,9 +803,30 @@ namespace Sooda.Sql
 
             ArrayList par = new ArrayList();
             bool anyChange = false;
+            FieldInfo verField = null;
+            object newVersion = null;
             foreach (FieldInfo fi in table.Fields)
             {
-                if (obj.IsFieldDirty(fi.ClassUnifiedOrdinal))
+                if (!string.IsNullOrEmpty(fi.ParentClass.VersionField) && string.Equals(fi.ParentClass.VersionField, fi.Name))
+                {
+                    if (anyChange)
+                        builder.Append(", ");
+                    verField = fi;
+                    var fv = GetFieldValue(obj, fi, isPrecommit);
+                    newVersion = fv;
+                    if (fi.DataType == FieldDataType.Integer)
+                    {
+                        newVersion = ((int)fv) + 1;
+                    }
+                    else if (fi.DataType == FieldDataType.DateTime)
+                    {
+                        newVersion = DateTime.Now;
+                    }
+                    else throw new Exception("Invalid data type for version field " + fi.Name);
+                    FieldEquals(fi, newVersion, builder, par);
+                    anyChange = true;
+                }
+                else if (obj.IsFieldDirty(fi.ClassUnifiedOrdinal))
                 {
                     if (anyChange)
                         builder.Append(", ");
@@ -789,7 +837,12 @@ namespace Sooda.Sql
             if (!anyChange)
                 return;
 
-            DoWithWhere(obj, builder, par, false);
+            DoWithWhere(obj, builder, par, false, verField != null);
+            if (verField != null && !isPrecommit)
+            {
+                //only update the ver if we're saving for commit, not precommit
+                obj._fieldValues.SetFieldValue(verField.ClassUnifiedOrdinal, newVersion);
+            }
         }
 
         string StripWhitespace(string s)

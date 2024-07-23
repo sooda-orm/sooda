@@ -541,8 +541,11 @@ namespace Sooda
                 for (int i = 0; i < _fieldValues.Length; ++i)
                 {
                     Sooda.Schema.FieldInfo field = fields[i];
-                    if (!field.IsNullable && IsDataLoaded(field.Table.OrdinalInClass) && _fieldValues.IsNull(i))
-                        FieldCannotBeNull(field.Name);
+                    if (!field.ReadOnly)
+                    {
+                        if (!field.IsNullable && IsDataLoaded(field.Table.OrdinalInClass) && _fieldValues.IsNull(i))
+                            FieldCannotBeNull(field.Name);
+                    }
                 }
             }
         }
@@ -595,6 +598,7 @@ namespace Sooda
             SoodaTuple tuple = (SoodaTuple) _primaryKeyValue;
             if (tuple == null)
                 _primaryKeyValue = tuple = new SoodaTuple(totalValues);
+            var oldv = tuple.GetValue(valueOrdinal);
             tuple.SetValue(valueOrdinal, keyValue);
             if (tuple.IsAllNotNull())
             {
@@ -603,6 +607,26 @@ namespace Sooda
                 if (IsRegisteredInTransaction())
                     throw new SoodaException("Cannot set primary key value more than once.");
                 RegisterObjectInTransaction();
+            }
+            var fi = this.GetClassInfo().GetPrimaryKeyFields().FirstOrDefault(x => x.ClassUnifiedOrdinal == valueOrdinal);
+            if (keyValue != null && fi.ReferencedClass != null)
+            {
+                var tf = GetTransaction().GetFactory(fi.ReferencedClass);
+                var rtyp = tf.TheType;
+
+                StringCollection backRefCollections = GetTransaction().Schema.GetBackRefCollections(fi);
+                if (backRefCollections != null)
+                {
+                    foreach (string collectionName in backRefCollections)
+                    {
+                        PropertyInfo coll = rtyp.GetProperty(collectionName, BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public);
+                        if (coll == null)
+                            throw new Exception(collectionName + " not found in " + keyValue.GetType().Name + " while setting [key part] " + this.GetType().Name + "." + fi.Name);
+                        var theObj = tf.GetRef(GetTransaction(), keyValue);
+                        ISoodaObjectListInternal listInternal = (ISoodaObjectListInternal)coll.GetValue(theObj, null);
+                        listInternal.InternalAdd(this);
+                    }
+                }
             }
         }
 
@@ -691,7 +715,7 @@ namespace Sooda
                         }
                         catch (Exception ex)
                         {
-                            logger.Error("Error while reading field {0}.{1}: {2}", table.NameToken, field.Name, ex);
+                            logger.Error("Error while reading field {0}.{1}: {2}. column #{3}", table.NameToken, field.Name, ex, recordPos);
                             throw;
                         }
                     }
@@ -942,6 +966,10 @@ namespace Sooda
             {
                 EnsureFieldsInited();
                 ds.SaveObjectChanges(this, GetTransaction().IsPrecommit);
+            }
+            catch (SoodaException e)
+            {
+                throw;
             }
             catch (Exception e)
             {
@@ -1309,6 +1337,14 @@ namespace Sooda
                 return factory;
 
             // more complex case - we have to determine the actual factory to be used for object creation
+            if (classInfo.SubclassSelectorField == null)
+            {
+                if (subclasses.Count != 1) throw new Exception(string.Format("Class {0} is abstract, no subclassSelectorField, so only 1 subclass allowed", classInfo.Name));
+                var sc = subclasses[0];
+                var fact = tran.GetFactory(sc);
+                SoodaTransaction.SoodaObjectFactoryCache.SetObjectFactory(classInfo.Name, keyValue, fact);
+                return fact;
+            }
 
             int selectorFieldOrdinal = loadData ? classInfo.SubclassSelectorField.OrdinalInTable : record.FieldCount - 1;
             object selectorActualValue = factory.GetFieldHandler(selectorFieldOrdinal).RawRead(record, firstColumnIndex + selectorFieldOrdinal);
@@ -1546,6 +1582,8 @@ namespace Sooda
                 throw new Exception("Field " + name + " not found in " + ci.Name);
             return fi;
         }
+
+        
 
         object GetTypedFieldValue(Sooda.Schema.FieldInfo fi)
         {

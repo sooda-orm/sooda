@@ -39,6 +39,7 @@ namespace ConsoleTest
     {
         static void Main(string[] args)
         {
+            Sooda.SoodaTransaction.DefaultObjectsAssembly = typeof(Sooda.UnitTests.BaseObjects.Bike).Assembly;
             Sooda.UnitTests.TestCases.Soql.CollectionTest ct = new Sooda.UnitTests.TestCases.Soql.CollectionTest();
             ct.ContainsOnSubclassTPT();
         }

@@ -151,6 +151,28 @@
             <field name="NullableBlob" type="Blob" dbcolumn="blob2" nullable="true" />
         </table>
     </class>
+    
+	<class name="VerTestSim" versionField="Version">
+        <table name="VerTestSim">
+            <field name="Id" type="Integer" dbcolumn="id" primaryKey="true" />
+            <field name="Name" type="String" nullable="false" />
+			<field name="LastModified" type="DateTime" nullable="false" />
+			<field name="Version" type="Integer" nullable="false" />
+        </table>
+    </class>
+	
+    <class name="EightFieldsEx" keygen="none">
+        <table name="EightFieldsEx">
+        <field name="Id" type="Integer" dbcolumn="id" primaryKey="true" references="EightFields"/>
+        <field name="Name" type="String" nullable="false" />
+        </table>
+    </class>
+    
+    <class name="PersonConcrete" inheritFrom="PersonBase">
+    
+        <const key="1" name="TheBoss" />
+        <const key="2" name="Admin" />
+    </class>
 
     <relation name="RelInt32ToString">
         <table name="RelInt32ToString">

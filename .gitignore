@@ -6,6 +6,7 @@
 # User-specific files
 *.rsuser
 *.suo
+
 *.user
 *.userosscache
 *.sln.docstates
@@ -342,3 +343,4 @@ healthchecksdb
 /examples/console/Sooda.ConsoleApplicationExample/_DBSchema.bin
 /examples/console/Sooda.ConsoleApplicationExample/_Stubs.cs
 /Sooda.config.DELL-DLV.xml
+
