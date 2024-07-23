@@ -32,6 +32,7 @@ using Sooda.UnitTests.BaseObjects;
 using Sooda;
 using Sooda.Schema;
 using Sooda.UnitTests.Objects;
+using System;
 
 namespace Sooda.UnitTests.TestCases.ObjectMapper
 {
@@ -78,14 +79,21 @@ namespace Sooda.UnitTests.TestCases.ObjectMapper
                 ss.Name = "A1";
                 id = ss.Id;
                 t.Commit();
+                Console.WriteLine("Created record {0} ver {1}", ss.Id, ss.Version);
+                Assert.AreEqual(0, ss.Version);
             }
             using (var t2 = new SoodaTransaction())
             {
                 var v0 = VerTestSim.GetRef(id);
+                Console.WriteLine("Got record {0} ver {1}", v0.Id, v0.Version);
+                Assert.AreEqual(0, v0.Version);
                 v0.Name = "Updated";
+                Console.WriteLine("updated before commit record {0} ver {1}", v0.Id, v0.Version);
+                Assert.AreEqual(0, v0.Version);
                 t2.Commit();
+                Console.WriteLine("updated after commit record {0} ver {1}", v0.Id, v0.Version);
+                Assert.AreEqual(1, v0.Version);
             }
-
         }
         [Test]
         public void CreateTest2()
@@ -169,7 +177,21 @@ namespace Sooda.UnitTests.TestCases.ObjectMapper
             v1.Name = "t4 Updated 2";
             
             t3.Commit();
-            t2.Commit();
+            try
+            {
+                t2.Commit();
+                Assert.Fail("T2 should not commit");
+            }
+            catch(SoodaVersionConflictException vc)
+            {
+                Console.WriteLine("Version conflict as expected {0}", vc.Message);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Unexpected error {0}", ex.ToString());
+                Assert.Fail(ex.ToString());
+            }
+            
             
         }
     }
