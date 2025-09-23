@@ -6,6 +6,8 @@
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	<SignAssembly>true</SignAssembly>
 	<AssemblyOriginatorKeyFile>Sooda.snk</AssemblyOriginatorKeyFile>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<IncludeSymbols>True</IncludeSymbols>
   </PropertyGroup>
 
   <ItemGroup>

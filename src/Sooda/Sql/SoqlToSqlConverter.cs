@@ -58,6 +58,7 @@ namespace Sooda.Sql
         public SoqlToSqlConverter(TextWriter output, SchemaInfo schema, ISqlBuilder builder)
             : base(output)
         {
+            if (builder == null) throw new ArgumentException("builder required");
             Schema = schema;
             _builder = builder;
         }

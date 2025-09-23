@@ -108,7 +108,7 @@ namespace Sooda.Sql
             this.SqlBuilder = string.IsNullOrEmpty(dialect) ?
                 SqlBuilderMenager.GetDefaultBuilder() : 
                 SqlBuilderMenager.GetBuilder(dialect);
-
+            if (this.SqlBuilder == null) throw new Exception("SQL builder missing. Dialect:" + dialect);
             if (GetParameter("useSafeLiterals", false) == "false")
                 this.SqlBuilder.UseSafeLiterals = false;
 
