@@ -53,6 +53,7 @@
     <Compile Include="ConcreteMegaSuperBikeA.cs" />
     <Compile Include="ConcreteMegaSuperBikeB.cs" />
     <Compile Include="EightFields.cs" />
+    <Compile Include="EightFieldsEx.cs" />
     <Compile Include="ExtendedBike.cs" />
     <Compile Include="MegaSuperBike.cs" />
     <Compile Include="MultiKey.cs" />
@@ -64,14 +65,23 @@
     <Compile Include="PKString.cs" />
     <Compile Include="SuperBike.cs" />
     <Compile Include="_Stubs.cs" />
+    <Compile Include="PersonConcrete.cs" />
     <Compile Include="VehicleMileage.cs" />
     <Compile Include="MileageItem.cs" />
+    <Compile Include="VerTestSim.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Sooda.UnitTests.Objects.soodaproject" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.Targets" />
   <PropertyGroup>
     <PreBuildEvent>$(ProjectDir)..\..\src\SoodaStubGen\bin\$(ConfigurationName)\net5.0\SoodaStubGen.exe $(ProjectDir)Sooda.UnitTests.Objects.soodaproject</PreBuildEvent>
   </PropertyGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\NUnitTestAdapter.2.3.0\build\NUnitTestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NUnitTestAdapter.2.3.0\build\NUnitTestAdapter.props'))" />
+  </Target>
 </Project>

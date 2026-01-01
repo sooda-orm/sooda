@@ -84,6 +84,7 @@
     <xsd:attribute name="triggers" use="optional" type="xsd:boolean" default="true" />
     <xsd:attribute name="readOnly" use="optional" type="xsd:boolean" default="false" />
     <xsd:attribute name="ignorePartial" use="optional" type="xsd:boolean" default="false" />
+    <xsd:attribute name="versionField" type="xsd:string" use="optional" />
     <xsd:anyAttribute namespace="##other" processContents="lax" />
   </xsd:complexType>
   <xsd:complexType name="CollectionOnetoManyInfo">

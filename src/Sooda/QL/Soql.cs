@@ -50,6 +50,9 @@ namespace Sooda.QL
             if (classInfo.InheritsFromClass == null)
                 return null;
 
+            if (classInfo.SubclassSelectorField == null) //we have inheritance without subclass selector - so just assume all are same class
+                return null;
+
             SoqlExpressionCollection literals = new SoqlExpressionCollection();
 
             foreach (ClassInfo subclass in classInfo.GetSubclassesForSchema(schema))
