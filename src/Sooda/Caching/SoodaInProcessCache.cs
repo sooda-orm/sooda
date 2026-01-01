@@ -213,7 +213,7 @@ namespace Sooda.Caching
                 {
                     if (logger.IsTraceEnabled)
                     {
-                        logger.Trace("Storing collection: {0} {1} items. Dependent on: [ {2} ]", cacheKey, primaryKeys.Count, String.Join(",",dependentClassNames));
+                        logger.Trace("Storing collection: {0} {1} items. Dependent on: [ {2} ]", cacheKey, primaryKeys.Count, dependentClassNames == null ? "" : String.Join(",",dependentClassNames));
                     }
 
                     SoodaCachedCollection cc = new SoodaCachedCollection(cacheKey, rootClassName, primaryKeys);
